@@ -1,5 +1,67 @@
 # Subset of Go Programming Language Specification
 - - -
+
+### Table Of Contents
+* [Notation](#notation)
+* [Source code representation](#source-code-representation)
+	* [Characters](#characters)
+	* [Letters and digits](#letters-and-digits)
+* [Lexical elements](#lexical-elements)
+	* [Comments](#comments)
+	* [Tokens](#tokens)
+	* [Semicolons](#semicolons)
+	* [Identifier](#identifier)
+	* [Keywords](#keywords)
+	* [Operators and punctuation](#operators-and-punctuation)
+	* [Integer literal](#integer-literals)
+* [Constants](#constants)
+* [Variable](#variables)
+* [Types](#types)
+	* [Boolean types](#boolean-types)
+	* [Numeric types](#numeric-types)
+	* [Function types](#function-types)
+* [Properites of types and values](#properties-of-types-and-values)
+	* [Underlying types](#underlying-types)
+	* [Core types](#core-types)
+	* [Type identitfy](#type-identity)
+	* [Assignability](#assignability)
+	* [Representablity](#representability)
+* [Blocks](#blocks)
+* [Declaration and scope](#declarations-and-scope)
+	* [Predeclared identifiers](#predeclared-identifiers)
+	* [Uniqueness of identifiers](#uniqueness-of-identifiers)
+	* [Constant declarations](#constant-declarations)
+	* [Type declarations](#type-declarations)
+	* [Type definitions](#type-definitions)
+	* [Variable declaration](#variable-declarations)
+	* [Function declaration](#function-declarations)
+* [Expressions](#expressions)
+	* [Operands](#operands)
+	* [Primary expression](#primary-expressions)
+	* [Calls](#calls)
+	* [Operators](#operators)
+	* [Operator precedence](#operator-precedence)
+	* [Arithmetic operators](#arithmetic-operators)
+	* [Integer operators](#integer-operators)
+	* [Integer overflow](#integer-overflow)
+	* [Comparison operators](#comparison-operators)
+	* [Logical operators](#logical-operators)
+	* [Address operators](#address-operators)
+	* [Constant expression](#constant-expressions)
+	* [Order of evaluation](#order-of-evaluation)
+* [Statments](#statements)
+	* [Terminating statements](#terminating-statements)
+	* [Empty statements](#empty-statements)
+	* [Expression statements](#expression-statements)
+	* [IncDec statements](#incdec-statements)
+	* [Assignment statements](#assignment-statements)
+	* [If statements](#if-statements)
+	* [Return statements](#return-statements)
+* [Program initialization and execution](#program-initialization-and-execution)
+	* [The zero value](#the-zero-value)
+	* [Program execution](#program-execution)
+	* [Run-time panics](#run-time-panics)
+
 ## Notation
 The syntax is specified using a variant of Extended Backus-Naur Form (EBNF):
 ```
@@ -23,9 +85,12 @@ Lowercase production names are used to identify lexical (terminal) tokens. Non-t
 are in CamelCase. Lexical tokens are enclosed in double quotes ``""`` or back quotes ``` `` ``` .
 
 The form ``a … b`` represents the set of characters from ``a`` through ``b`` as alternatives.
-The horizontal ellipsis ``…``is also used else where in the spec to informally denote various 
+The horizontal ellipsis ``…`` is also used else where in the spec to informally denote various 
 enumerations or code snippets that are not further specified. The character ``…`` (as opposed 
 to the three characters ``...``) is not a token of the Go language.
+
+## Source code representation
+> ***TODO:*** yet to be discussed
 
 ## Characters
 > ***TODO:***  Keep it to ASCII
@@ -36,12 +101,13 @@ unicode_letter = /* a Unicode code point categorized as "Letter" */ .
 unicode_digit  = /* a Unicode code point categorized as "Number, decimal digit" */ .
 ```
 
-## Letters and Digits
+## Letters and digits
 The underscore character `_` is considered a lowercase letter.
 ```
 letter        = letter | "_" .
 decimal_digit = "0" … "9" .
 ```
+# Lexical elements
 
 ## Comments
 
@@ -55,6 +121,7 @@ A comment cannot start inside a _rune_ or _string_ literal, or inside a comment.
 comment containing no newlines acts like a space. Any other comment acts like a newline.
 
 ## Tokens
+> ***TODO:*** use ASCII values for _space_, _horizontal tabs_, _carriage returns_, _semicolons_ and _newlines_.
 
 Tokens form the vocabulary of the Go language. There are four classes: _identifiers_,
 _keywords_, _operators_, _punctuation_ and _literals_. _White space_, formed from 
@@ -143,7 +210,7 @@ decimal_lit    = "0" | ( "1" … "9" ) [ [ "_" ] decimal_digits ] .
 decimal_digits = decimal_digit { [ "_" ] decimal_digit } .
 ```
 ## Constants
-> NOTE: Rune, floating-point and complex constants are not supported yet 
+> ***NOTE***: Rune, floating-point and complex constants are not supported yet 
 
 There are boolean constants, integer constants. ~~Rune~~, integer, ~~floating-point~~, and ~~complex constants~~ are collectively called numeric constants.
 
@@ -163,16 +230,16 @@ in a _variable declarations_ such as `var i = 0` where there is no explicit type
 or string respectively, depending on whether it is a boolean, rune, integer, floating-point, complex, or string constant.
 
 
-Implementation restriction: Although numeric constants have arbitrary precision in the language, a compiler may implement them using an internal representation 
+> ***Implementation restriction:*** Although numeric constants have arbitrary precision in the language, a compiler may implement them using an internal representation 
 with limited precision. That said, every implementation must:
-
-- Represent integer constants with at least 256 bits.
-- Represent floating-point constants, including the parts of a complex constant, with a mantissa of at least 256 bits and a signed binary exponent of at least 16 bits.
-- Give an error if unable to represent an integer constant precisely.
-- Give an error if unable to represent a floating-point or complex constant due to overflow.
-- Round to the nearest representable constant if unable to represent a floating-point or complex constant due to limits on precision.
-
-These requirements apply both to literal constants and to the result of evaluating _constant expressions_.
+>
+> - Represent integer constants with at least 256 bits.
+> - Represent floating-point constants, including the parts of a complex constant, with a mantissa of at least 256 bits and a signed binary exponent of at least 16 bits.
+> - Give an error if unable to represent an integer constant precisely.
+> - Give an error if unable to represent a floating-point or complex constant due to overflow.
+> - Round to the nearest representable constant if unable to represent a floating-point or complex constant due to limits on precision.
+> 
+> These requirements apply both to literal constants and to the result of evaluating _constant expressions_.
 
 ## Variables
 
@@ -184,9 +251,10 @@ The static type (or just type) of a variable is the type given in its declaratio
 A variable's value is retrieved by referring to the variable in an _expression_; it is the most recent value _assigned_ to the variable. 
 If a variable has not yet been assigned a value, its value is the _zero value_ for its type.
 
-## Types 
+# Types 
 
-A type determines a set of values together with operations and methods specific to those values. A type may be denoted by a _type name_, if it has one. 
+A type determines a set of values together with operations specific to those
+values. A type may be denoted by a _type name_, if it has one. 
 
 ```
 Type      = TypeName | "(" Type ")" .
@@ -197,11 +265,10 @@ The language predeclares certain type names. Others are introduced with _type de
 Predeclared types and defined types are called _named types_. An alias denotes a named type if the type given in the alias declaration is a named type.
 
 ## Boolean types
+A boolean type represents the set of Boolean truth values denoted by the predeclared constants _true_ and _false_. The predeclared boolean type is _bool_; it is a _defined type_.
 
-A boolean type represents the set of Boolean truth values denoted by the predeclared constants _true_ and _false_. The predeclared boolean type is _bool_; 
-it is a _defined type_.
-
-An _integer_, ~~floating-point, or complex~~ type represents the set of integer, ~~floating-point, or complex~~ values, respectively. They are collectively 
+## Numeric types
+An _integer_ type represents the set of integer values. They are collectively 
 called numeric types. The predeclared architecture-independent numeric types are:
 
 The value of an _n_-bit integer is _n_ bits wide and represented using two's complement arithmetic.
@@ -261,7 +328,6 @@ func(prefix bool, values ...int) (success bool)
 # Properties of types and values
 
 ## Underlying types
-
 Each type T has an _underlying type_: If T is one of the predeclared boolean, numeric, or string types,
 or a type literal, the corresponding underlying type is T itself. Otherwise, T's underlying type is the
 underlying type of the type to which T refers in its declaration.
@@ -278,6 +344,7 @@ type (
 ```
 ## Core types
 Each non-interface type T has a _core type_, which is the same as the _underlying type_ of T.
+
 ## Type identity
 Two types are either _identical_ or _different_.
 
@@ -310,7 +377,6 @@ int and int
 B0 and B1 are different because they are new types created by distinct type definitions.
 
 ## Assignability
-
 A value x of type V is _assignable_ to a _variable_ of type T ("x is assignable to T") if one of the
 following conditions applies:
 
@@ -319,7 +385,6 @@ following conditions applies:
 - x is an untyped _constant representable_ by a value of type T.
 
 ## Representability
-
 A _constant_ x is _representable_ by a value of tye T, if one of the following conditions applies:
 
 - x is in the set of value _determined_ by T 
@@ -342,7 +407,7 @@ x                   T           x is not representable by a value of T because
 -1                  uint16      -1 is not in the set of unsigned 16-bit integers
 ```
 
-## Blocks
+# Blocks
 
 A block is a possibly empty sequence of declarations and statements within matching brace brackets.
 ```
@@ -359,7 +424,7 @@ In addition to explicit blocks in the source code, there are implicit blocks:
 
 Blocks nest and influence _scoping_.
 
-## Declarations and scope
+# Declarations and scope
 
 A _declaration_ binds a non-_blank_ identifier to a _constant_, _type_, _variable_, _function_. Every
 identifier in a program must be declared. No identifier may be declared twice in the same block, and no
@@ -509,7 +574,7 @@ to type bool.
 var i int = 45
 var j bool = true
 ```
-Implementation restriction: A compiler may make it illegal to declare a variable inside a function body if the
+> ***Implementation restriction:*** A compiler may make it illegal to declare a variable inside a function body if the
 variable is never used.
 
 ## Function declarations
@@ -528,7 +593,7 @@ A function declaration without type parameters may omit the body. Such a declara
 func flushICache(begin, end int)  // implemented externally
 ```
 
-## Expressions
+# Expressions
 An expression specifies the computation of a value by applying operators and functions to operands.
 
 ## Operands
@@ -545,7 +610,6 @@ OperandName = identifier .
 
 Primary expressions are the operands for unary and binary expressions.
 
-> ***Question:*** what's with the _Type_ here?
 ```
 PrimaryExpr =
 	Operand |
@@ -836,8 +900,7 @@ Floating-point operations within a single expression are evaluated according to 
 the operators. Explicit parentheses affect the evaluation by overriding the default associativity. In
 the expression `x + (y + z)` the addition `y + z` is performed before adding `x`.
 
-## Statements
-
+# Statements
 Statements control execution.
 ```
 Statement =
