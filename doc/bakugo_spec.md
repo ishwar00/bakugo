@@ -534,8 +534,9 @@ Blocks nest and influence _scoping_.
 | Changes yet to made |
 
 A _declaration_ binds a non-_blank_ identifier to a _constant_, _type_, _variable_, _function_. Every
-identifier in a program must be declared. No identifier may be declared twice in the same block, and no
-identifier may be declared in both the file and package block.
+identifier in a program must be declared. No identifier may be declared in both the file and package block.
+
+An identifier may be re-declared, possibly with a different type, in the same block.
 
 ```
 Declaration   = ConstDecl | TypeDecl | VarDecl .
@@ -546,15 +547,15 @@ The _scope_ of a declared identifier is the extent of source text in which the i
 constant, type, variable, function, label, or package.
 
 
-Go is lexically scoped using _blocks_:
+Go is lexically scoped:
 
 1. The scope of a _predeclared identifier_ is the universe block.
-2. The scope of an identifier denoting a function parameter, or result variable is the function body.
-3. The scope of a constant or variable identifier declared inside a function begins at the end of the ConstSpec or VarSpec and ends at the end of the innermost containing block.
-4. The scope of a type identifier declared inside a function begins at the identifier in the TypeSpec and ends at the end of the innermost containing block.
+1. The scope of an identifier denoting a function result variable is the function body.
+1. The scope of an identifier denoting a function parameter begins at the beginning of the function body and ends at the first re-declaration of the same identifier, or at the end of the function body if there are no re-declarations.
+1. The scope of a constant or variable identifier declared inside a function begins at the end of the ConstSpec or VarSpec and ends at the beginning of the next re-declaration of the same identifier, or  at the end of the innermost containing block if there are no re-declarations.
+1. The scope of a type identifier declared inside a function begins at the identifier in the TypeSpec and ends at the end of the innermost containing block.
 
-An identifier declared in a block may be redeclared in an inner block. While the identifier of the inner 
-declaration is in scope, it denotes the entity declared by the inner declaration.
+An identifier declared in a block may be redeclared in an inner block too. While the identifier of the inner declaration is in scope, it denotes the entity declared by the inner declaration.
 
 ## Predeclared identifiers
 The following identifiers are implicitly declared in the _universe block_:
