@@ -13,7 +13,9 @@
 	* [Identifier](#identifier)
 	* [Keywords](#keywords)
 	* [Operators and punctuation](#operators-and-punctuation)
-	* [Integer literal](#integer-literals)
+	* [Integer literals](#integer-literals)
+	* [Rune literals](#rune-literals)
+	* [String literals](#string-literals)
 * [Constants](#constants)
 * [Variable](#variables)
 * [Types](#types)
@@ -90,16 +92,33 @@ enumerations or code snippets that are not further specified. The character ``�
 to the three characters ``...``) is not a token of the Go language.
 
 ## Source code representation
-> ***TODO:*** yet to be discussed
+Source code is Unicode text encoded in UTF-8. The text is not canonicalized,
+so a single accented code point is distinct from the same character
+constructed from combining an accent and a letter; those are treated as two
+code points. For simplicity, this document will use the unqualified term
+character to refer to a Unicode code point in the source text.
+
+Each code point is distinct; for instance, uppercase and lowercase letters
+are different characters.
+
+| Implementation restriction |
+| :-------- |
+| For compatibility with other tools, a compiler may disallow the NUL character (U+0000) in the source text. |
+
+| Implementation restriction |
+| :-------- |
+| For compatibility with other tools, a compiler may ignore a UTF-8-encoded byte order mark (U+FEFF) if it is the first Unicode code point in the source text. A byte order mark may be disallowed anywhere else in the source. |
 
 ## Characters
-> ***TODO:***  Keep it to ASCII
+The following terms are used to denote specific Unicode character categories:
 ```
 newline        = /* the Unicode code point U+000A */ .
 unicode_char   = /* an arbitrary Unicode code point except newline */ .
 unicode_letter = /* a Unicode code point categorized as "Letter" */ .
 unicode_digit  = /* a Unicode code point categorized as "Number, decimal digit" */ .
 ```
+In _The Unicode Standard 8.0_, Section 4.5 "General Category" defines a set of character categories. 
+Go treats all characters in any of the Letter categories Lu, Ll, Lt, Lm, or Lo as Unicode letters, and those in the Number category Nd as Unicode digits.
 
 ## Letters and digits
 The underscore character `_` is considered a lowercase letter.
@@ -121,18 +140,15 @@ A comment cannot start inside a _rune_ or _string_ literal, or inside a comment.
 comment containing no newlines acts like a space. Any other comment acts like a newline.
 
 ## Tokens
-> ***TODO:*** use ASCII values for _space_, _horizontal tabs_, _carriage returns_, _semicolons_ and _newlines_.
-
-Tokens form the vocabulary of the Go language. There are four classes: _identifiers_,
-_keywords_, _operators_, _punctuation_ and _literals_. _White space_, formed from 
-spaces(` `), horizontal tabs(`\t`), carriage returns,(`\r`) and newlines(`\n`), is ignored
-except as it separates tokens that would otherwise combine into a single token. Also, a
-newline or end of file may trigger the insertion of a semicolon(`;`). While breaking the
-input into tokens, the next token is the longest sequence of characters that form a
-valid token.
+Tokens form the vocabulary of the Go language. There are four classes: _identifiers_, _keywords_, _operators_ and _punctuation_, and _literals_. 
+_White space_, formed from spaces (U+0020), horizontal tabs (U+0009), carriage returns (U+000D), and newlines (U+000A), is ignored except as it separates tokens that would 
+otherwise combine into a single token. Also, a newline or end of file may trigger the insertion of a _semicolon_.
+While breaking the input into tokens, the next token is the longest sequence of characters that form a valid token.
 
 ## Semicolons
-> ***NOTE:*** floating-point, rune or string literal, keywords `break`, `continue` and `fallthrough`, and punctuation `]` are not yet supported.
+| NOTE | 
+| :-------- |
+| Floating-point, rune or string literal, keywords `break`, `continue` and `fallthrough`, and punctuation `]` are not yet supported. |
 
 The formal syntax uses semicolons `";"` as terminators in a number of productions. Go programs may omit most of these semicolons using the following two rules:
 1. When the input is broken into tokens, a semicolon is automatically inserted into the token stream immediately after a line's final token if that token is
@@ -156,8 +172,10 @@ examples of _identifier_
 a
 _x9
 ThisVariableIsExported
+αβ
 this_is_Bakugo
 ```
+Some identifiers are _predeclared._
 
 ## Keywords
 
@@ -166,7 +184,7 @@ The following keywords are reserved and may not be used as _identifiers_.
 func  const  if  type  return  var  else
 ```
 </details>
-<details><summary>unsupported keywords</summary>
+<details><summary>Reserved keywords</summary>
 <p>
 
 ```
@@ -187,7 +205,7 @@ The following character sequences represent operators (including assignment oper
 +    &    &&    ==    !=    (    )    -    |    ||    <    <=    *
 >    >=   {     }     /     ++   =    ,    ;    %     --   !
 ```
-<details><summary>unsupported operators and punctuations </summary>
+<details><summary>Reserved operators and punctuations </summary>
 
 ```
 +=    &=    -=    |=    [    ]
@@ -199,23 +217,117 @@ The following character sequences represent operators (including assignment oper
 </details>
 
 ## Integer literals
+| NOTE |
+| :--- |
+| Binary, Octal, Hexadecimal literals are not supported yet. |
 
-An integer literal is a sequence of digits representing an integer constant. 
+An integer literal is a sequence of digits representing an _integer constant_. 
 
-For readability, an underscore character _ may appear between successive digits; such underscores do not change the literal's value.
+For readability, an underscore character `_` may appear between successive digits; such underscores do not change the literal's value.
 
 ```
 int_lit        = decimal_lit.
 decimal_lit    = "0" | ( "1" … "9" ) [ [ "_" ] decimal_digits ] .
 decimal_digits = decimal_digit { [ "_" ] decimal_digit } .
 ```
+## Rune literals
+
+A rune literal represents a _rune constant_, an integer value identifying a Unicode code point. 
+A rune literal is expressed as one or more characters enclosed in single quotes, as in 'x' or '\n'. 
+Within the quotes, any character may appear except newline and unescaped single quote. 
+A single quoted character represents the Unicode value of the character itself, while multi-character sequences beginning with a backslash encode values in various formats.
+
+The simplest form represents the single character within the quotes; since Go source text is Unicode characters encoded in UTF-8, multiple UTF-8-encoded bytes may represent a single integer value. For instance, the literal 'a' holds a single byte representing a literal `a`, Unicode U+0061, value 0x61, while 'ä' holds two bytes (0xc3 0xa4) representing a literal a-dieresis, U+00E4, value 0xe4.
+
+Several backslash escapes allow arbitrary values to be encoded as ASCII text. There are four ways to represent the integer value as a numeric constant: \x followed by exactly two hexadecimal digits; \u followed by exactly four hexadecimal digits; \U followed by exactly eight hexadecimal digits, and a plain backslash \ followed by exactly three octal digits. In each case the value of the literal is the value represented by the digits in the corresponding base.
+
+Although these representations all result in an integer, they have different valid ranges. Octal escapes must represent a value between 0 and 255 inclusive. Hexadecimal escapes satisfy this condition by construction. The escapes \u and \U represent Unicode code points so within them some values are illegal, in particular those above 0x10FFFF and surrogate halves.
+
+After a backslash, certain single-character escapes represent special values:
+```
+\a   U+0007 alert or bell
+\b   U+0008 backspace
+\f   U+000C form feed
+\n   U+000A line feed or newline
+\r   U+000D carriage return
+\t   U+0009 horizontal tab
+\v   U+000B vertical tab
+\\   U+005C backslash
+\'   U+0027 single quote  (valid escape only within rune literals)
+\"   U+0022 double quote  (valid escape only within string literals)
+```
+
+An unrecognized character following a backslash in a rune literal is illegal.
+
+```
+rune_lit         = "'" ( unicode_value | byte_value ) "'" .
+unicode_value    = unicode_char | little_u_value | big_u_value | escaped_char .
+byte_value       = octal_byte_value | hex_byte_value .
+octal_byte_value = `\` octal_digit octal_digit octal_digit .
+hex_byte_value   = `\` "x" hex_digit hex_digit .
+little_u_value   = `\` "u" hex_digit hex_digit hex_digit hex_digit .
+big_u_value      = `\` "U" hex_digit hex_digit hex_digit hex_digit
+                           hex_digit hex_digit hex_digit hex_digit .
+escaped_char     = `\` ( "a" | "b" | "f" | "n" | "r" | "t" | "v" | `\` | "'" | `"` ) .
+```
+
+```
+'a'
+'ä'
+'本'
+'\t'
+'\000'
+'\007'
+'\377'
+'\x07'
+'\xff'
+'\u12e4'
+'\U00101234'
+'\''         // rune literal containing single quote character
+'aa'         // illegal: too many characters
+'\k'         // illegal: k is not recognized after a backslash
+'\xa'        // illegal: too few hexadecimal digits
+'\0'         // illegal: too few octal digits
+'\400'       // illegal: octal value over 255
+'\uDFFF'     // illegal: surrogate half
+'\U00110000' // illegal: invalid Unicode code point
+```
+
+## String literals
+
+A string literal represents a _string constant_ obtained from concatenating a sequence of characters. There are two forms: raw string literals and interpreted string literals.
+
+Raw string literals are character sequences between back quotes, as in ``` `foo` ```. Within the quotes, any character may appear except back quote. The value of a raw string literal is the string composed of the uninterpreted (implicitly UTF-8-encoded) characters between the quotes; in particular, backslashes have no special meaning and the string may contain newlines. Carriage return characters (`'\r'`) inside raw string literals are discarded from the raw string value.
+```
+string_lit             = raw_string_lit | interpreted_string_lit .
+raw_string_lit         = "`" { unicode_char | newline } "`" .
+interpreted_string_lit = `"` { unicode_value | byte_value } `"` .
+```
+
+```
+`abc`                // same as "abc"
+`\n
+\n`                  // same as "\\n\n\\n"
+"\n"
+"\""                 // same as `"`
+"Hello, world!\n"
+"日本語"
+"\u65e5本\U00008a9e"
+"\xff\u00FF"
+"\uD800"             // illegal: surrogate half
+"\U00110000"         // illegal: invalid Unicode code point
+```
+If the source code represents a character as two code points, such as a combining form involving an accent and a letter, the result will be an error if placed in a rune literal (it is not a single code point), and will appear as two code points if placed in a string literal.
+
 ## Constants
-> ***NOTE***: Rune, floating-point and complex constants are not supported yet 
+| NOTE | 
+| :------- |
+| Floating-point and complex constants are not supported yet. |
 
-There are boolean constants, integer constants. ~~Rune~~, integer, ~~floating-point~~, and ~~complex constants~~ are collectively called numeric constants.
+There are _boolean constants_, _rune constants_, _integer constants_ and _string constants_. Rune, integer, ~~floating-point~~, and ~~complex constants~~ are collectively called numeric constants.
 
-A constant value is represented by an integer literal, an identifier denoting a constant, a _constant expression_, The boolean truth values are represented by the
-predeclared  constants `true` and `false`.
+A constant value is represented by a _rune_, _integer_ or _string_ literal, an identifier denoting a constant, a _constant expression_, The boolean truth values are represented by the
+predeclared constants `true` and `false`.
 
 Numeric constants represent exact values of arbitrary precision and do not overflow. Consequently, there are no constants denoting the IEEE-754 negative zero, 
 infinity, and not-a-number values.
@@ -226,20 +338,15 @@ A constant may be given a type explicitly by a _constant declaration_ or implici
 as an operand in an _expression_. It is an error if the constant value cannot be _represented_ as a value of the respective type.
 
 An untyped constant has a _default_ type which is the type to which the constant is implicitly converted in contexts where a typed value is required, for instance, 
-in a _variable declarations_ such as `var i = 0` where there is no explicit type. The default type of an untyped constant is bool, rune, int, float64, complex128 
-or string respectively, depending on whether it is a boolean, rune, integer, floating-point, complex, or string constant.
+in a _variable declarations_ such as `var i = 0` where there is no explicit type. The default type of an untyped constant is `bool`, `rune`, `int` or `string` respectively, depending on whether it is a boolean, rune, integer, or string constant.
 
+| Implementation restriction |
+| ----------------------------- |
+| Although numeric constants have arbitrary precision in the language, a compiler may implement them using an internal representation with limited precision. That said, every implementation must: 
+| Represent integer constants with at least 256 bits.|
+| Give an error if unable to represent an integer constant precisely.|
 
-> ***Implementation restriction:*** Although numeric constants have arbitrary precision in the language, a compiler may implement them using an internal representation 
-with limited precision. That said, every implementation must:
->
-> - Represent integer constants with at least 256 bits.
-> - Represent floating-point constants, including the parts of a complex constant, with a mantissa of at least 256 bits and a signed binary exponent of at least 16 bits.
-> - Give an error if unable to represent an integer constant precisely.
-> - Give an error if unable to represent a floating-point or complex constant due to overflow.
-> - Round to the nearest representable constant if unable to represent a floating-point or complex constant due to limits on precision.
-> 
-> These requirements apply both to literal constants and to the result of evaluating _constant expressions_.
+These requirements apply both to literal constants and to the result of evaluating _constant expressions_.
 
 ## Variables
 
@@ -301,9 +408,9 @@ rune        alias for int32
 </details>
 
 ## Function types
-> ***NOTE:*** FunctionType is not supported yet
-
-A function type denotes the set of all functions with the same parameter and result types. The value of an uninitialized variable of function type is nil.
+| NOTE | 
+| :------- |
+| FunctionType is not supported yet. |
 
 ```
 Signature      = Parameters [ Result ] .
@@ -342,6 +449,8 @@ type (
 	B2 B1
 )
 ```
+The underlying type of string, A1, A2, B1, and B2 is string.
+
 ## Core types
 Each non-interface type T has a _core type_, which is the same as the _underlying type_ of T.
 
@@ -388,17 +497,12 @@ following conditions applies:
 A _constant_ x is _representable_ by a value of tye T, if one of the following conditions applies:
 
 - x is in the set of value _determined_ by T 
-- T is a floating-point type and x can be rounded to T's precision without overflow. Rounding uses IEEE
-754 round-to-even rules but with an IEEE negative zero further simplified to an unsigned zero. Note that
-constant values never result in an IEEE negative zero, NaN, or infinity.
 
 ```
 x                   T           x is representable by a value of T because
 
 1024                int16       1024 is in the set of 16-bit integers
 1e10                uint64      10000000000 is in the set of unsigned 64-bit integers
-2.718281828459045   float32     2.718281828459045 rounds to 2.7182817 which is in the set of float32 values
--1e-1000            float64     -1e-1000 rounds to IEEE -0.0 which is further simplified to 0.0
 ```
 ```
 x                   T           x is not representable by a value of T because
@@ -425,6 +529,9 @@ In addition to explicit blocks in the source code, there are implicit blocks:
 Blocks nest and influence _scoping_.
 
 # Declarations and scope
+| NOTE |
+| :--- |
+| Changes yet to made |
 
 A _declaration_ binds a non-_blank_ identifier to a _constant_, _type_, _variable_, _function_. Every
 identifier in a program must be declared. No identifier may be declared twice in the same block, and no
@@ -482,12 +589,10 @@ Functions:
 </details>
 
 ## Uniqueness of identifiers
-
 Given a set of identifiers, an identifier is called _unique_ if it is _different_ from every other in the set.
 Two identifiers are different if they are spelled differently. Otherwise, they are the same.
 
 ## Constant declarations
-
 A constant declaration binds a list of identifiers (the names of the constants) to the values of a list of
 _constant expressions_. The number of identifiers must be equal to the number of expressions, and the _n_th
 identifier on the left is bound to the value of the _n_th expression on the right.
@@ -521,7 +626,9 @@ expression list and its type if any. Omitting the list of expressions is therefo
 previous list. The number of identifiers must be equal to the number of expressions in the previous list.
 
 ## Type declarations
-> ***NOTE:*** alias declaration is not supported yet
+| NOTE |
+| :--- |
+| Alias declaration is not supported yet |
 
 A type declaration binds an identifier, the _type name_, to a _type_. Type declarations come in two forms: alias
 declarations and type definitions.
@@ -531,7 +638,6 @@ TypeSpec = TypeDef .
 ```
 
 ## Type definitions
-
 A type definition creates a new, distinct type with the same _underlying type_ and operations as the given type and binds an identifier, the _type name_, to it.
 ```
 TypeDef = identifier [ TypeParameters ] Type .
@@ -546,7 +652,6 @@ type (
 )
 ```
 ## Variable declarations
-
 A variable declaration creates one or more _variables_, binds corresponding identifiers to them, and gives each a type and an initial value.
 
 ```
@@ -574,11 +679,11 @@ to type bool.
 var i int = 45
 var j bool = true
 ```
-> ***Implementation restriction:*** A compiler may make it illegal to declare a variable inside a function body if the
-variable is never used.
+| Implementation restriction |
+| :------------------------- |
+| A compiler may make it illegal to declare a variable inside a function body if the variable is never used.|
 
 ## Function declarations
-
 A function declaration binds an identifier, the _function name_, to a function.
 ```
 FunctionDecl = "func" FunctionName Signature [ FunctionBody ] .
@@ -605,9 +710,7 @@ BasicLit    = int_lit .
 OperandName = identifier .
 ```
 
-
 ## Primary expressions
-
 Primary expressions are the operands for unary and binary expressions.
 
 ```
@@ -619,7 +722,6 @@ Arguments      = "(" [ ( ExpressionList | Type [ "," ExpressionList ] ) [ "," ] 
 ```
 
 ## Calls
-
 Given an expression f with a core type F of function type,
 
 ```
@@ -662,7 +764,9 @@ Comparisons are discussed _elsewhere_. For other binary operators, the operand t
 _identical_ unless the operation involves untyped _constants_. For operations involving
 constants only, see the section on _constant expressions_.
 
-> ***NOTE:*** conversion is not supported yet
+| NOTE |
+| :--- |
+| Conversion is not supported yet |
 
 If one operand is an untyped _constant_ and the other operand is not, the constant is implicitly
 _converted_ to the type of the other operand.
@@ -743,7 +847,6 @@ For integer operands, the unary operators +, -, and ^ are defined as follows:
 -x    negation              is 0 - x
 ```
 ## Integer overflow
-
 For _unsigned integer_ values, the operations +, -, and * are computed modulo 2n, where n is the
 bit width of the unsigned integer's type. Loosely speaking, these unsigned integer operations
 discard high bits upon overflow, and programs may rely on "wrap around".
@@ -790,26 +893,26 @@ var (
 ```
 
 ## Logical operators
-
 Logical operators apply to _boolean_ values and yield a result of the same type as the operands.
 The right operand is evaluated conditionally.
 
 ```
-!     NOT     !p     is  "not p"
-```
-<details><summary>unsupported logical operators</summary>
+!     NOT                !p      is  "not p"
 &&    conditional AND    p && q  is  "if p then q else false"
 ||    conditional OR     p || q  is  "if p then true else q"
+```
+
 </details>
 
 ## Address operators
-> ***NOTE:*** this is added to understand _addressable_
+| NOTE | 
+| :--- |
+| This is added to understand _addressable_|
 
 For an operand x of type T, the address operation &x generates a pointer of type *T to x. The
 operand must be _addressable_, that is, a variable.
 
 ## Constant expressions
-
 Constant expressions may contain only _constant_ operands and are evaluated at compile time.
 
 Untyped boolean and numeric constants may be used as operands wherever it is legal to use an
@@ -833,7 +936,10 @@ const j = true             // j == true  (untyped boolean constant)
 Constant expressions are always evaluated exactly; intermediate values and the constants themselves
 may require precision significantly larger than supported by any predeclared type in the language.
 The following are legal declarations:
-> ***NOTE:*** shift operator is not supported yet
+| NOTE |
+| :--- |
+| Shift operator is not supported yet |
+
 ```
 const Huge = 1 << 100         // Huge == 1267650600228229401496703205376  (untyped integer constant)
 const Four int8 = Huge >> 98  // Four == 4                                (type int8)
@@ -845,7 +951,9 @@ The divisor of a constant division or remainder operation must not be zero:
 ```
 The values of typed constants must always be accurately _representable_ by values of the constant
 type. The following constant expressions are illegal:
-> ***NOTE:*** conversions are not supported yet
+| NOTE |
+| :--- |
+| Conversions are not supported yet |
 
 ```
 uint(-1)     // -1 cannot be represented as a uint
@@ -855,13 +963,14 @@ Four * 300   // operand 300 cannot be represented as an int8 (type of Four)
 Four * 100   // product 400 cannot be represented as an int8 (type of Four)
 ```
 
-> ***Implementation restriction:*** A compiler may use rounding while computing untyped floating-point or
-complex constant expressions; see the implementation restriction in the section on _constants_. This
-rounding may cause a floating-point constant expression to be invalid in an integer context, even if
-it would be integral when calculated using infinite precision, and vice versa.
+| Implementation restriction |
+| :------------------------- |
+| A compiler may use rounding while computing untyped floating-point or complex constant expressions; see the implementation restriction in the section on _constants_. This rounding may cause a floating-point constant expression to be invalid in an integer context, even if it would be integral when calculated using infinite precision, and vice versa. |
 
 ## Order of evaluation
-> ***NOTE:*** Needs discussion
+| NOTE |
+| :--- |
+| Needs discussion |
 
 When evaluating the operands of an expression, assignment, or return
 statement, all function calls are evaluated in lexical left-to-right order.
@@ -915,10 +1024,10 @@ EmptyStmt = .
 ```
 
 ## Expression statements
-
 function calls can appear in statement context. Such statements may be parenthesized.
-
+```
 ExpressionStmt = Expression .
+```
 
 ## IncDec statements
 
@@ -988,8 +1097,7 @@ if x > max {
 }
 ```
 
-The expression may be preceded by a simple statement, which executes before the expression is
-evaluated.
+The expression may be preceded by a simple statement, which executes before the expression is evaluated.
 
 ```
 if x := f(); x < y {
@@ -1002,9 +1110,7 @@ if x := f(); x < y {
 ```
 
 ## Return statements
-
-A "return" statement in a function F terminates the execution of F, and optionally provides one or
-more result values.
+A "return" statement in a function F terminates the execution of F, and optionally provides one or more result values.
 ```
 ReturnStmt = "return" [ ExpressionList ] .
 ```
@@ -1015,7 +1121,6 @@ func noResult() {
 	return
 }
 ```
-> ***TODO:*** simplify, let's not have three ways of returning values
 
 There are three ways to return values from a function with a result type:
 1. The return value or values may be explicitly listed in the "return" statement. Each expression
@@ -1060,14 +1165,12 @@ func (devnull) Write(p []byte) (n int, _ error) {
 Regardless of how they are declared, all the result values are initialized to the zero values for
 their type upon entry to the function
 
-> ***Implementation restriction:*** A compiler may disallow an empty expression list in a "return"
-statement if a different entity (constant, type, or variable) with the same name as a result
-parameter is in _scope_ at the place of the return.
+| Implementation restriction |
+| :------------------------- |
+| A compiler may disallow an empty expression list in a "return" statement if a different entity (constant, type, or variable) with the same name as a result parameter is in _scope_ at the place of the return.|
 
 # Program initialization and execution
-
 ## The zero value
-
 When storage is allocated for a _variable_, through a declaration and no explicit
 initialization is provided, the variable or value is given a default value. Each element of such a
 variable or value is set to the _zero value_ for its type: `false` for booleans, `0` for numeric
@@ -1080,7 +1183,9 @@ var i int = 0
 ```
 
 ## Program execution
-> ***NOTE:*** packages are not supported yet
+| NOTE | 
+| :--- |
+| Packages are not supported yet |
 
 A complete program is created by linking a single, unimported package called the _main_ package with
 all the packages it imports, transitively. The main package must have package name main and declare
@@ -1094,7 +1199,9 @@ that function invocation returns, the program exits. It does not wait for other 
 goroutines to complete.
 
 ## Run-time panics
-> ***TODO:*** yet to be discussed
+| TODO |
+| :--- |
+| Discussion |
 
 Execution errors such as attempting to index an array out of bounds trigger a run-time panic
 equivalent to a call of the built-in function panic with a value of the implementation-defined
