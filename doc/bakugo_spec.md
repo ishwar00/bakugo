@@ -529,9 +529,6 @@ In addition to explicit blocks in the source code, there are implicit blocks:
 Blocks nest and influence _scoping_.
 
 # Declarations and scope
-| NOTE |
-| :--- |
-| Changes yet to made |
 
 A _declaration_ binds a non-_blank_ identifier to a _constant_, _type_, _variable_, _function_. Every
 identifier in a program must be declared. No identifier may be declared in both the file and package block.
