@@ -531,7 +531,7 @@ Blocks nest and influence _scoping_.
 # Declarations and scope
 
 A _declaration_ binds a non-_blank_ identifier to a _constant_, _type_, _variable_, _function_. Every
-identifier in a program must be declared. No identifier may be declared in both the file and package block.
+identifier in a program must be declared.
 
 An identifier may be re-declared, possibly with a different type, in the same block.
 
@@ -1105,7 +1105,7 @@ if x := f(); x < y {
 ```
 
 ## Return statements
-A "return" statement in a function F terminates the execution of F.
+A "return" statement in a function F terminates the execution of F, and optionally provides one or more result values.
 ```
 ReturnStmt = "return" [ ExpressionList ] .
 ```
