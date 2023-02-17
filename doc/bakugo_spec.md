@@ -547,6 +547,7 @@ constant, type, variable, function, label, or package.
 Go is lexically scoped:
 
 1. The scope of a _predeclared identifier_ is the universe block.
+1. The scope of an identifier denoting a constant, type, variable, or function declared at top level (outside any function) is the universe block.
 1. The scope of an identifier denoting a function parameter begins at the beginning of the function body and ends at the first re-declaration of the same identifier, or at the end of the function body if there are no re-declarations.
 1. The scope of a constant or variable identifier declared inside a function begins at the end of the ConstSpec or VarSpec and ends at the beginning of the next re-declaration of the same identifier, or  at the end of the innermost containing block if there are no re-declarations.
 1. The scope of a type identifier declared inside a function begins at the identifier in the TypeSpec and ends at the end of the innermost containing block.
