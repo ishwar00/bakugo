@@ -414,22 +414,22 @@ rune        alias for int32
 
 ```
 Signature      = Parameters [ Result ] .
-Result         = Parameters | Type .
+Result         = Type .
 Parameters     = "(" [ ParameterList [ "," ] ] ")" .
 ParameterList  = ParameterDecl { "," ParameterDecl } .
 ParameterDecl  = [ IdentifierList ] Type .
 ```
 
-Within a list of parameters or results, the names (IdentifierList) must either all be present or all be absent. If present, each name stands for one item 
-(parameter or result) of the specified type and all non-_blank_ names in the signature must be unique. If absent, each type stands for one item of that type. 
-Parameter and result lists are always parenthesized except that if there is exactly one unnamed result it may be written as an unparenthesized type.
+Within a list of parameters, the names (IdentifierList) must either all be present or all be absent. If present, each name stands for one item 
+(parameter) of the specified type and all non-_blank_ names in the signature must be unique. If absent, each type stands for one item of that type. 
+Parameter lists are always parenthesized. A single return type can be unparenthesized.
 
 ```
 func()
 func(x int) int
 func(a, _ int, z bool) bool
 func(a, b int, z bool) (bool)
-func(prefix bool, values ...int) (success bool)
+func(prefix bool, values ...int) (bool)
 ```
 
 # Properties of types and values
@@ -529,13 +529,11 @@ In addition to explicit blocks in the source code, there are implicit blocks:
 Blocks nest and influence _scoping_.
 
 # Declarations and scope
-| NOTE |
-| :--- |
-| Changes yet to made |
 
 A _declaration_ binds a non-_blank_ identifier to a _constant_, _type_, _variable_, _function_. Every
-identifier in a program must be declared. No identifier may be declared twice in the same block, and no
-identifier may be declared in both the file and package block.
+identifier in a program must be declared.
+
+An identifier may be re-declared, possibly with a different type, in the same block.
 
 ```
 Declaration   = ConstDecl | TypeDecl | VarDecl .
@@ -546,15 +544,15 @@ The _scope_ of a declared identifier is the extent of source text in which the i
 constant, type, variable, function, label, or package.
 
 
-Go is lexically scoped using _blocks_:
+Go is lexically scoped:
 
 1. The scope of a _predeclared identifier_ is the universe block.
-2. The scope of an identifier denoting a function parameter, or result variable is the function body.
-3. The scope of a constant or variable identifier declared inside a function begins at the end of the ConstSpec or VarSpec and ends at the end of the innermost containing block.
-4. The scope of a type identifier declared inside a function begins at the identifier in the TypeSpec and ends at the end of the innermost containing block.
+1. The scope of an identifier denoting a constant, type, variable, or function declared at top level (outside any function) is the universe block.
+1. The scope of an identifier denoting a function parameter begins at the beginning of the function body and ends at the first re-declaration of the same identifier, or at the end of the function body if there are no re-declarations.
+1. The scope of a constant or variable identifier declared inside a function begins at the end of the ConstSpec or VarSpec and ends at the beginning of the next re-declaration of the same identifier, or  at the end of the innermost containing block if there are no re-declarations.
+1. The scope of a type identifier declared inside a function begins at the identifier in the TypeSpec and ends at the end of the innermost containing block.
 
-An identifier declared in a block may be redeclared in an inner block. While the identifier of the inner 
-declaration is in scope, it denotes the entity declared by the inner declaration.
+An identifier declared in a block may be redeclared in an inner block too. While the identifier of the inner declaration is in scope, it denotes the entity declared by the inner declaration.
 
 ## Predeclared identifiers
 The following identifiers are implicitly declared in the _universe block_:
@@ -690,8 +688,6 @@ FunctionDecl = "func" FunctionName Signature [ FunctionBody ] .
 FunctionName = identifier .
 FunctionBody = Block .
 ```
-If the function's _signature_ declares result parameters, the function body's statement list must
-end in a _terminating statement_.
 
 A function declaration without type parameters may omit the body. Such a declaration provides the signature for a function implemented outside Go, such as an assembly routine.
 ```
@@ -1122,7 +1118,7 @@ func noResult() {
 }
 ```
 
-There are three ways to return values from a function with a result type:
+There are two ways to return values from a function with a result type:
 1. The return value or values may be explicitly listed in the "return" statement. Each expression
 must be single-valued and assignable to the corresponding element of the function's result type.
 
@@ -1131,7 +1127,7 @@ func simpleF() int {
 	return 2
 }
 
-func complexF1() (re float64, im float64) {
+func complexF1() (float64, float64) {
 	return -7.0, -4.0
 }
 ```
@@ -1142,32 +1138,10 @@ the type of the respective value, followed by a "return" statement listing these
 point the rules of the previous case apply.
 
 ```
-func complexF2() (re float64, im float64) {
+func complexF2() (float64, float64) {
 	return complexF1()
 }
 ```
-
-3. The expression list may be empty if the function's result type specifies names for its result
-parameters. The result parameters act as ordinary local variables and the function may assign values
-to them as necessary. The "return" statement returns the values of these variables.
-```
-func complexF3() (re float64, im float64) {
-	re = 7.0
-	im = 4.0
-	return
-}
-
-func (devnull) Write(p []byte) (n int, _ error) {
-	n = len(p)
-	return
-}
-```
-Regardless of how they are declared, all the result values are initialized to the zero values for
-their type upon entry to the function
-
-| Implementation restriction |
-| :------------------------- |
-| A compiler may disallow an empty expression list in a "return" statement if a different entity (constant, type, or variable) with the same name as a result parameter is in _scope_ at the place of the return.|
 
 # Program initialization and execution
 ## The zero value
