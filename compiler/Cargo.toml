@@ -1,0 +1,19 @@
+[package]
+name = "bakugo"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+pest = { version = "2.0", features = ["pretty-print"] }
+pest_derive = "2.0"
+
+[dev-dependencies]
+insta = { version = "1.29.0", features = ["yaml", "glob"] }
+
+[profile.dev.package.insta]
+opt-level = 3
+
+[profile.dev.package.similar]
+opt-level = 3
