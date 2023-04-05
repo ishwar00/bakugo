@@ -1,0 +1,10 @@
+set positional-arguments
+
+init:
+    cargo install cargo-insta
+
+run *args='':
+    cargo run -- "$@"
+
+test:
+    cargo insta test --review
