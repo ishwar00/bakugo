@@ -2,10 +2,19 @@
 
 ## Contributing guide
 
-Install [`just`](https://github.com/casey/just#installation)
+### Set up
+
+Install [`just`](https://github.com/casey/just#installation):
 ```bash
 cargo install just
 ```
+
+Then run set up:
+```bash
+just init
+```
+
+### Testing
 
 Run on a specific file:
 ```bash
