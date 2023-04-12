@@ -1,0 +1,2 @@
+WHITESPACE = _{ " " | "\n" }
+package = { SOI ~ "package" ~ "main" ~ EOI }

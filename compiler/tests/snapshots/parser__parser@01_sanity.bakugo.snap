@@ -1,0 +1,24 @@
+---
+source: tests/parser.rs
+expression: parsed
+input_file: tests/examples/01_sanity.bakugo
+---
+pos:
+  - 0
+  - 13
+pairs:
+  - pos:
+      - 0
+      - 13
+    rule: package
+    inner:
+      pos:
+        - 13
+        - 13
+      pairs:
+        - pos:
+            - 13
+            - 13
+          rule: EOI
+          inner: ""
+
