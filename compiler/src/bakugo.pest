@@ -12,9 +12,6 @@
 // Questions:
 //
 
-// Sanity check
-package = { SOI ~ "package" ~ "main" ~ EOI }
-
 /// Source Code Representation
 
 /// Characters
