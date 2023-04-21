@@ -1,2 +1,34 @@
-WHITESPACE = _{ " " | "\n" }
+//! Parsing expression grammars(PEG) for subset of the Go programming language spec
+
+// TODO:
+// 1. Disallow NUL character(U+0000) in the source text
+// 2. Ignore a UTF-8-encoded byte order mark (U+FEFF) if it is the first
+//    Unicode code point in the source text. A byte order mark may be disallowed
+//    anywhere else in the source.
+// 3. consider comment containing newlines as newlines. A general comment containing no
+//    newlines acts like a space. Any other comment acts like a newline.
+
+// Questions:
+//
+
+// Sanity check
 package = { SOI ~ "package" ~ "main" ~ EOI }
+
+/// Source Code Representation
+
+/// Characters
+
+/// escape sequence `\n`
+newline = { "\u{000A}" }
+unicode_char = { !(newline) ~ ANY }
+// refer:
+// 1. https://pest.rs/book/grammars/built-ins.html
+// 2. page 175 of https://www.unicode.org/versions/Unicode8.0.0/ch04.pdf
+unicode_letter = { LETTER }
+unicode_digit = { DECIMAL_NUMBER }
+
+/// Letters and digits
+
+letter = { unicode_letter | "_" }
+decimal_digit = { '0'..'9' }
+
