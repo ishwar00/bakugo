@@ -121,9 +121,9 @@ In _The Unicode Standard 8.0_, Section 4.5 "General Category" defines a set of c
 Go treats all characters in any of the Letter categories Lu, Ll, Lt, Lm, or Lo as Unicode letters, and those in the Number category Nd as Unicode digits.
 
 ## Letters and digits
-The underscore character `_` is considered a lowercase letter.
+The underscore character `_`(U+005F) is considered a lowercase letter.
 ```
-letter        = letter | "_" .
+letter        = unicode_letter | "_" .
 decimal_digit = "0" … "9" .
 ```
 # Lexical elements
