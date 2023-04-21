@@ -221,7 +221,7 @@ The following character sequences represent operators (including assignment oper
 | :--- |
 | Binary, Octal, Hexadecimal literals are not supported yet. |
 
-An integer literal is a sequence of digits representing an _integer constant_.
+An integer literal is a sequence of digits representing an _integer constant_. A single 0 is considered a decimal zero.
 
 For readability, an underscore character `_` may appear between successive digits; such underscores do not change the literal's value.
 
