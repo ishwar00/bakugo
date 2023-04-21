@@ -1,0 +1,10 @@
+---
+source: tests/parser.rs
+expression: err.to_string()
+---
+ --> 1:1
+  |
+1 | (333)
+  | ^---
+  |
+  = expected int_lit

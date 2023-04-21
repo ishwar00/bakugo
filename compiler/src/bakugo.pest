@@ -7,6 +7,7 @@
 //    anywhere else in the source.
 // 3. consider comment containing newlines as newlines. A general comment containing no
 //    newlines acts like a space. Any other comment acts like a newline.
+// 4. Semicolons
 
 // Questions:
 //
@@ -31,4 +32,51 @@ unicode_digit = { DECIMAL_NUMBER }
 
 letter = { unicode_letter | "_" }
 decimal_digit = { '0'..'9' }
+
+/// Lexical elements
+
+/// space (U+0020), horizontal tabs (U+0009), carriage returns (U+000D) and
+/// newline (U+000A)
+WHITESPACE = _{ "\u{0020}" | "\u{0009}" | "\u{000D}" | "\u{000A}" }
+
+/// No comments containg `newline`.
+// Refer TODO[3]
+COMMENT = _{ "/*" ~ (!("*/" | newline) ~ ANY)* ~ "*/" }
+
+ident = @{ letter ~ (letter | unicode_digit)* }
+
+add = { "+" }
+sub = { "-" }
+mul = { "*" }
+quo = { "/" }
+rem = { "%" }
+
+or = { "|" }
+and = { "&" }
+not = { "!" }
+
+inc = { "++" }
+dec = { "--" }
+land = { "&&" }
+lor = { "||" }
+
+eql = { "==" }
+neq = { "!=" }
+lss = { "<" }
+gtr = { ">" }
+leq = { "<=" }
+geq = { ">=" }
+
+assign = { "=" }
+comma = { "," }
+semicolon = { ";" }
+
+lparen = { "(" }
+lbrace = { "{" }
+
+rparen = { ")" }
+rbrace = { "{" }
+
+int_lit = @{ "0" | ('1'..'9' ~ ("_"? ~ decimal_digits)?) }
+decimal_digits = @{ decimal_digit ~ ("_"? ~ decimal_digit)* }
 

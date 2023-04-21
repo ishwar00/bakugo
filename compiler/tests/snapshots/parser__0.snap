@@ -1,0 +1,6 @@
+---
+source: tests/parser.rs
+expression: decimal_test
+---
+"0"
+
