@@ -7,4 +7,4 @@ expression: err.to_string()
 1 | (333)
   | ^---
   |
-  = expected int_lit
+  = expected IntLit

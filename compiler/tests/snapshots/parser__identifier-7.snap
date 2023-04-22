@@ -7,4 +7,4 @@ expression: err.to_string()
 1 | (_)43
   | ^---
   |
-  = expected ident
+  = expected Ident

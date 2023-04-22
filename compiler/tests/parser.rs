@@ -22,7 +22,7 @@ fn test_identifier() {
     ];
 
     for ident in ident_tests {
-        let parse_result = BakugoParser::parse(Rule::ident, ident);
+        let parse_result = BakugoParser::parse(Rule::Ident, ident);
         match parse_result {
             Ok(parsed) => assert_yaml_snapshot!(parsed.as_str()),
             Err(err) => assert_snapshot!(err.to_string()),
@@ -46,7 +46,7 @@ fn test_decimal_lit() {
     ];
 
     for decimal_test in decimal_tests {
-        let parse_result = BakugoParser::parse(Rule::int_lit, decimal_test);
+        let parse_result = BakugoParser::parse(Rule::IntLit, decimal_test);
         match parse_result {
             Ok(parsed) => assert_yaml_snapshot!(parsed.as_str(), decimal_test),
             Err(err) => assert_snapshot!(err.to_string()),

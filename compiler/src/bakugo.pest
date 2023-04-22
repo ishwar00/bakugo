@@ -17,18 +17,18 @@
 /// Characters
 
 /// escape sequence `\n`
-newline = { "\u{000A}" }
-unicode_char = { !(newline) ~ ANY }
+NewLine = { "\u{000A}" }
+UnicodeChar = { !(NewLine) ~ ANY }
 // refer:
 // 1. https://pest.rs/book/grammars/built-ins.html
 // 2. page 175 of https://www.unicode.org/versions/Unicode8.0.0/ch04.pdf
-unicode_letter = { LETTER }
-unicode_digit = { DECIMAL_NUMBER }
+UnicodeLetter = { LETTER }
+UnicodeDigit = { DECIMAL_NUMBER }
 
 /// Letters and digits
 
-letter = { unicode_letter | "_" }
-decimal_digit = { '0'..'9' }
+Letter = { UnicodeLetter | "_" }
+DecimalDigit = { '0'..'9' }
 
 /// Lexical elements
 
@@ -36,54 +36,54 @@ decimal_digit = { '0'..'9' }
 /// newline (U+000A)
 WHITESPACE = _{ "\u{0020}" | "\u{0009}" | "\u{000D}" | "\u{000A}" }
 
-/// No comments containg `newline`.
+/// No comments containg `NewLine`.
 // Refer TODO[3]
-COMMENT = _{ "/*" ~ (!("*/" | newline) ~ ANY)* ~ "*/" }
+COMMENT = _{ "/*" ~ (!("*/" | NewLine) ~ ANY)* ~ "*/" }
 
-ident = @{ letter ~ (letter | unicode_digit)* }
+Ident = @{ Letter ~ (Letter | UnicodeDigit)* }
 
-add = { "+" }
-sub = { "-" }
-mul = { "*" }
-quo = { "/" }
-rem = { "%" }
+Add = { "+" }
+Sub = { "-" }
+Mul = { "*" }
+Quo = { "/" }
+Rem = { "%" }
 
-or = { "|" }
-and = { "&" }
-not = { "!" }
+Or = { "|" }
+And = { "&" }
+Not = { "!" }
 
-inc = { "++" }
-dec = { "--" }
-land = { "&&" }
-lor = { "||" }
+Inc = { "++" }
+Dec = { "--" }
+Land = { "&&" }
+Lor = { "||" }
 
-eql = { "==" }
-neq = { "!=" }
-lss = { "<" }
-gtr = { ">" }
-leq = { "<=" }
-geq = { ">=" }
+Eql = { "==" }
+Neq = { "!=" }
+Lss = { "<" }
+Gtr = { ">" }
+Leq = { "<=" }
+Geq = { ">=" }
 
-assign = { "=" }
-comma = { "," }
-semicolon = { ";" }
+Assign = { "=" }
+Comma = { "," }
+Semicolon = { ";" }
 
-lparen = { "(" }
-lbrace = { "{" }
+Lparen = { "(" }
+Lbrace = { "{" }
 
-rparen = { ")" }
-rbrace = { "{" }
+Rparen = { ")" }
+Rbrace = { "{" }
 
-int_lit = @{ "0" | ('1'..'9' ~ ("_"? ~ decimal_digits)?) }
-decimal_digits = @{ decimal_digit ~ ("_"? ~ decimal_digit)* }
+IntLit = @{ "0" | ('1'..'9' ~ ("_"? ~ DecimalDigits)?) }
+DecimalDigits = @{ DecimalDigit ~ ("_"? ~ DecimalDigit)* }
 
 /// Keywords
 
-func = { "func" }
-const = { "const" }
-if = { "if" }
-type = { "type" }
-return = { "return" }
-var = { "var" }
-else = { "else" }
+Func = { "func" }
+Const = { "const" }
+If = { "if" }
+Type = { "type" }
+Return = { "return" }
+Var = { "var" }
+Else = { "else" }
 
