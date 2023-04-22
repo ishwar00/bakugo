@@ -29,6 +29,9 @@ UnicodeDigit = { DECIMAL_NUMBER }
 
 Letter = { UnicodeLetter | "_" }
 DecimalDigit = { '0'..'9' }
+//TODO: update spec
+OctalDigit = { '0'..'7' }
+HexDigit = { '0'..'9' | 'A'..'F' | 'a'..'f' }
 
 /// Lexical elements
 
@@ -86,4 +89,14 @@ Type = { "type" }
 Return = { "return" }
 Var = { "var" }
 Else = { "else" }
+
+/// Rune literals
+RuneLit = @{ "'" ~ (UnicodeValue | ByteValue) ~ "'" }
+UnicodeValue = { UnicodeChar | LittleUValue | BigUValue | EscapedChar }
+ByteValue = { OctalByteValue | HexByteValue }
+OctalByteValue = @{ "\\" ~ OctalDigit{3} } // escape backslash
+HexByteValue = @{ "\\" ~ "x" ~ HexDigit{2} }
+LittleUValue = @{ "\\" ~ "u" ~ HexDigit{4} }
+BigUValue = @{ "\\" ~ "U" ~ HexDigit{8} }
+EscapedChar = @{ "\\" ~ ( "a" | "b" | "f" | "n" | "r" | "t" | "v" | "\\" | "'" | "\"" )}
 

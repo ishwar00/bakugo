@@ -53,3 +53,34 @@ fn test_decimal_lit() {
         }
     }
 }
+
+#[test]
+fn test_rune_lit() {
+    let runes = r#"
+        'a'
+        'ä'
+        '本'
+        '\t'
+        '\000'
+        '\007'
+        '\377'
+        '\x07'
+        '\xff'
+        '\u12e4'
+        '\U00101234'
+    "#;
+
+    let rune_tests: Vec<&str> = runes
+        .lines()
+        .map(|line| line.trim())
+        .filter(|line| line.len() > 0)
+        .collect();
+
+    for rune_test in rune_tests {
+        let parse_result = BakugoParser::parse(Rule::RuneLit, rune_test);
+        match parse_result {
+            Ok(parsed) => assert_yaml_snapshot!(parsed.as_str(), rune_test),
+            Err(err) => assert_snapshot!(err.to_string()),
+        }
+    }
+}
