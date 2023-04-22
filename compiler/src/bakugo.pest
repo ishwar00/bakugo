@@ -77,3 +77,13 @@ rbrace = { "{" }
 int_lit = @{ "0" | ('1'..'9' ~ ("_"? ~ decimal_digits)?) }
 decimal_digits = @{ decimal_digit ~ ("_"? ~ decimal_digit)* }
 
+/// Keywords
+
+func = { "func" }
+const = { "const" }
+if = { "if" }
+type = { "type" }
+return = { "return" }
+var = { "var" }
+else = { "else" }
+
