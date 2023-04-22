@@ -3,35 +3,35 @@
 // TODO:
 // 1. Disallow NUL character(U+0000) in the source text
 // 2. Ignore a UTF-8-encoded byte order mark (U+FEFF) if it is the first
-//    Unicode code point in the source text. A byte order mark may be disallowed
-//    anywhere else in the source.
+// Unicode code point in the source text. A byte order mark may be disallowed
+// anywhere else in the source.
 // 3. consider comment containing newlines as newlines. A general comment containing no
-//    newlines acts like a space. Any other comment acts like a newline.
+// newlines acts like a space. Any other comment acts like a newline.
 // 4. Semicolons
 
 // Questions:
-//
+// 
 
 /// Source Code Representation
 
 /// Characters
 
 /// escape sequence `\n`
-NewLine = { "\u{000A}" }
+NewLine     = { "\u{000A}" }
 UnicodeChar = { !(NewLine) ~ ANY }
 // refer:
 // 1. https://pest.rs/book/grammars/built-ins.html
 // 2. page 175 of https://www.unicode.org/versions/Unicode8.0.0/ch04.pdf
 UnicodeLetter = { LETTER }
-UnicodeDigit = { DECIMAL_NUMBER }
+UnicodeDigit  = { DECIMAL_NUMBER }
 
 /// Letters and digits
 
-Letter = { UnicodeLetter | "_" }
+Letter       = { UnicodeLetter | "_" }
 DecimalDigit = { '0'..'9' }
-//TODO: update spec
+// TODO: update spec
 OctalDigit = { '0'..'7' }
-HexDigit = { '0'..'9' | 'A'..'F' | 'a'..'f' }
+HexDigit   = { '0'..'9' | 'A'..'F' | 'a'..'f' }
 
 /// Lexical elements
 
@@ -51,14 +51,14 @@ Mul = { "*" }
 Quo = { "/" }
 Rem = { "%" }
 
-Or = { "|" }
+Or  = { "|" }
 And = { "&" }
 Not = { "!" }
 
-Inc = { "++" }
-Dec = { "--" }
+Inc  = { "++" }
+Dec  = { "--" }
 Land = { "&&" }
-Lor = { "||" }
+Lor  = { "||" }
 
 Eql = { "==" }
 Neq = { "!=" }
@@ -67,8 +67,8 @@ Gtr = { ">" }
 Leq = { "<=" }
 Geq = { ">=" }
 
-Assign = { "=" }
-Comma = { "," }
+Assign    = { "=" }
+Comma     = { "," }
 Semicolon = { ";" }
 
 Lparen = { "(" }
@@ -77,26 +77,25 @@ Lbrace = { "{" }
 Rparen = { ")" }
 Rbrace = { "{" }
 
-IntLit = @{ "0" | ('1'..'9' ~ ("_"? ~ DecimalDigits)?) }
+IntLit        = @{ "0" | ('1'..'9' ~ ("_"? ~ DecimalDigits)?) }
 DecimalDigits = @{ DecimalDigit ~ ("_"? ~ DecimalDigit)* }
 
 /// Keywords
 
-Func = { "func" }
-Const = { "const" }
-If = { "if" }
-Type = { "type" }
+Func   = { "func" }
+Const  = { "const" }
+If     = { "if" }
+Type   = { "type" }
 Return = { "return" }
-Var = { "var" }
-Else = { "else" }
+Var    = { "var" }
+Else   = { "else" }
 
 /// Rune literals
-RuneLit = @{ "'" ~ (UnicodeValue | ByteValue) ~ "'" }
-UnicodeValue = { UnicodeChar | LittleUValue | BigUValue | EscapedChar }
-ByteValue = { OctalByteValue | HexByteValue }
-OctalByteValue = @{ "\\" ~ OctalDigit{3} } // escape backslash
-HexByteValue = @{ "\\" ~ "x" ~ HexDigit{2} }
-LittleUValue = @{ "\\" ~ "u" ~ HexDigit{4} }
-BigUValue = @{ "\\" ~ "U" ~ HexDigit{8} }
-EscapedChar = @{ "\\" ~ ( "a" | "b" | "f" | "n" | "r" | "t" | "v" | "\\" | "'" | "\"" )}
-
+RuneLit        = @{ "'" ~ (UnicodeValue | ByteValue) ~ "'" }
+UnicodeValue   =  { UnicodeChar | LittleUValue | BigUValue | EscapedChar }
+ByteValue      =  { OctalByteValue | HexByteValue }
+OctalByteValue = @{ "\\" ~ OctalDigit{3} }
+HexByteValue   = @{ "\\" ~ "x" ~ HexDigit{2} }
+LittleUValue   = @{ "\\" ~ "u" ~ HexDigit{4} }
+BigUValue      = @{ "\\" ~ "U" ~ HexDigit{8} }
+EscapedChar    = @{ "\\" ~ ("a" | "b" | "f" | "n" | "r" | "t" | "v" | "\\" | "'" | "\"") }
