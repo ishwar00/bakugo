@@ -20,6 +20,6 @@ jobs:
       - name: Build
         run: cargo build --verbose
       - name: Initialize setup
-        run: just init
+        run: cargo install cargo-insta
       - name: Run tests
         run: cargo insta test
