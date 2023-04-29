@@ -73,7 +73,7 @@ fn test_rune_lit() {
     let rune_tests: Vec<&str> = runes
         .lines()
         .map(|line| line.trim())
-        .filter(|line| line.len() > 0)
+        .filter(|trim_line| trim_line.len() > 0)
         .collect();
 
     for rune_test in rune_tests {

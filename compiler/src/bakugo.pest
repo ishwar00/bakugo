@@ -13,7 +13,6 @@
 // 
 
 /// Source Code Representation
-
 /// Characters
 
 /// escape sequence `\n`
@@ -29,7 +28,6 @@ UnicodeDigit  = { DECIMAL_NUMBER }
 
 Letter       = { UnicodeLetter | "_" }
 DecimalDigit = { '0'..'9' }
-// TODO: update spec
 OctalDigit = { '0'..'7' }
 HexDigit   = { '0'..'9' | 'A'..'F' | 'a'..'f' }
 
@@ -81,7 +79,6 @@ IntLit        = @{ "0" | ('1'..'9' ~ ("_"? ~ DecimalDigits)?) }
 DecimalDigits = @{ DecimalDigit ~ ("_"? ~ DecimalDigit)* }
 
 /// Keywords
-
 Func   = { "func" }
 Const  = { "const" }
 If     = { "if" }
@@ -91,9 +88,9 @@ Var    = { "var" }
 Else   = { "else" }
 
 /// Rune literals
-RuneLit        = @{ "'" ~ (UnicodeValue | ByteValue) ~ "'" }
-UnicodeValue   =  { UnicodeChar | LittleUValue | BigUValue | EscapedChar }
-ByteValue      =  { OctalByteValue | HexByteValue }
+RuneLit        = @{ "'" ~ (ByteValue | UnicodeValue) ~ "'" }
+UnicodeValue   =  { LittleUValue | BigUValue | EscapedChar | UnicodeChar }
+ByteValue      =  { HexByteValue | OctalByteValue }
 OctalByteValue = @{ "\\" ~ OctalDigit{3} }
 HexByteValue   = @{ "\\" ~ "x" ~ HexDigit{2} }
 LittleUValue   = @{ "\\" ~ "u" ~ HexDigit{4} }

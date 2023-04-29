@@ -1,0 +1,6 @@
+---
+source: tests/parser.rs
+expression: rune_test
+---
+"'\\000'"
+
