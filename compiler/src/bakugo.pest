@@ -10,7 +10,7 @@
 // 4. Semicolons
 
 // Questions:
-// 
+//
 
 /// Source Code Representation
 /// Characters
@@ -73,7 +73,7 @@ Lparen = { "(" }
 Lbrace = { "{" }
 
 Rparen = { ")" }
-Rbrace = { "{" }
+Rbrace = { "}" }
 
 IntLit        = @{ "0" | ('1'..'9' ~ ("_"? ~ DecimalDigits)?) }
 DecimalDigits = @{ DecimalDigit ~ ("_"? ~ DecimalDigit)* }
@@ -96,3 +96,4 @@ HexByteValue   = @{ "\\" ~ "x" ~ HexDigit{2} }
 LittleUValue   = @{ "\\" ~ "u" ~ HexDigit{4} }
 BigUValue      = @{ "\\" ~ "U" ~ HexDigit{8} }
 EscapedChar    = @{ "\\" ~ ("a" | "b" | "f" | "n" | "r" | "t" | "v" | "\\" | "'" | "\"") }
+
