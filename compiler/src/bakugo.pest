@@ -10,7 +10,7 @@
 // 4. Semicolons
 
 // Questions:
-//
+// 
 
 /// Source Code Representation
 /// Characters
@@ -28,8 +28,8 @@ UnicodeDigit  = { DECIMAL_NUMBER }
 
 Letter       = { UnicodeLetter | "_" }
 DecimalDigit = { '0'..'9' }
-OctalDigit = { '0'..'7' }
-HexDigit   = { '0'..'9' | 'A'..'F' | 'a'..'f' }
+OctalDigit   = { '0'..'7' }
+HexDigit     = { '0'..'9' | 'A'..'F' | 'a'..'f' }
 
 /// Lexical elements
 
@@ -97,3 +97,8 @@ LittleUValue   = @{ "\\" ~ "u" ~ HexDigit{4} }
 BigUValue      = @{ "\\" ~ "U" ~ HexDigit{8} }
 EscapedChar    = @{ "\\" ~ ("a" | "b" | "f" | "n" | "r" | "t" | "v" | "\\" | "'" | "\"") }
 
+/// string literals
+StringLit            =  { RawStringLit | InterpretedStringLit }
+// `UnicodeChar | NewLine` is equivalent to `ANY``
+RawStringLit         = @{ "`" ~ (!"`" ~ ANY)* ~ "`" }
+InterpretedStringLit = @{ "\"" ~ (!"\"" ~ (ByteValue | UnicodeValue))* ~ "\"" }

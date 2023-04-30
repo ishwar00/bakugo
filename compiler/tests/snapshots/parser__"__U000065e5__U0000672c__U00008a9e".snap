@@ -1,0 +1,6 @@
+---
+source: tests/parser.rs
+expression: string_test
+---
+"\"\\U000065e5\\U0000672c\\U00008a9e\""
+

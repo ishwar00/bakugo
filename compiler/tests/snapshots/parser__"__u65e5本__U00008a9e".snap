@@ -1,0 +1,6 @@
+---
+source: tests/parser.rs
+expression: string_test
+---
+"\"\\u65e5本\\U00008a9e\""
+

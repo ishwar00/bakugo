@@ -102,3 +102,40 @@ fn test_rune_lit() {
         }
     }
 }
+
+#[test]
+fn test_string_lit() {
+    let strings = vec![
+        r#" `abc` "#,
+        r#" `\n
+            \n` "#,
+        r#" "\n" "#,
+        r#" "\"" "#,
+        r#" "Hello, world!\n" "#,
+        r#" "日本語" "#,
+        r#" `日本語` "#,
+        r#" "\u65e5本\U00008a9e" "#,
+        r#" "\U000065e5\U0000672c\U00008a9e" "#,
+        r#" "\xe6\x97\xa5\xe6\x9c\xac\xe8\xaa\x9e" "#,
+        r#" "\xff\u00FF" "#,
+        r#" "\uD800" "#,
+        r#" "\U00110000" "#,
+    ];
+
+    let string_tests: Vec<&str> = strings.iter().map(|string| string.trim()).collect();
+
+    for string_test in string_tests {
+        let parse_result = BakugoParser::parse(Rule::StringLit, string_test);
+        match parse_result {
+            Ok(mut parsed) => {
+                let string_lit = parsed.next().unwrap().into_inner().next().unwrap();
+                if let Rule::RawStringLit | Rule::InterpretedStringLit = string_lit.as_rule() {
+                    assert_yaml_snapshot!(string_lit.as_str(), string_test);
+                } else {
+                    panic!("testing error: recieved {}, with rule {:?}", string_test, string_lit.as_rule());
+                }
+            }
+            Err(err) => assert_snapshot!(err.to_string()),
+        }
+    }
+}
