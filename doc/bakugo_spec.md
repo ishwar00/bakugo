@@ -125,6 +125,8 @@ The underscore character `_`(U+005F) is considered a lowercase letter.
 ```
 letter        = unicode_letter | "_" .
 decimal_digit = "0" … "9" .
+octal_digit = { '0'..'7' }
+hex_digit   = { '0'..'9' | 'A'..'F' | 'a'..'f' }
 ```
 # Lexical elements
 
