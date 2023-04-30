@@ -68,7 +68,25 @@ fn test_rune_lit() {
         '\xff'
         '\u12e4'
         '\U00101234'
+        '\''
+
+        'aa'
+        '\k'
+        '\xa'
+        '\0'
+        '\400'
+        '\uDFFF'
+        '\U00110000'
     "#;
+    // NOTE:
+    // '\''        // rune literal containing single quote character
+    //'aa'         // illegal: too many characters
+    //'\k'         // illegal: k is not recognized after a backslash
+    //'\xa'        // illegal: too few hexadecimal digits
+    //'\0'         // illegal: too few octal digits
+    //'\400'       // illegal: octal value over 255
+    //'\uDFFF'     // illegal: surrogate half
+    //'\U00110000' // illegal: invalid Unicode code point
 
     let rune_tests: Vec<&str> = runes
         .lines()
