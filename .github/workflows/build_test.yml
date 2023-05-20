@@ -18,6 +18,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: Swatinem/rust-cache@v2
+        with:
+          cache-on-failure: "true"
       - run: cargo install just
       - run: just build
       - run: just init
