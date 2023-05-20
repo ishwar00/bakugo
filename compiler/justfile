@@ -8,3 +8,17 @@ run *args='':
 
 test:
     cargo insta test --review
+    cargo insta test --unreferenced reject
+
+build:
+    cargo build --verbose
+
+clippy:
+    cargo clippy --all-targets
+
+ci-fmt:
+    cargo fmt --all -- --check
+
+ci-test:
+    cargo insta test
+    cargo insta test --unreferenced reject

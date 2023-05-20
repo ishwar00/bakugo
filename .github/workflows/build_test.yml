@@ -17,11 +17,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Install Just
-        run: cargo install just
-      - name: Build
-        run: cargo build --verbose
-      - name: Initialize setup
-        run: just init
-      - name: Run tests
-        run: cargo insta test
+      - run: cargo install just
+      - run: just build
+      - run: just init
+      - run: just ci-test
+      - run: just ci-fmt
+      - run: just clippy
+
