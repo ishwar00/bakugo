@@ -8,7 +8,7 @@ fn main() {
 
     // TODO: no panic!
     let unparsed_file =
-        fs::read_to_string(&filepath).expect(&format!("cannot read file: {filepath}"));
+        fs::read_to_string(&filepath).unwrap_or_else(|_| panic!("cannot read file: {filepath}"));
 
     let parsed = parse_string(&unparsed_file); // get and unwrap the `file` rule; never fails
 
