@@ -140,3 +140,27 @@ VarSpec = { IdentifierList ~ ((Type ~ ("=" ~ ExpressionList )?) | ("=" ~ Express
 FunctionDecl = { "func" ~ FunctionName ~ Signature ~ FunctionBody? }
 FunctionName = { Ident }
 FunctionBody = { Block }
+
+// TODO: update the spec
+// Operands
+Operand     = { Literal | OperandName | "(" ~ Expression ~ ")" }
+Literal     = { BasicLit }
+BasicLit    = { IntLit | RuneLit | StringLit }
+OperandName = { Ident }
+
+// Primary expressions
+PrimaryExpr = { Operand | PrimaryExpr ~ Arguments }
+
+Arguments   = { "(" ~ (((Type ~ ("," ~ ExpressionList)?) | ExpressionList) ~ ","?)? ~ ")" }
+
+// Operators
+Expression = { UnaryExpr | Expression ~ BinaryOp ~ Expression }
+UnaryExpr  = { (UnaryOp ~ UnaryExpr) | PrimaryExpr }
+
+BinaryOp  = { RelOp | AddOp | MulOp }
+RelOp     = { "==" | "!=" | "<=" | "<" | ">=" | ">" }
+AddOp     = { "+" | "-" | "|" }
+MulOp     = { "*" | "/" | "%" | "&" }
+
+UnaryOp   = { "+" | "-" | "!" | "*" | "&" }
+
