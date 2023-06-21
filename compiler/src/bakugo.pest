@@ -43,38 +43,6 @@ COMMENT = _{ "/*" ~ (!("*/" | NewLine) ~ ANY)* ~ "*/" }
 
 Ident = @{ Letter ~ (Letter | UnicodeDigit)* }
 
-Add = { "+" }
-Sub = { "-" }
-Mul = { "*" }
-Quo = { "/" }
-Rem = { "%" }
-
-Or  = { "|" }
-And = { "&" }
-Not = { "!" }
-
-Inc  = { "++" }
-Dec  = { "--" }
-Land = { "&&" }
-Lor  = { "||" }
-
-Eql = { "==" }
-Neq = { "!=" }
-Lss = { "<" }
-Gtr = { ">" }
-Leq = { "<=" }
-Geq = { ">=" }
-
-Assign    = { "=" }
-Comma     = { "," }
-Semicolon = { ";" }
-
-Lparen = { "(" }
-Lbrace = { "{" }
-
-Rparen = { ")" }
-Rbrace = { "}" }
-
 IntLit        = @{ "0" | ('1'..'9' ~ ("_"? ~ DecimalDigits)?) }
 DecimalDigits = @{ DecimalDigit ~ ("_"? ~ DecimalDigit)* }
 
@@ -149,11 +117,13 @@ BasicLit    = { IntLit | RuneLit | StringLit }
 OperandName = { Ident }
 
 // Primary expressions
+// FIXME: PrimaryExpr is left-recursive
 PrimaryExpr = { Operand | PrimaryExpr ~ Arguments }
 
 Arguments   = { "(" ~ (((Type ~ ("," ~ ExpressionList)?) | ExpressionList) ~ ","?)? ~ ")" }
 
 // Operators
+// FIXME: PrimaryExpr is left-recursive
 Expression = { UnaryExpr | Expression ~ BinaryOp ~ Expression }
 UnaryExpr  = { (UnaryOp ~ UnaryExpr) | PrimaryExpr }
 
@@ -163,4 +133,20 @@ AddOp     = { "+" | "-" | "|" }
 MulOp     = { "*" | "/" | "%" | "&" }
 
 UnaryOp   = { "+" | "-" | "!" | "*" | "&" }
+
+// Statements
+
+Statement = { Declaration | SimpleStmt | ReturnStmt  | Block | IfStmt }
+
+SimpleStmt = { ExpressionStmt | IncDecStmt | Assignment }
+
+ExpressionStmt = { Expression }
+
+IncDecStmt = { Expression ~ ( "++" | "--" ) }
+
+Assignment = { ExpressionList ~ "=" ~ ExpressionList }
+
+IfStmt = { "if" ~ (SimpleStmt ~ ";")? ~ Expression ~ Block ~ ("else" ~ (IfStmt | Block ))? }
+
+ReturnStmt = { "return" ~ ExpressionList? }
 
