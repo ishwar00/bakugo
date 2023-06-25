@@ -1,5 +1,6 @@
-use bakugo::parser::{BakugoParser, Rule};
-use pest::Parser;
+use std::{env::args, fs};
+
+use bakugo::parser::parse_string;
 
 fn main() {
     // TODO: REPL?
@@ -23,4 +24,3 @@ fn main() {
         }
     }
 }
-
