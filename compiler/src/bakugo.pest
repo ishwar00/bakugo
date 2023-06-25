@@ -117,14 +117,16 @@ BasicLit    = { IntLit | RuneLit | StringLit }
 OperandName = { Ident }
 
 // Primary expressions
-// FIXME: PrimaryExpr is left-recursive
-PrimaryExpr = { Operand | PrimaryExpr ~ Arguments }
+// ref: https://www.csd.uwo.ca/~mmorenom/CS447/Lectures/Syntax.html/node8.html
+PrimaryExpr = { Operand ~ PrimaryExprPrime }
+PrimaryExprPrime = { (Arguments ~ PrimaryExprPrime)? }
 
 Arguments   = { "(" ~ (((Type ~ ("," ~ ExpressionList)?) | ExpressionList) ~ ","?)? ~ ")" }
 
 // Operators
-// FIXME: PrimaryExpr is left-recursive
-Expression = { UnaryExpr | Expression ~ BinaryOp ~ Expression }
+// ref: https://www.csd.uwo.ca/~mmorenom/CS447/Lectures/Syntax.html/node8.html
+Expression = { UnaryExpr ~ ExpressionPrime }
+ExpressionPrime = { (BinaryOp ~ Expression ~ ExpressionPrime)? }
 UnaryExpr  = { (UnaryOp ~ UnaryExpr) | PrimaryExpr }
 
 BinaryOp  = { RelOp | AddOp | MulOp }
