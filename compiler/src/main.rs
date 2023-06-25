@@ -16,7 +16,7 @@ fn main() {
         Ok(parsed) => {
             let package = parsed.peek().unwrap(); // never fails?
             for item in package.into_inner() {
-                println!("{item:?}");
+                println!("{item:#?}");
             }
         }
         Err(err) => {

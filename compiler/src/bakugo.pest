@@ -106,8 +106,8 @@ VarSpec = { IdentifierList ~ ((Type ~ ("=" ~ ExpressionList )?) | ("=" ~ Express
 
 // Function declaration
 FunctionDecl = { "func" ~ FunctionName ~ Signature ~ FunctionBody? }
-FunctionName = { Ident }
-FunctionBody = { Block }
+FunctionName = _{ Ident }
+FunctionBody = _{ Block }
 
 // TODO: update the spec
 // Operands

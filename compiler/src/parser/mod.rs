@@ -5,5 +5,5 @@ use pest::{iterators::Pairs, Parser};
 pub struct BakugoParser;
 
 pub fn parse_string(s: &str) -> Result<Pairs<'_, Rule>, pest::error::Error<Rule>> {
-    BakugoParser::parse(Rule::Statement, s)
+    BakugoParser::parse(Rule::TopLevelDecl, s)
 }
