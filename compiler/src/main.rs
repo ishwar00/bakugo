@@ -1,6 +1,6 @@
-use std::{env::args, fs};
+use std::{env::args, fs, println};
 
-use bakugo::parser::parse_string;
+use bakugo::parser::{construct_ast, parse_string};
 
 fn main() {
     // TODO: REPL?
@@ -14,9 +14,12 @@ fn main() {
 
     match parsed {
         Ok(parsed) => {
-            let package = parsed.peek().unwrap(); // never fails?
-            for item in package.into_inner() {
-                println!("{item:#?}");
+            for package in parsed {
+                for item in package.clone().into_inner() {
+                    println!("{item:#?}");
+                }
+                let ast = construct_ast(package);
+                println!("{ast:#?}");
             }
         }
         Err(err) => {
