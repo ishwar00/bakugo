@@ -185,7 +185,23 @@ impl<'i> Node<'i> for Kind<'i> {
                 name: inner.as_str().to_owned(),
                 span: inner.as_span(),
             },
-            Rule::Tuple => todo!("Tuple types cannot be parsed yet"),
+            Rule::Tuple => {
+                let inner = inner.into_inner().next().unwrap();
+                let span = inner.as_span();
+                let mut kinds = Vec::new();
+                match inner.as_rule() {
+                    Rule::Type => {
+                        kinds.push(Kind::parse(inner));
+                    },
+                    Rule::TypeList => {
+                        for inner in inner.into_inner() {
+                            kinds.push(Kind::parse(inner));
+                        }
+                    },
+                    _ => unreachable!(""),
+                }
+                Self::Tuple { kinds, span }
+            },
             _ => unreachable!(""),
         }
     }

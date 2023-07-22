@@ -68,7 +68,7 @@ TypeName = _{ Ident }
 
 // TODO: add it in spec
 // Tuple
-Tuple    = { "(" ~ ((Type ~ ",") | TypeList) ~ ")" }
+Tuple    = { "(" ~ (TypeList | (Type ~ ",")) ~ ")" }
 TypeList = { Type ~ ("," ~ Type)+ }
 
 // Function types

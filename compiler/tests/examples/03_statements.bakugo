@@ -1,2 +1,5 @@
-func something(a, b bunt, c uint) {
+func something(a, b bunt, c uint, d (int, )) {
+};
+
+func something(a, b bunt, c uint, d (int, string)) {
 };
