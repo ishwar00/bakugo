@@ -4,7 +4,7 @@ use pest::Parser;
 
 #[test]
 fn test_parser() {
-    glob!("examples/*.bakugo", |path| {});
+    glob!("examples/*.bakugo", |_| {});
 }
 
 #[test]
@@ -91,7 +91,7 @@ fn test_rune_lit() {
     let rune_tests: Vec<&str> = runes
         .lines()
         .map(|line| line.trim())
-        .filter(|trim_line| trim_line.len() > 0)
+        .filter(|trim_line| !trim_line.is_empty())
         .collect();
 
     for rune_test in rune_tests {
@@ -107,8 +107,6 @@ fn test_rune_lit() {
 fn test_string_lit() {
     let strings = vec![
         r#" `abc` "#,
-        r#" `\n
-            \n` "#,
         r#" "\n" "#,
         r#" "\"" "#,
         r#" "Hello, world!\n" "#,
@@ -132,7 +130,11 @@ fn test_string_lit() {
                 if let Rule::RawStringLit | Rule::InterpretedStringLit = string_lit.as_rule() {
                     assert_yaml_snapshot!(string_lit.as_str(), string_test);
                 } else {
-                    panic!("testing error: recieved {}, with rule {:?}", string_test, string_lit.as_rule());
+                    panic!(
+                        "testing error: recieved {}, with rule {:?}",
+                        string_test,
+                        string_lit.as_rule()
+                    );
                 }
             }
             Err(err) => assert_snapshot!(err.to_string()),

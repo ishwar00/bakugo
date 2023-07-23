@@ -43,7 +43,7 @@ impl<'i> Node<'i> for FnDecl<'i> {
 
         let mut sig_children = signature.into_inner();
         let param_pair = sig_children.next().unwrap();
-        let result_kind = sig_children.next().map(|p| Kind::parse(p));
+        let result_kind = sig_children.next().map(Kind::parse);
         let mut params = vec![];
         if let Some(param_list_pair) = param_pair.into_inner().next() {
             let param_list = ParameterList::parse(param_list_pair);
@@ -56,10 +56,7 @@ impl<'i> Node<'i> for FnDecl<'i> {
             params = param_decls.into_iter().map(|p| p.into()).collect();
         }
 
-        let body = body_pair
-            .into_inner()
-            .map(|p| Statement::parse(p))
-            .collect();
+        let body = body_pair.into_inner().map(Statement::parse).collect();
 
         Self {
             name,
@@ -271,14 +268,12 @@ lazy_static::lazy_static! {
 impl Expr {
     fn parse_expr(pairs: Pairs<Rule>) -> Expr {
         PRATT_PARSER
-            .map_primary(|primary| {
-                match primary.as_rule() {
-                    Rule::IntLit => match primary.as_str().parse::<i32>() {
-                        Ok(int) => Expr::Integer(int),
-                        Err(_) => panic!("failed to parse int"),
-                    },
-                    _ => unreachable!(),
-                }
+            .map_primary(|primary| match primary.as_rule() {
+                Rule::IntLit => match primary.as_str().parse::<i32>() {
+                    Ok(int) => Expr::Integer(int),
+                    Err(_) => panic!("failed to parse int"),
+                },
+                _ => unreachable!(),
             })
             .map_infix(|left, op, right| {
                 let op = match op.as_rule() {

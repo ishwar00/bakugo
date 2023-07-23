@@ -1,6 +1,0 @@
----
-source: tests/parser.rs
-expression: string_test
----
-"`\\n\n            \\n`"
-

@@ -1,4 +1,5 @@
 use pest::{
+    error::Error,
     iterators::{Pair, Pairs},
     Parser,
 };
@@ -9,8 +10,11 @@ use crate::ast::{FnDecl, Node, SourceFile, TopLevelDecl};
 #[grammar = "bakugo.pest"]
 pub struct BakugoParser;
 
-pub fn parse_string(s: &str) -> Result<Pairs<'_, Rule>, pest::error::Error<Rule>> {
-    BakugoParser::parse(Rule::SourceFile, s)
+pub fn parse_string(s: &str) -> Result<Pairs<'_, Rule>, Box<Error<Rule>>> {
+    match BakugoParser::parse(Rule::SourceFile, s) {
+        Ok(ast) => Ok(ast),
+        Err(err) => Err(Box::new(err)),
+    }
 }
 
 pub fn construct_ast(pair: Pair<'_, Rule>) -> SourceFile<'_> {
