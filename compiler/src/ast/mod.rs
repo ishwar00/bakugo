@@ -1,4 +1,8 @@
-use pest::{iterators::Pair, Span};
+use pest::{
+    iterators::{Pair, Pairs},
+    pratt_parser::PrattParser,
+    Span,
+};
 
 use crate::parser::Rule;
 
@@ -192,18 +196,122 @@ impl<'i> Node<'i> for Kind<'i> {
                 match inner.as_rule() {
                     Rule::Type => {
                         kinds.push(Kind::parse(inner));
-                    },
+                    }
                     Rule::TypeList => {
                         for inner in inner.into_inner() {
                             kinds.push(Kind::parse(inner));
                         }
-                    },
+                    }
                     _ => unreachable!(""),
                 }
                 Self::Tuple { kinds, span }
-            },
+            }
             _ => unreachable!(""),
         }
+    }
+}
+
+#[derive(Debug)]
+pub enum UnaryOp {
+    Plus,
+    Minus,
+    Not,
+    Star,
+    And,
+}
+
+#[derive(Debug)]
+pub enum BinaryOp {
+    Plus,
+    Minus,
+    Star,
+    Slash,
+    Pipe,
+    Percent,
+    And,
+}
+
+#[derive(Debug)]
+pub enum Expr {
+    Integer(i32),
+    UnaryExpr {
+        op: UnaryOp,
+        operand: Box<Expr>,
+    },
+    BinaryExpr {
+        left: Box<Expr>,
+        op: BinaryOp,
+        right: Box<Expr>,
+    },
+}
+
+lazy_static::lazy_static! {
+    static ref PRATT_PARSER: PrattParser<Rule> = {
+        use pest::pratt_parser::{Assoc::*, Op};
+        use Rule::*;
+
+        // Precedence is defined lowest to highest
+        PrattParser::new()
+            .op(
+                Op::infix(EqEq, Left) | Op::infix(NotEq, Left) | Op::infix(Le, Left) |
+                Op::infix(Lt, Left) | Op::infix(Ge, Left) | Op::infix(Gt, Left)
+            )
+            .op(Op::infix(Plus, Left) | Op::infix(Minus, Left) | Op::infix(Pipe, Left))
+            .op(
+                Op::infix(Star, Left) | Op::infix(Slash, Left) | Op::infix(Percent, Left) |
+                Op::infix(And, Left)
+            )
+            .op(
+                Op::prefix(UnaryPlus) | Op::prefix(UnaryMinus) | Op::prefix(UnaryNot) |
+                Op::prefix(UnaryStar) | Op::prefix(UnaryAnd)
+            )
+    };
+}
+
+impl Expr {
+    fn parse_expr(pairs: Pairs<Rule>) -> Expr {
+        PRATT_PARSER
+            .map_primary(|primary| {
+                match primary.as_rule() {
+                    Rule::IntLit => match primary.as_str().parse::<i32>() {
+                        Ok(int) => Expr::Integer(int),
+                        Err(_) => panic!("failed to parse int"),
+                    },
+                    _ => unreachable!(),
+                }
+            })
+            .map_infix(|left, op, right| {
+                let op = match op.as_rule() {
+                    Rule::Pipe => BinaryOp::Pipe,
+                    Rule::Plus => BinaryOp::Plus,
+                    Rule::Minus => BinaryOp::Minus,
+                    Rule::Star => BinaryOp::Star,
+                    Rule::Percent => BinaryOp::Percent,
+                    Rule::And => BinaryOp::And,
+                    Rule::Slash => BinaryOp::Slash,
+                    _ => unreachable!(""),
+                };
+                Expr::BinaryExpr {
+                    left: Box::new(left),
+                    op,
+                    right: Box::new(right),
+                }
+            })
+            .map_prefix(|op, right| {
+                let op = match op.as_rule() {
+                    Rule::UnaryMinus => UnaryOp::Minus,
+                    Rule::UnaryStar => UnaryOp::Star,
+                    Rule::UnaryPlus => UnaryOp::Plus,
+                    Rule::UnaryAnd => UnaryOp::And,
+                    Rule::UnaryNot => UnaryOp::Not,
+                    _ => unreachable!(""),
+                };
+                Expr::UnaryExpr {
+                    op,
+                    operand: Box::new(right),
+                }
+            })
+            .parse(pairs)
     }
 }
 
@@ -211,10 +319,18 @@ impl<'i> Node<'i> for Kind<'i> {
 pub enum Statement {
     // TODO: add expression list
     Return,
+    Expression(Expr),
 }
 
 impl<'i> Node<'i> for Statement {
     fn parse(pair: Pair<'i, Rule>) -> Self {
-        Self::Return
+        match pair.as_rule() {
+            Rule::ExpressionStmt => {
+                let expr = Expr::parse_expr(pair.into_inner());
+                Statement::Expression(expr)
+            }
+            Rule::ReturnStmt => Statement::Return,
+            _ => unreachable!(),
+        }
     }
 }

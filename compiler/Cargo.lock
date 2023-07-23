@@ -16,6 +16,7 @@ name = "bakugo"
 version = "0.1.0"
 dependencies = [
  "insta",
+ "lazy_static",
  "pest",
  "pest_derive",
 ]

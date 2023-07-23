@@ -10,7 +10,7 @@
 // 4. Semicolons
 
 // Questions:
-//
+// 
 
 /// Source Code Representation
 /// Characters
@@ -63,7 +63,7 @@ RawStringLit         = @{ "`" ~ (!"`" ~ ANY)* ~ "`" }
 InterpretedStringLit = @{ "\"" ~ (!"\"" ~ (ByteValue | UnicodeValue))* ~ "\"" }
 
 // Types
-Type     = { TypeName | Tuple }
+Type     =  { TypeName | Tuple }
 TypeName = _{ Ident }
 
 // TODO: add it in spec
@@ -72,20 +72,20 @@ Tuple    = { "(" ~ (TypeList | (Type ~ ",")) ~ ")" }
 TypeList = { Type ~ ("," ~ Type)+ }
 
 // Function types
-Signature      = { Parameters ~ Result? }
+Signature      =  { Parameters ~ Result? }
 Result         = _{ Type }
-Parameters     = { "(" ~ (ParameterList ~ ","?)? ~ ")" }
-ParameterList  = { ParameterDecl ~ ("," ~ ParameterDecl)* }
-ParameterDecl  = { (IdentifierList ~ Type) | (Type ~ ("," ~ Type)*) }
-IdentifierList = { Ident ~ ("," ~ Ident)* }
+Parameters     =  { "(" ~ (ParameterList ~ ","?)? ~ ")" }
+ParameterList  =  { ParameterDecl ~ ("," ~ ParameterDecl)* }
+ParameterDecl  =  { (IdentifierList ~ Type) | (Type ~ ("," ~ Type)*) }
+IdentifierList =  { Ident ~ ("," ~ Ident)* }
 
 // Blocks
 Block         = _{ "{" ~ StatementList ~ "}" }
-StatementList = { (Statement ~ ";")* }
+StatementList =  { (Statement ~ ";")* }
 
 // Declarations
-Declaration    = { ConstDecl | TypeDecl | VarDecl }
-TopLevelDecl   = { Declaration | FunctionDecl }
+Declaration  = { ConstDecl | TypeDecl | VarDecl }
+TopLevelDecl = { Declaration | FunctionDecl }
 
 // Const declartions
 ConstDecl      = { "const" ~ (ConstSpec | "(" ~ (ConstSpec ~ ";")+ ~ ")") }
@@ -93,7 +93,7 @@ ConstSpec      = { IdentifierList ~ (Type? ~ "=" ~ ExpressionList)? }
 ExpressionList = { Expression ~ ("," ~ Expression)* }
 
 // Type declarations
-TypeDecl = { "type" ~ ( TypeSpec | "(" ~ (TypeSpec ~ ";" )+ ~ ")" ) }
+TypeDecl = { "type" ~ (TypeSpec | "(" ~ (TypeSpec ~ ";")+ ~ ")") }
 TypeSpec = { TypeDef }
 
 // TODO: correct TypeDef spec (remove type parameters)
@@ -101,54 +101,72 @@ TypeSpec = { TypeDef }
 TypeDef = { Ident ~ Type }
 
 // Variable declaration
-VarDecl = { "var" ~ (VarSpec | "(" ~ ( VarSpec ~ ";")* ~ ")") }
-VarSpec = { IdentifierList ~ ((Type ~ ("=" ~ ExpressionList )?) | ("=" ~ ExpressionList)) }
+VarDecl = { "var" ~ (VarSpec | "(" ~ (VarSpec ~ ";")* ~ ")") }
+VarSpec = { IdentifierList ~ ((Type ~ ("=" ~ ExpressionList)?) | ("=" ~ ExpressionList)) }
 
 // Function declaration
-FunctionDecl = { "func" ~ FunctionName ~ Signature ~ FunctionBody? }
+FunctionDecl =  { "func" ~ FunctionName ~ Signature ~ FunctionBody? }
 FunctionName = _{ Ident }
 FunctionBody = _{ Block }
 
 // TODO: update the spec
 // Operands
-Operand     = { Literal | OperandName | "(" ~ Expression ~ ")" }
-Literal     = { BasicLit }
-BasicLit    = { IntLit | RuneLit | StringLit }
-OperandName = { Ident }
+Operand     = _{ Literal | OperandName | "(" ~ Expression ~ ")" }
+Literal     = _{ BasicLit }
+BasicLit    = _{ IntLit | RuneLit | StringLit }
+OperandName = _{ Ident }
 
 // Primary expressions
 // ref: https://www.csd.uwo.ca/~mmorenom/CS447/Lectures/Syntax.html/node8.html
-PrimaryExpr = { Operand ~ PrimaryExprPrime }
-PrimaryExprPrime = { (Arguments ~ PrimaryExprPrime)? }
+PrimaryExpr      = _{ Operand ~ PrimaryExprPrime? }
+PrimaryExprPrime = _{ (Arguments ~ PrimaryExprPrime?) }
 
-Arguments   = { "(" ~ (((Type ~ ("," ~ ExpressionList)?) | ExpressionList) ~ ","?)? ~ ")" }
+Arguments = { "(" ~ (((Type ~ ("," ~ ExpressionList)?) | ExpressionList) ~ ","?)? ~ ")" }
 
 // Operators
 // ref: https://www.csd.uwo.ca/~mmorenom/CS447/Lectures/Syntax.html/node8.html
-Expression = { UnaryExpr ~ ExpressionPrime }
-ExpressionPrime = { (BinaryOp ~ Expression ~ ExpressionPrime)? }
-UnaryExpr  = { (UnaryOp ~ UnaryExpr) | PrimaryExpr }
+Expression      = _{ UnaryExpr ~ ExpressionPrime? }
+ExpressionPrime = _{ (BinaryOp ~ Expression ~ ExpressionPrime)? }
+UnaryExpr       = _{ (UnaryOp ~ UnaryExpr) | PrimaryExpr }
 
-BinaryOp  = { RelOp | AddOp | MulOp }
-RelOp     = { "==" | "!=" | "<=" | "<" | ">=" | ">" }
-AddOp     = { "+" | "-" | "|" }
-MulOp     = { "*" | "/" | "%" | "&" }
+BinaryOp  = _{ RelOp | SumOp | ProductOp }
+RelOp     = _{ EqEq | NotEq | Le | Lt | Ge | Gt }
+EqEq      =  { "==" }
+NotEq     =  { "!=" }
+Le        =  { "<=" }
+Lt        =  { "<" }
+Ge        =  { ">=" }
+Gt        =  { ">" }
+SumOp     = _{ Plus | Minus | Pipe }
+Plus      =  { "+" }
+Minus     =  { "-" }
+Pipe      =  { "|" }
+ProductOp = _{ Star | Slash | Percent | And }
+Star      =  { "*" }
+Slash     =  { "/" }
+Percent   =  { "%" }
+And       =  { "&" }
 
-UnaryOp   = { "+" | "-" | "!" | "*" | "&" }
+UnaryOp    = _{ UnaryPlus | UnaryMinus | UnaryNot | UnaryStar | UnaryAnd }
+UnaryPlus  =  { "+" }
+UnaryMinus =  { "-" }
+UnaryStar  =  { "*" }
+UnaryAnd   =  { "&" }
+UnaryNot   =  { "!" }
 
 // Statements
 
-Statement = { Declaration | SimpleStmt | ReturnStmt  | Block | IfStmt }
+Statement = _{ Declaration | SimpleStmt | ReturnStmt | Block | IfStmt }
 
-SimpleStmt = { ExpressionStmt | IncDecStmt | Assignment }
+SimpleStmt = _{ ExpressionStmt | IncDecStmt | Assignment }
 
 ExpressionStmt = { Expression }
 
-IncDecStmt = { Expression ~ ( "++" | "--" ) }
+IncDecStmt = { Expression ~ ("++" | "--") }
 
 Assignment = { ExpressionList ~ "=" ~ ExpressionList }
 
-IfStmt = { "if" ~ (SimpleStmt ~ ";")? ~ Expression ~ Block ~ ("else" ~ (IfStmt | Block ))? }
+IfStmt = { "if" ~ (SimpleStmt ~ ";")? ~ Expression ~ Block ~ ("else" ~ (IfStmt | Block))? }
 
 ReturnStmt = { "return" ~ ExpressionList? }
 
