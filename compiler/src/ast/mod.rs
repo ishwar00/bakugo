@@ -25,7 +25,7 @@ pub struct FnDecl<'i> {
     pub name: Ident<'i>,
     pub params: Vec<FnParameterDecl<'i>>,
     pub result_kind: Option<Kind<'i>>,
-    pub body: Vec<Statement>,
+    pub body: Vec<Statement<'i>>,
     pub span: Span<'i>,
 }
 
@@ -226,20 +226,37 @@ pub enum BinaryOp {
     Pipe,
     Percent,
     And,
+    Comma,
 }
 
 #[derive(Debug)]
-pub enum Expr {
+pub enum Expr<'i> {
+    Identifier(&'i str),
     Integer(i32),
+    FunctionCall {
+        function: Box<Expr<'i>>,
+        args: Option<Box<Expr<'i>>>,
+    },
     UnaryExpr {
         op: UnaryOp,
-        operand: Box<Expr>,
+        operand: Box<Expr<'i>>,
     },
     BinaryExpr {
-        left: Box<Expr>,
+        left: Box<Expr<'i>>,
         op: BinaryOp,
-        right: Box<Expr>,
+        right: Box<Expr<'i>>,
     },
+}
+
+impl<'i> Node<'i> for Expr<'i> {
+    fn parse(pair: Pair<'i, Rule>) -> Self {
+        match pair.as_rule() {
+            Rule::Ident => Expr::Identifier(pair.as_str()),
+            Rule::IntLit => Expr::Integer(pair.as_str().parse().unwrap()),
+            Rule::FunctionCall => Self::parse_expr(pair.into_inner()),
+            _ => unreachable!(),
+        }
+    }
 }
 
 lazy_static::lazy_static! {
@@ -249,8 +266,9 @@ lazy_static::lazy_static! {
 
         // Precedence is defined lowest to highest
         PrattParser::new()
+            .op(Op::infix(Comma, Left))
             .op(
-                Op::infix(EqEq, Left) | Op::infix(NotEq, Left) | Op::infix(Le, Left) |
+                Op::infix(Rule::Eq, Left) | Op::infix(NotEq, Left) | Op::infix(Le, Left) |
                 Op::infix(Lt, Left) | Op::infix(Ge, Left) | Op::infix(Gt, Left)
             )
             .op(Op::infix(Plus, Left) | Op::infix(Minus, Left) | Op::infix(Pipe, Left))
@@ -262,17 +280,15 @@ lazy_static::lazy_static! {
                 Op::prefix(UnaryPlus) | Op::prefix(UnaryMinus) | Op::prefix(UnaryNot) |
                 Op::prefix(UnaryStar) | Op::prefix(UnaryAnd)
             )
+            .op(Op::postfix(Arguments))
     };
 }
 
-impl Expr {
+impl<'i> Expr<'i> {
     fn parse_expr(pairs: Pairs<Rule>) -> Expr {
         PRATT_PARSER
             .map_primary(|primary| match primary.as_rule() {
-                Rule::IntLit => match primary.as_str().parse::<i32>() {
-                    Ok(int) => Expr::Integer(int),
-                    Err(_) => panic!("failed to parse int"),
-                },
+                Rule::IntLit | Rule::Ident | Rule::FunctionCall => Expr::parse(primary),
                 _ => unreachable!(),
             })
             .map_infix(|left, op, right| {
@@ -284,6 +300,7 @@ impl Expr {
                     Rule::Percent => BinaryOp::Percent,
                     Rule::And => BinaryOp::And,
                     Rule::Slash => BinaryOp::Slash,
+                    Rule::Comma => BinaryOp::Comma,
                     _ => unreachable!(""),
                 };
                 Expr::BinaryExpr {
@@ -306,18 +323,33 @@ impl Expr {
                     operand: Box::new(right),
                 }
             })
+            .map_postfix(|left, op| match op.as_rule() {
+                Rule::Arguments => {
+                    // TODO: handle when first arg is 'Kind'
+                    let mut inner = op.into_inner();
+                    let args = inner
+                        .next()
+                        .map(|expr_list| Box::new(Expr::parse_expr(expr_list.into_inner())));
+                    assert!(inner.next().is_none());
+                    Expr::FunctionCall {
+                        function: Box::new(left),
+                        args,
+                    }
+                }
+                _ => unreachable!(""),
+            })
             .parse(pairs)
     }
 }
 
 #[derive(Debug)]
-pub enum Statement {
+pub enum Statement<'i> {
     // TODO: add expression list
     Return,
-    Expression(Expr),
+    Expression(Expr<'i>),
 }
 
-impl<'i> Node<'i> for Statement {
+impl<'i> Node<'i> for Statement<'i> {
     fn parse(pair: Pair<'i, Rule>) -> Self {
         match pair.as_rule() {
             Rule::ExpressionStmt => {

@@ -10,7 +10,7 @@
 // 4. Semicolons
 
 // Questions:
-// 
+//
 
 /// Source Code Representation
 /// Characters
@@ -80,6 +80,7 @@ ParameterDecl  =  { (IdentifierList ~ Type) | (Type ~ ("," ~ Type)*) }
 IdentifierList =  { Ident ~ ("," ~ Ident)* }
 
 // Blocks
+// *(a.method())
 Block         = _{ "{" ~ StatementList ~ "}" }
 StatementList =  { (Statement ~ ";")* }
 
@@ -90,7 +91,7 @@ TopLevelDecl = { Declaration | FunctionDecl }
 // Const declartions
 ConstDecl      = { "const" ~ (ConstSpec | "(" ~ (ConstSpec ~ ";")+ ~ ")") }
 ConstSpec      = { IdentifierList ~ (Type? ~ "=" ~ ExpressionList)? }
-ExpressionList = { Expression ~ ("," ~ Expression)* }
+ExpressionList = { Expression ~ (Comma ~ Expression)* }
 
 // Type declarations
 TypeDecl = { "type" ~ (TypeSpec | "(" ~ (TypeSpec ~ ";")+ ~ ")") }
@@ -109,6 +110,8 @@ FunctionDecl =  { "func" ~ FunctionName ~ Signature ~ FunctionBody? }
 FunctionName = _{ Ident }
 FunctionBody = _{ Block }
 
+// op? expr op expr op expr
+
 // TODO: update the spec
 // Operands
 Operand     = _{ Literal | OperandName | "(" ~ Expression ~ ")" }
@@ -118,29 +121,33 @@ OperandName = _{ Ident }
 
 // Primary expressions
 // ref: https://www.csd.uwo.ca/~mmorenom/CS447/Lectures/Syntax.html/node8.html
-PrimaryExpr      = _{ Operand ~ PrimaryExprPrime? }
+PrimaryExpr      = _{ FunctionCall | Operand }
+FunctionCall     = { Operand ~ PrimaryExprPrime }
 PrimaryExprPrime = _{ (Arguments ~ PrimaryExprPrime?) }
 
-Arguments = { "(" ~ (((Type ~ ("," ~ ExpressionList)?) | ExpressionList) ~ ","?)? ~ ")" }
+Arguments = { "(" ~ (((Type ~ (Comma ~ ExpressionList)?) | ExpressionList) ~ ","?)? ~ ")" }
 
 // Operators
 // ref: https://www.csd.uwo.ca/~mmorenom/CS447/Lectures/Syntax.html/node8.html
 Expression      = _{ UnaryExpr ~ ExpressionPrime? }
-ExpressionPrime = _{ (BinaryOp ~ Expression ~ ExpressionPrime)? }
+ExpressionPrime = _{ BinaryOp ~ Expression ~ ExpressionPrime? }
 UnaryExpr       = _{ (UnaryOp ~ UnaryExpr) | PrimaryExpr }
 
 BinaryOp  = _{ RelOp | SumOp | ProductOp }
-RelOp     = _{ EqEq | NotEq | Le | Lt | Ge | Gt }
-EqEq      =  { "==" }
+
+RelOp     = _{ Eq | NotEq | Le | Lt | Ge | Gt }
+Eq        =  { "==" }
 NotEq     =  { "!=" }
 Le        =  { "<=" }
 Lt        =  { "<" }
 Ge        =  { ">=" }
 Gt        =  { ">" }
+
 SumOp     = _{ Plus | Minus | Pipe }
 Plus      =  { "+" }
 Minus     =  { "-" }
 Pipe      =  { "|" }
+
 ProductOp = _{ Star | Slash | Percent | And }
 Star      =  { "*" }
 Slash     =  { "/" }
@@ -154,6 +161,7 @@ UnaryStar  =  { "*" }
 UnaryAnd   =  { "&" }
 UnaryNot   =  { "!" }
 
+Comma = { "," }
 // Statements
 
 Statement = _{ Declaration | SimpleStmt | ReturnStmt | Block | IfStmt }
