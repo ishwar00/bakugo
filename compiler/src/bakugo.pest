@@ -125,7 +125,7 @@ PrimaryExpr      = _{ FunctionCall | Operand }
 FunctionCall     = { Operand ~ PrimaryExprPrime }
 PrimaryExprPrime = _{ (Arguments ~ PrimaryExprPrime?) }
 
-Arguments = { "(" ~ (((Type ~ (Comma ~ ExpressionList)?) | ExpressionList) ~ ","?)? ~ ")" }
+Arguments = { "(" ~ ((ExpressionList | (Type ~ (Comma ~ ExpressionList)?)) ~ ","?)? ~ ")" }
 
 // Operators
 // ref: https://www.csd.uwo.ca/~mmorenom/CS447/Lectures/Syntax.html/node8.html

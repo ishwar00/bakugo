@@ -240,7 +240,7 @@ pub enum Expr<'i> {
     },
     FunctionCall {
         function: Box<Expr<'i>>,
-        args: Vec<Expr<'i>>,
+        args: Args<'i>,
     },
     UnaryExpr {
         op: UnaryOp,
@@ -268,6 +268,12 @@ impl<'i> Node<'i> for Expr<'i> {
             _ => unreachable!(),
         }
     }
+}
+
+#[derive(Debug)]
+pub struct Args<'i> {
+    pub kind: Option<Kind<'i>>,
+    pub args: Vec<Expr<'i>>,
 }
 
 lazy_static::lazy_static! {
@@ -334,14 +340,30 @@ impl<'i> Expr<'i> {
             })
             .map_postfix(|left, op| match op.as_rule() {
                 Rule::Arguments => {
-                    // TODO: handle when first arg is 'Kind'
+                    // TODO: refactor this, does not look good
+                    let mut inner = op.into_inner();
+                    let is_kind = inner
+                        .peek()
+                        .map(|pair| pair.as_rule() == Rule::Type)
+                        .unwrap_or(false);
+
+                    let kind = if is_kind {
+                        let kind = Some(Kind::parse(inner.next().unwrap()));
+                        // this next skips comma
+                        inner.next();
+                        kind
+                    } else {
+                        None
+                    };
                     Expr::FunctionCall {
                         function: Box::new(left),
-                        args: op
-                            .into_inner()
-                            .next()
-                            .map(Self::parse_expr_list)
-                            .unwrap_or_else(|| vec![]),
+                        args: Args {
+                            kind,
+                            args: inner
+                                .next()
+                                .map(Self::parse_expr_list)
+                                .unwrap_or_else(|| vec![]),
+                        },
                     }
                 }
                 _ => unreachable!(""),

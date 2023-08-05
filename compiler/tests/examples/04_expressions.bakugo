@@ -5,4 +5,6 @@ func expr(a int) {
 	4 + bakugo(3, 4) * 4;
 	2 + bakugo(0 * 2, 0, -3 * 4)(3);
 	4 + bakugo(3 * 2, 3);
+
+	3 + bakugo((int), bb * 3, cc);
 };
