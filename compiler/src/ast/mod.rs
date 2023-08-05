@@ -226,16 +226,21 @@ pub enum BinaryOp {
     Pipe,
     Percent,
     And,
-    Comma,
 }
 
 #[derive(Debug)]
 pub enum Expr<'i> {
-    Identifier(&'i str),
-    Integer(i32),
+    Identifier {
+        value: &'i str,
+        span: Span<'i>,
+    },
+    Integer {
+        value: i32,
+        span: Span<'i>,
+    },
     FunctionCall {
         function: Box<Expr<'i>>,
-        args: Option<Box<Expr<'i>>>,
+        args: Vec<Expr<'i>>,
     },
     UnaryExpr {
         op: UnaryOp,
@@ -251,8 +256,14 @@ pub enum Expr<'i> {
 impl<'i> Node<'i> for Expr<'i> {
     fn parse(pair: Pair<'i, Rule>) -> Self {
         match pair.as_rule() {
-            Rule::Ident => Expr::Identifier(pair.as_str()),
-            Rule::IntLit => Expr::Integer(pair.as_str().parse().unwrap()),
+            Rule::Ident => Expr::Identifier {
+                value: pair.as_str(),
+                span: pair.as_span(),
+            },
+            Rule::IntLit => Expr::Integer {
+                value: pair.as_str().parse().unwrap(),
+                span: pair.as_span(),
+            },
             Rule::FunctionCall => Self::parse_expr(pair.into_inner()),
             _ => unreachable!(),
         }
@@ -266,7 +277,6 @@ lazy_static::lazy_static! {
 
         // Precedence is defined lowest to highest
         PrattParser::new()
-            .op(Op::infix(Comma, Left))
             .op(
                 Op::infix(Rule::Eq, Left) | Op::infix(NotEq, Left) | Op::infix(Le, Left) |
                 Op::infix(Lt, Left) | Op::infix(Ge, Left) | Op::infix(Gt, Left)
@@ -285,7 +295,7 @@ lazy_static::lazy_static! {
 }
 
 impl<'i> Expr<'i> {
-    fn parse_expr(pairs: Pairs<Rule>) -> Expr {
+    fn parse_expr<I: Iterator<Item = Pair<'i, Rule>>>(pairs: I) -> Expr<'i> {
         PRATT_PARSER
             .map_primary(|primary| match primary.as_rule() {
                 Rule::IntLit | Rule::Ident | Rule::FunctionCall => Expr::parse(primary),
@@ -300,7 +310,6 @@ impl<'i> Expr<'i> {
                     Rule::Percent => BinaryOp::Percent,
                     Rule::And => BinaryOp::And,
                     Rule::Slash => BinaryOp::Slash,
-                    Rule::Comma => BinaryOp::Comma,
                     _ => unreachable!(""),
                 };
                 Expr::BinaryExpr {
@@ -326,19 +335,32 @@ impl<'i> Expr<'i> {
             .map_postfix(|left, op| match op.as_rule() {
                 Rule::Arguments => {
                     // TODO: handle when first arg is 'Kind'
-                    let mut inner = op.into_inner();
-                    let args = inner
-                        .next()
-                        .map(|expr_list| Box::new(Expr::parse_expr(expr_list.into_inner())));
-                    assert!(inner.next().is_none());
                     Expr::FunctionCall {
                         function: Box::new(left),
-                        args,
+                        args: op
+                            .into_inner()
+                            .next()
+                            .map(Self::parse_expr_list)
+                            .unwrap_or_else(|| vec![]),
                     }
                 }
                 _ => unreachable!(""),
             })
             .parse(pairs)
+    }
+
+    fn parse_expr_list(pairs: Pair<'i, Rule>) -> Vec<Expr<'i>> {
+        // having this inside the 'map_postfix()' of parse_expr() leads to a compile
+        // time recursion limit error.
+        let mut inner = pairs.into_inner();
+        let mut args = vec![];
+        while inner.peek().is_some() {
+            let inner_expr = inner
+                .by_ref()
+                .take_while(|pair| pair.as_rule() != Rule::Comma);
+            args.push(Expr::parse_expr(inner_expr));
+        }
+        args
     }
 }
 
