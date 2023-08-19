@@ -1,5 +1,5 @@
 use pest::{
-    iterators::{Pair, Pairs},
+    iterators::Pair,
     pratt_parser::PrattParser,
     Span,
 };
@@ -362,7 +362,7 @@ impl<'i> Expr<'i> {
                             args: inner
                                 .next()
                                 .map(Self::parse_expr_list)
-                                .unwrap_or_else(|| vec![]),
+                                .unwrap_or_else(Vec::new),
                         },
                     }
                 }
