@@ -41,6 +41,11 @@ WHITESPACE = _{ "\u{0020}" | "\u{0009}" | "\u{000D}" | "\u{000A}" }
 // Refer TODO[3]
 COMMENT = _{ "/*" ~ (!("*/" | NewLine) ~ ANY)* ~ "*/" }
 
+/// Punctuation
+Semicolon = { ";" }
+Comma = { "," }
+
+/// Identifier
 Ident = @{ Letter ~ (Letter | UnicodeDigit)* }
 
 IntLit        = @{ "0" | ('1'..'9' ~ ("_"? ~ DecimalDigits)?) }
@@ -82,19 +87,19 @@ IdentifierList =  { Ident ~ ("," ~ Ident)* }
 // Blocks
 // *(a.method())
 Block         = _{ "{" ~ StatementList ~ "}" }
-StatementList =  { (Statement ~ ";")* }
+StatementList =  { (Statement ~ Semicolon)* }
 
 // Declarations
 Declaration  = { ConstDecl | TypeDecl | VarDecl }
 TopLevelDecl = { Declaration | FunctionDecl }
 
 // Const declartions
-ConstDecl      = { "const" ~ (ConstSpec | "(" ~ (ConstSpec ~ ";")+ ~ ")") }
+ConstDecl      = { "const" ~ (ConstSpec | "(" ~ (ConstSpec ~ Semicolon)+ ~ ")") }
 ConstSpec      = { IdentifierList ~ (Type? ~ "=" ~ ExpressionList)? }
 ExpressionList = { Expression ~ (Comma ~ Expression)* }
 
 // Type declarations
-TypeDecl = { "type" ~ (TypeSpec | "(" ~ (TypeSpec ~ ";")+ ~ ")") }
+TypeDecl = { "type" ~ (TypeSpec | "(" ~ (TypeSpec ~ Semicolon)+ ~ ")") }
 TypeSpec = { TypeDef }
 
 // TODO: correct TypeDef spec (remove type parameters)
@@ -102,11 +107,11 @@ TypeSpec = { TypeDef }
 TypeDef = { Ident ~ Type }
 
 // Variable declaration
-VarDecl = { "var" ~ (VarSpec | "(" ~ (VarSpec ~ ";")* ~ ")") }
+VarDecl = { "var" ~ (VarSpec | "(" ~ (VarSpec ~ Semicolon)* ~ ")") }
 VarSpec = { IdentifierList ~ ((Type ~ ("=" ~ ExpressionList)?) | ("=" ~ ExpressionList)) }
 
 // Function declaration
-FunctionDecl =  { "func" ~ FunctionName ~ Signature ~ FunctionBody? }
+FunctionDecl =  { "func" ~ FunctionName ~ Signature ~ FunctionBody }
 FunctionName = _{ Ident }
 FunctionBody = _{ Block }
 
@@ -161,7 +166,6 @@ UnaryStar  =  { "*" }
 UnaryAnd   =  { "&" }
 UnaryNot   =  { "!" }
 
-Comma = { "," }
 // Statements
 
 Statement = _{ Declaration | SimpleStmt | ReturnStmt | Block | IfStmt }
@@ -174,8 +178,8 @@ IncDecStmt = { Expression ~ ("++" | "--") }
 
 Assignment = { ExpressionList ~ "=" ~ ExpressionList }
 
-IfStmt = { "if" ~ (SimpleStmt ~ ";")? ~ Expression ~ Block ~ ("else" ~ (IfStmt | Block))? }
+IfStmt = { "if" ~ (SimpleStmt ~ Semicolon)? ~ Expression ~ Block ~ ("else" ~ (IfStmt | Block))? }
 
 ReturnStmt = { "return" ~ ExpressionList? }
 
-SourceFile = { (TopLevelDecl ~ ";")* }
+SourceFile = { SOI ~ (TopLevelDecl ~ Semicolon)* ~ EOI }

@@ -1,8 +1,4 @@
-use pest::{
-    iterators::Pair,
-    pratt_parser::PrattParser,
-    Span,
-};
+use pest::{iterators::Pair, pratt_parser::PrattParser, Span};
 
 use crate::parser::Rule;
 
@@ -56,7 +52,11 @@ impl<'i> Node<'i> for FnDecl<'i> {
             params = param_decls.into_iter().map(|p| p.into()).collect();
         }
 
-        let body = body_pair.into_inner().map(Statement::parse).collect();
+        let body = body_pair
+            .into_inner()
+            .filter(|p| p.as_rule() != Rule::Semicolon)
+            .map(Statement::parse)
+            .collect();
 
         Self {
             name,

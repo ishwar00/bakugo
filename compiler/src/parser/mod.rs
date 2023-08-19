@@ -23,6 +23,11 @@ pub fn construct_ast(pair: Pair<'_, Rule>) -> SourceFile<'_> {
             let pairs = pair.into_inner();
             let mut top_level = vec![];
             for pair in pairs {
+                // TODO: find a better way to do this
+                // see: https://github.com/pest-parser/pest/issues/327
+                if matches!(pair.as_rule(), Rule::Semicolon | Rule::EOI) {
+                    continue;
+                }
                 let inner = pair.into_inner().next().unwrap();
                 match inner.as_rule() {
                     Rule::FunctionDecl => {
