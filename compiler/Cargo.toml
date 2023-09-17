@@ -7,8 +7,10 @@ edition = "2021"
 
 [dependencies]
 lazy_static = "1.4.0"
+miette = { version = "5.10.0", features = ["fancy"] }
 pest = { version = "2.0", features = ["pretty-print"] }
 pest_derive = "2.0"
+thiserror = "1.0.48"
 
 [dev-dependencies]
 insta = { version = "1.29.0", features = ["yaml", "glob"] }

@@ -2,8 +2,63 @@ use pest::{iterators::Pair, pratt_parser::PrattParser, Span};
 
 use crate::parser::Rule;
 
-pub trait Node<'i> {
-    fn parse(pair: Pair<'i, Rule>) -> Self;
+use miette::{Diagnostic, NamedSource, SourceSpan};
+use thiserror::Error;
+
+#[derive(Error, Debug)]
+pub enum BakugoParsingErrorKind {
+    #[error("Internal error")]
+    InternalError,
+    #[error("Syntax error")]
+    SyntaxError,
+}
+
+#[derive(Error, Debug)]
+#[error("{kind}: {msg}")]
+pub struct BakugoParsingError<'i> {
+    span: Span<'i>,
+    msg: String,
+    kind: BakugoParsingErrorKind,
+}
+
+impl<'i> BakugoParsingError<'i> {
+    fn new(span: Span<'i>, msg: String, kind: BakugoParsingErrorKind) -> Self {
+        Self { span, msg, kind }
+    }
+}
+
+#[derive(Error, Debug, Diagnostic)]
+#[error("Parsing error")]
+pub struct BakugoParsingErrorDisplay {
+    #[source_code]
+    src: NamedSource,
+
+    #[label = "{kind}: {msg}"]
+    span: SourceSpan,
+    msg: String,
+
+    kind: BakugoParsingErrorKind,
+}
+
+impl BakugoParsingErrorDisplay {
+    pub fn from_error(err: BakugoParsingError, src: NamedSource) -> Self {
+        Self {
+            src,
+            msg: err.msg,
+            span: SourceSpan::new(
+                err.span.start().into(),
+                (err.span.end() - err.span.start()).into(),
+            ),
+            kind: err.kind,
+        }
+    }
+}
+
+pub trait Node<'i>
+where
+    Self: Sized,
+{
+    fn parse(pair: Pair<'i, Rule>) -> Result<Self, BakugoParsingError>;
 }
 
 #[derive(Debug)]
@@ -25,28 +80,46 @@ pub struct FnDecl<'i> {
     pub span: Span<'i>,
 }
 
+fn check_rule<'i>(
+    pair: &Pair<'i, Rule>,
+    rule: Rule,
+    rule_name: &str,
+) -> Result<(), BakugoParsingError<'i>> {
+    if pair.as_rule() != rule {
+        Err(BakugoParsingError::new(
+            pair.as_span(),
+            format!("We ran into an error. Expected to see a {rule_name}."),
+            BakugoParsingErrorKind::InternalError,
+        ))
+    } else {
+        Ok(())
+    }
+}
+
 impl<'i> Node<'i> for FnDecl<'i> {
-    fn parse(pair: Pair<'i, Rule>) -> Self {
-        if pair.as_rule() != Rule::FunctionDecl {
-            unreachable!("FnDecl has been checked");
-        }
+    fn parse(pair: Pair<'i, Rule>) -> Result<Self, BakugoParsingError> {
+        check_rule(&pair, Rule::FunctionDecl, "functional declaration")?;
 
         let span = pair.as_span();
         let mut pairs = pair.into_inner();
-        let name = Ident::parse(pairs.next().unwrap());
+        let name = Ident::parse(pairs.next().unwrap())?;
         let signature = pairs.next().unwrap();
         let body_pair = pairs.next().unwrap();
 
         let mut sig_children = signature.into_inner();
         let param_pair = sig_children.next().unwrap();
-        let result_kind = sig_children.next().map(Kind::parse);
+        let result_kind = sig_children.next().map(Kind::parse).transpose()?;
         let mut params = vec![];
         if let Some(param_list_pair) = param_pair.into_inner().next() {
-            let param_list = ParameterList::parse(param_list_pair);
+            let param_list = ParameterList::parse(param_list_pair)?;
             let param_decls = param_list.0;
             for param_decl in &param_decls {
                 if param_decl.name.is_none() {
-                    panic!("cant have only type in fn decl params")
+                    return Err(BakugoParsingError::new(
+                        param_decl.span,
+                        "Function declaration parameters cannot only have a type".to_owned(),
+                        BakugoParsingErrorKind::SyntaxError,
+                    ));
                 }
             }
             params = param_decls.into_iter().map(|p| p.into()).collect();
@@ -56,15 +129,15 @@ impl<'i> Node<'i> for FnDecl<'i> {
             .into_inner()
             .filter(|p| p.as_rule() != Rule::Semicolon)
             .map(Statement::parse)
-            .collect();
+            .collect::<Result<_, _>>()?;
 
-        Self {
+        Ok(Self {
             name,
             params,
             result_kind,
             body,
             span,
-        }
+        })
     }
 }
 
@@ -72,10 +145,8 @@ impl<'i> Node<'i> for FnDecl<'i> {
 pub struct ParameterList<'i>(pub Vec<ParameterDecl<'i>>);
 
 impl<'i> Node<'i> for ParameterList<'i> {
-    fn parse(pair: Pair<'i, Rule>) -> Self {
-        if pair.as_rule() != Rule::ParameterList {
-            unreachable!("FnDecl has been checked");
-        }
+    fn parse(pair: Pair<'i, Rule>) -> Result<Self, BakugoParsingError> {
+        check_rule(&pair, Rule::ParameterList, "parameters")?;
 
         let mut params = vec![];
         for param_decl in pair.into_inner() {
@@ -89,8 +160,8 @@ impl<'i> Node<'i> for ParameterList<'i> {
                     for ident in first.into_inner() {
                         let span = ident.as_span();
                         params.push(ParameterDecl {
-                            name: Some(Ident::parse(ident)),
-                            kind: Kind::parse(second.clone()),
+                            name: Some(Ident::parse(ident)?),
+                            kind: Kind::parse(second.clone())?,
                             span,
                         });
                     }
@@ -100,22 +171,28 @@ impl<'i> Node<'i> for ParameterList<'i> {
                     let span = first.as_span();
                     params.push(ParameterDecl {
                         name: None,
-                        kind: Kind::parse(first),
+                        kind: Kind::parse(first)?,
                         span,
                     });
                     for kind in pairs {
                         let span = kind.as_span();
                         params.push(ParameterDecl {
                             name: None,
-                            kind: Kind::parse(kind),
+                            kind: Kind::parse(kind)?,
                             span,
                         });
                     }
                 }
-                _ => unreachable!("parameter list should not have anything else"),
+                _ => {
+                    return Err(BakugoParsingError::new(
+                        first.as_span(),
+                        "Expected only types and identifiers in parameters".to_owned(),
+                        BakugoParsingErrorKind::InternalError,
+                    ))
+                }
             }
         }
-        Self(params)
+        Ok(Self(params))
     }
 }
 
@@ -126,15 +203,13 @@ pub struct Ident<'i> {
 }
 
 impl<'i> Node<'i> for Ident<'i> {
-    fn parse(pair: Pair<'i, Rule>) -> Self {
-        if pair.as_rule() != Rule::Ident {
-            unreachable!("Ident has been checked");
-        }
+    fn parse(pair: Pair<'i, Rule>) -> Result<Self, BakugoParsingError> {
+        check_rule(&pair, Rule::Ident, "identifiers")?;
 
-        Self {
+        Ok(Self {
             value: pair.as_str().to_owned(),
             span: pair.as_span(),
-        }
+        })
     }
 }
 
@@ -175,35 +250,45 @@ pub enum Kind<'i> {
 }
 
 impl<'i> Node<'i> for Kind<'i> {
-    fn parse(pair: Pair<'i, Rule>) -> Self {
-        if pair.as_rule() != Rule::Type {
-            unreachable!("Type is already checked");
-        }
+    fn parse(pair: Pair<'i, Rule>) -> Result<Self, BakugoParsingError> {
+        check_rule(&pair, Rule::Type, "type")?;
 
         let inner = pair.into_inner().next().unwrap();
         match inner.as_rule() {
-            Rule::Ident => Self::Simple {
+            Rule::Ident => Ok(Self::Simple {
                 name: inner.as_str().to_owned(),
                 span: inner.as_span(),
-            },
+            }),
             Rule::Tuple => {
                 let inner = inner.into_inner().next().unwrap();
                 let span = inner.as_span();
                 let mut kinds = Vec::new();
                 match inner.as_rule() {
                     Rule::Type => {
-                        kinds.push(Kind::parse(inner));
+                        kinds.push(Kind::parse(inner)?);
                     }
                     Rule::TypeList => {
                         for inner in inner.into_inner() {
-                            kinds.push(Kind::parse(inner));
+                            kinds.push(Kind::parse(inner)?);
                         }
                     }
-                    _ => unreachable!(""),
+                    _ => {
+                        return Err(BakugoParsingError::new(
+                            span,
+                            "expected type but got something else".to_owned(),
+                            BakugoParsingErrorKind::InternalError,
+                        ))
+                    }
                 }
-                Self::Tuple { kinds, span }
+                Ok(Self::Tuple { kinds, span })
             }
-            _ => unreachable!(""),
+            _ => {
+                return Err(BakugoParsingError::new(
+                    inner.as_span(),
+                    "expected type but got something else".to_owned(),
+                    BakugoParsingErrorKind::InternalError,
+                ))
+            }
         }
     }
 }
@@ -254,18 +339,22 @@ pub enum Expr<'i> {
 }
 
 impl<'i> Node<'i> for Expr<'i> {
-    fn parse(pair: Pair<'i, Rule>) -> Self {
+    fn parse(pair: Pair<'i, Rule>) -> Result<Self, BakugoParsingError> {
         match pair.as_rule() {
-            Rule::Ident => Expr::Identifier {
+            Rule::Ident => Ok(Expr::Identifier {
                 value: pair.as_str(),
                 span: pair.as_span(),
-            },
-            Rule::IntLit => Expr::Integer {
+            }),
+            Rule::IntLit => Ok(Expr::Integer {
                 value: pair.as_str().parse().unwrap(),
                 span: pair.as_span(),
-            },
-            Rule::FunctionCall => Self::parse_expr(pair.into_inner()),
-            _ => unreachable!(),
+            }),
+            Rule::FunctionCall => Ok(Self::parse_expr(pair.into_inner())?),
+            _ => Err(BakugoParsingError::new(
+                pair.as_span(),
+                "got a non expression".to_owned(),
+                BakugoParsingErrorKind::InternalError,
+            )),
         }
     }
 }
@@ -301,11 +390,18 @@ lazy_static::lazy_static! {
 }
 
 impl<'i> Expr<'i> {
-    fn parse_expr<I: Iterator<Item = Pair<'i, Rule>>>(pairs: I) -> Expr<'i> {
+    fn parse_expr<I: Iterator<Item = Pair<'i, Rule>>>(
+        pairs: I,
+    ) -> Result<Expr<'i>, BakugoParsingError<'i>> {
         PRATT_PARSER
             .map_primary(|primary| match primary.as_rule() {
+                // TODO: check if this match is needed
                 Rule::IntLit | Rule::Ident | Rule::FunctionCall => Expr::parse(primary),
-                _ => unreachable!(),
+                _ => Err(BakugoParsingError::new(
+                    primary.as_span(),
+                    "got a non expression".to_owned(),
+                    BakugoParsingErrorKind::InternalError,
+                )),
             })
             .map_infix(|left, op, right| {
                 let op = match op.as_rule() {
@@ -316,13 +412,19 @@ impl<'i> Expr<'i> {
                     Rule::Percent => BinaryOp::Percent,
                     Rule::And => BinaryOp::And,
                     Rule::Slash => BinaryOp::Slash,
-                    _ => unreachable!(""),
+                    _ => {
+                        return Err(BakugoParsingError::new(
+                            op.as_span(),
+                            "got a non operator".to_owned(),
+                            BakugoParsingErrorKind::InternalError,
+                        ))
+                    }
                 };
-                Expr::BinaryExpr {
-                    left: Box::new(left),
+                Ok(Expr::BinaryExpr {
+                    left: Box::new(left?),
                     op,
-                    right: Box::new(right),
-                }
+                    right: Box::new(right?),
+                })
             })
             .map_prefix(|op, right| {
                 let op = match op.as_rule() {
@@ -331,12 +433,18 @@ impl<'i> Expr<'i> {
                     Rule::UnaryPlus => UnaryOp::Plus,
                     Rule::UnaryAnd => UnaryOp::And,
                     Rule::UnaryNot => UnaryOp::Not,
-                    _ => unreachable!(""),
+                    _ => {
+                        return Err(BakugoParsingError::new(
+                            op.as_span(),
+                            "got a non operator".to_owned(),
+                            BakugoParsingErrorKind::InternalError,
+                        ))
+                    }
                 };
-                Expr::UnaryExpr {
+                Ok(Expr::UnaryExpr {
                     op,
-                    operand: Box::new(right),
-                }
+                    operand: Box::new(right?),
+                })
             })
             .map_postfix(|left, op| match op.as_rule() {
                 Rule::Arguments => {
@@ -348,30 +456,37 @@ impl<'i> Expr<'i> {
                         .unwrap_or(false);
 
                     let kind = if is_kind {
-                        let kind = Some(Kind::parse(inner.next().unwrap()));
+                        let kind = Some(Kind::parse(inner.next().unwrap())?);
                         // this next skips comma
                         inner.next();
                         kind
                     } else {
                         None
                     };
-                    Expr::FunctionCall {
-                        function: Box::new(left),
+                    Ok(Expr::FunctionCall {
+                        function: Box::new(left?),
                         args: Args {
                             kind,
                             args: inner
                                 .next()
                                 .map(Self::parse_expr_list)
+                                .transpose()?
                                 .unwrap_or_else(Vec::new),
                         },
-                    }
+                    })
                 }
-                _ => unreachable!(""),
+                _ => {
+                    return Err(BakugoParsingError::new(
+                        op.as_span(),
+                        "got a non arguments".to_owned(),
+                        BakugoParsingErrorKind::InternalError,
+                    ))
+                }
             })
             .parse(pairs)
     }
 
-    fn parse_expr_list(pairs: Pair<'i, Rule>) -> Vec<Expr<'i>> {
+    fn parse_expr_list(pairs: Pair<'i, Rule>) -> Result<Vec<Expr<'i>>, BakugoParsingError> {
         // having this inside the 'map_postfix()' of parse_expr() leads to a compile
         // time recursion limit error.
         let mut inner = pairs.into_inner();
@@ -380,28 +495,33 @@ impl<'i> Expr<'i> {
             let inner_expr = inner
                 .by_ref()
                 .take_while(|pair| pair.as_rule() != Rule::Comma);
-            args.push(Expr::parse_expr(inner_expr));
+            args.push(Expr::parse_expr(inner_expr)?);
         }
-        args
+        Ok(args)
     }
 }
 
 #[derive(Debug)]
 pub enum Statement<'i> {
-    // TODO: add expression list
-    Return,
+    Return, // TODO: add expression list
     Expression(Expr<'i>),
 }
 
 impl<'i> Node<'i> for Statement<'i> {
-    fn parse(pair: Pair<'i, Rule>) -> Self {
+    fn parse(pair: Pair<'i, Rule>) -> Result<Self, BakugoParsingError> {
         match pair.as_rule() {
             Rule::ExpressionStmt => {
-                let expr = Expr::parse_expr(pair.into_inner());
-                Statement::Expression(expr)
+                let expr = Expr::parse_expr(pair.into_inner())?;
+                Ok(Statement::Expression(expr))
             }
-            Rule::ReturnStmt => Statement::Return,
-            _ => unreachable!(),
+            Rule::ReturnStmt => Ok(Statement::Return),
+            _ => {
+                return Err(BakugoParsingError::new(
+                    pair.as_span(),
+                    "got a statement".to_owned(),
+                    BakugoParsingErrorKind::InternalError,
+                ))
+            }
         }
     }
 }
