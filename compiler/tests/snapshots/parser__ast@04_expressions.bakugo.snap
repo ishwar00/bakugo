@@ -1,0 +1,372 @@
+---
+source: tests/parser.rs
+expression: parsed
+input_file: tests/examples/04_expressions.bakugo
+---
+SourceFile {
+    top_level: [
+        FnDecl(
+            FnDecl {
+                name: Ident {
+                    value: "expr",
+                    span: Span {
+                        str: "expr",
+                        start: 5,
+                        end: 9,
+                    },
+                },
+                params: [],
+                result_kind: None,
+                body: [
+                    Expression(
+                        BinaryExpr {
+                            left: UnaryExpr {
+                                op: Minus,
+                                operand: Integer {
+                                    value: 4,
+                                    span: Span {
+                                        str: "4",
+                                        start: 16,
+                                        end: 17,
+                                    },
+                                },
+                            },
+                            op: Plus,
+                            right: BinaryExpr {
+                                left: Integer {
+                                    value: 2,
+                                    span: Span {
+                                        str: "2",
+                                        start: 20,
+                                        end: 21,
+                                    },
+                                },
+                                op: Star,
+                                right: Integer {
+                                    value: 3,
+                                    span: Span {
+                                        str: "3",
+                                        start: 24,
+                                        end: 25,
+                                    },
+                                },
+                            },
+                        },
+                    ),
+                    Expression(
+                        BinaryExpr {
+                            left: BinaryExpr {
+                                left: Integer {
+                                    value: 4,
+                                    span: Span {
+                                        str: "4",
+                                        start: 28,
+                                        end: 29,
+                                    },
+                                },
+                                op: And,
+                                right: Integer {
+                                    value: 3,
+                                    span: Span {
+                                        str: "3",
+                                        start: 32,
+                                        end: 33,
+                                    },
+                                },
+                            },
+                            op: Pipe,
+                            right: Integer {
+                                value: 1,
+                                span: Span {
+                                    str: "1",
+                                    start: 36,
+                                    end: 37,
+                                },
+                            },
+                        },
+                    ),
+                    Expression(
+                        Integer {
+                            value: 4,
+                            span: Span {
+                                str: "4",
+                                start: 40,
+                                end: 41,
+                            },
+                        },
+                    ),
+                    Expression(
+                        BinaryExpr {
+                            left: Integer {
+                                value: 4,
+                                span: Span {
+                                    str: "4",
+                                    start: 44,
+                                    end: 45,
+                                },
+                            },
+                            op: Plus,
+                            right: BinaryExpr {
+                                left: FunctionCall {
+                                    function: Identifier {
+                                        value: "bakugo",
+                                        span: Span {
+                                            str: "bakugo",
+                                            start: 48,
+                                            end: 54,
+                                        },
+                                    },
+                                    args: Args {
+                                        kind: None,
+                                        args: [
+                                            Integer {
+                                                value: 3,
+                                                span: Span {
+                                                    str: "3",
+                                                    start: 55,
+                                                    end: 56,
+                                                },
+                                            },
+                                            Integer {
+                                                value: 4,
+                                                span: Span {
+                                                    str: "4",
+                                                    start: 58,
+                                                    end: 59,
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                                op: Star,
+                                right: Integer {
+                                    value: 4,
+                                    span: Span {
+                                        str: "4",
+                                        start: 63,
+                                        end: 64,
+                                    },
+                                },
+                            },
+                        },
+                    ),
+                    Expression(
+                        BinaryExpr {
+                            left: Integer {
+                                value: 2,
+                                span: Span {
+                                    str: "2",
+                                    start: 67,
+                                    end: 68,
+                                },
+                            },
+                            op: Plus,
+                            right: FunctionCall {
+                                function: FunctionCall {
+                                    function: Identifier {
+                                        value: "bakugo",
+                                        span: Span {
+                                            str: "bakugo",
+                                            start: 71,
+                                            end: 77,
+                                        },
+                                    },
+                                    args: Args {
+                                        kind: None,
+                                        args: [
+                                            BinaryExpr {
+                                                left: Integer {
+                                                    value: 0,
+                                                    span: Span {
+                                                        str: "0",
+                                                        start: 78,
+                                                        end: 79,
+                                                    },
+                                                },
+                                                op: Star,
+                                                right: Integer {
+                                                    value: 2,
+                                                    span: Span {
+                                                        str: "2",
+                                                        start: 82,
+                                                        end: 83,
+                                                    },
+                                                },
+                                            },
+                                            Integer {
+                                                value: 0,
+                                                span: Span {
+                                                    str: "0",
+                                                    start: 85,
+                                                    end: 86,
+                                                },
+                                            },
+                                            BinaryExpr {
+                                                left: UnaryExpr {
+                                                    op: Minus,
+                                                    operand: Integer {
+                                                        value: 3,
+                                                        span: Span {
+                                                            str: "3",
+                                                            start: 89,
+                                                            end: 90,
+                                                        },
+                                                    },
+                                                },
+                                                op: Star,
+                                                right: Integer {
+                                                    value: 4,
+                                                    span: Span {
+                                                        str: "4",
+                                                        start: 93,
+                                                        end: 94,
+                                                    },
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                                args: Args {
+                                    kind: None,
+                                    args: [
+                                        Integer {
+                                            value: 3,
+                                            span: Span {
+                                                str: "3",
+                                                start: 96,
+                                                end: 97,
+                                            },
+                                        },
+                                    ],
+                                },
+                            },
+                        },
+                    ),
+                    Expression(
+                        BinaryExpr {
+                            left: Integer {
+                                value: 4,
+                                span: Span {
+                                    str: "4",
+                                    start: 101,
+                                    end: 102,
+                                },
+                            },
+                            op: Plus,
+                            right: FunctionCall {
+                                function: Identifier {
+                                    value: "bakugo",
+                                    span: Span {
+                                        str: "bakugo",
+                                        start: 105,
+                                        end: 111,
+                                    },
+                                },
+                                args: Args {
+                                    kind: None,
+                                    args: [
+                                        BinaryExpr {
+                                            left: Integer {
+                                                value: 3,
+                                                span: Span {
+                                                    str: "3",
+                                                    start: 112,
+                                                    end: 113,
+                                                },
+                                            },
+                                            op: Star,
+                                            right: Integer {
+                                                value: 2,
+                                                span: Span {
+                                                    str: "2",
+                                                    start: 116,
+                                                    end: 117,
+                                                },
+                                            },
+                                        },
+                                        Integer {
+                                            value: 3,
+                                            span: Span {
+                                                str: "3",
+                                                start: 119,
+                                                end: 120,
+                                            },
+                                        },
+                                    ],
+                                },
+                            },
+                        },
+                    ),
+                    Expression(
+                        BinaryExpr {
+                            left: Integer {
+                                value: 3,
+                                span: Span {
+                                    str: "3",
+                                    start: 125,
+                                    end: 126,
+                                },
+                            },
+                            op: Plus,
+                            right: FunctionCall {
+                                function: Identifier {
+                                    value: "bakugo",
+                                    span: Span {
+                                        str: "bakugo",
+                                        start: 129,
+                                        end: 135,
+                                    },
+                                },
+                                args: Args {
+                                    kind: None,
+                                    args: [
+                                        Identifier {
+                                            value: "int",
+                                            span: Span {
+                                                str: "int",
+                                                start: 137,
+                                                end: 140,
+                                            },
+                                        },
+                                        BinaryExpr {
+                                            left: Identifier {
+                                                value: "bb",
+                                                span: Span {
+                                                    str: "bb",
+                                                    start: 143,
+                                                    end: 145,
+                                                },
+                                            },
+                                            op: Star,
+                                            right: Integer {
+                                                value: 3,
+                                                span: Span {
+                                                    str: "3",
+                                                    start: 148,
+                                                    end: 149,
+                                                },
+                                            },
+                                        },
+                                        Identifier {
+                                            value: "cc",
+                                            span: Span {
+                                                str: "cc",
+                                                start: 151,
+                                                end: 153,
+                                            },
+                                        },
+                                    ],
+                                },
+                            },
+                        },
+                    ),
+                ],
+                span: Span {
+                    str: "func expr() {\n\t-4 + 2 * 3;\n\t4 & 3 | 1;\n\t4;\n\t4 + bakugo(3, 4) * 4;\n\t2 + bakugo(0 * 2, 0, -3 * 4)(3);\n\t4 + bakugo(3 * 2, 3);\n\n\t3 + bakugo((int), bb * 3, cc);\n}",
+                    start: 0,
+                    end: 157,
+                },
+            },
+        ),
+    ],
+}

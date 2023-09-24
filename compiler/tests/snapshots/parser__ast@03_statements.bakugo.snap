@@ -1,0 +1,307 @@
+---
+source: tests/parser.rs
+expression: parsed
+input_file: tests/examples/03_statements.bakugo
+---
+SourceFile {
+    top_level: [
+        FnDecl(
+            FnDecl {
+                name: Ident {
+                    value: "something",
+                    span: Span {
+                        str: "something",
+                        start: 5,
+                        end: 14,
+                    },
+                },
+                params: [
+                    FnParameterDecl {
+                        name: Ident {
+                            value: "a",
+                            span: Span {
+                                str: "a",
+                                start: 15,
+                                end: 16,
+                            },
+                        },
+                        kind: Simple {
+                            name: "bunt",
+                            span: Span {
+                                str: "bunt",
+                                start: 20,
+                                end: 24,
+                            },
+                        },
+                        span: Span {
+                            str: "a",
+                            start: 15,
+                            end: 16,
+                        },
+                    },
+                    FnParameterDecl {
+                        name: Ident {
+                            value: "b",
+                            span: Span {
+                                str: "b",
+                                start: 18,
+                                end: 19,
+                            },
+                        },
+                        kind: Simple {
+                            name: "bunt",
+                            span: Span {
+                                str: "bunt",
+                                start: 20,
+                                end: 24,
+                            },
+                        },
+                        span: Span {
+                            str: "b",
+                            start: 18,
+                            end: 19,
+                        },
+                    },
+                    FnParameterDecl {
+                        name: Ident {
+                            value: "c",
+                            span: Span {
+                                str: "c",
+                                start: 26,
+                                end: 27,
+                            },
+                        },
+                        kind: Simple {
+                            name: "uint",
+                            span: Span {
+                                str: "uint",
+                                start: 28,
+                                end: 32,
+                            },
+                        },
+                        span: Span {
+                            str: "c",
+                            start: 26,
+                            end: 27,
+                        },
+                    },
+                    FnParameterDecl {
+                        name: Ident {
+                            value: "d",
+                            span: Span {
+                                str: "d",
+                                start: 34,
+                                end: 35,
+                            },
+                        },
+                        kind: Tuple {
+                            kinds: [
+                                Simple {
+                                    name: "int",
+                                    span: Span {
+                                        str: "int",
+                                        start: 37,
+                                        end: 40,
+                                    },
+                                },
+                            ],
+                            span: Span {
+                                str: "int",
+                                start: 37,
+                                end: 40,
+                            },
+                        },
+                        span: Span {
+                            str: "d",
+                            start: 34,
+                            end: 35,
+                        },
+                    },
+                ],
+                result_kind: None,
+                body: [],
+                span: Span {
+                    str: "func something(a, b bunt, c uint, d (int, )) {\n}",
+                    start: 0,
+                    end: 48,
+                },
+            },
+        ),
+        FnDecl(
+            FnDecl {
+                name: Ident {
+                    value: "something",
+                    span: Span {
+                        str: "something",
+                        start: 56,
+                        end: 65,
+                    },
+                },
+                params: [
+                    FnParameterDecl {
+                        name: Ident {
+                            value: "a",
+                            span: Span {
+                                str: "a",
+                                start: 66,
+                                end: 67,
+                            },
+                        },
+                        kind: Simple {
+                            name: "bunt",
+                            span: Span {
+                                str: "bunt",
+                                start: 71,
+                                end: 75,
+                            },
+                        },
+                        span: Span {
+                            str: "a",
+                            start: 66,
+                            end: 67,
+                        },
+                    },
+                    FnParameterDecl {
+                        name: Ident {
+                            value: "b",
+                            span: Span {
+                                str: "b",
+                                start: 69,
+                                end: 70,
+                            },
+                        },
+                        kind: Simple {
+                            name: "bunt",
+                            span: Span {
+                                str: "bunt",
+                                start: 71,
+                                end: 75,
+                            },
+                        },
+                        span: Span {
+                            str: "b",
+                            start: 69,
+                            end: 70,
+                        },
+                    },
+                    FnParameterDecl {
+                        name: Ident {
+                            value: "c",
+                            span: Span {
+                                str: "c",
+                                start: 77,
+                                end: 78,
+                            },
+                        },
+                        kind: Simple {
+                            name: "uint",
+                            span: Span {
+                                str: "uint",
+                                start: 79,
+                                end: 83,
+                            },
+                        },
+                        span: Span {
+                            str: "c",
+                            start: 77,
+                            end: 78,
+                        },
+                    },
+                    FnParameterDecl {
+                        name: Ident {
+                            value: "d",
+                            span: Span {
+                                str: "d",
+                                start: 85,
+                                end: 86,
+                            },
+                        },
+                        kind: Tuple {
+                            kinds: [
+                                Simple {
+                                    name: "int",
+                                    span: Span {
+                                        str: "int",
+                                        start: 88,
+                                        end: 91,
+                                    },
+                                },
+                                Simple {
+                                    name: "string",
+                                    span: Span {
+                                        str: "string",
+                                        start: 93,
+                                        end: 99,
+                                    },
+                                },
+                            ],
+                            span: Span {
+                                str: "int, string",
+                                start: 88,
+                                end: 99,
+                            },
+                        },
+                        span: Span {
+                            str: "d",
+                            start: 85,
+                            end: 86,
+                        },
+                    },
+                ],
+                result_kind: Some(
+                    Tuple {
+                        kinds: [
+                            Simple {
+                                name: "int",
+                                span: Span {
+                                    str: "int",
+                                    start: 103,
+                                    end: 106,
+                                },
+                            },
+                            Simple {
+                                name: "string",
+                                span: Span {
+                                    str: "string",
+                                    start: 108,
+                                    end: 114,
+                                },
+                            },
+                        ],
+                        span: Span {
+                            str: "int, string",
+                            start: 103,
+                            end: 114,
+                        },
+                    },
+                ),
+                body: [],
+                span: Span {
+                    str: "func something(a, b bunt, c uint, d (int, string)) (int, string) {\n}",
+                    start: 51,
+                    end: 119,
+                },
+            },
+        ),
+        FnDecl(
+            FnDecl {
+                name: Ident {
+                    value: "empty",
+                    span: Span {
+                        str: "empty",
+                        start: 127,
+                        end: 132,
+                    },
+                },
+                params: [],
+                result_kind: None,
+                body: [],
+                span: Span {
+                    str: "func empty() {\n\n}",
+                    start: 122,
+                    end: 139,
+                },
+            },
+        ),
+    ],
+}

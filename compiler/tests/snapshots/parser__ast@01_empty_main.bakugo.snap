@@ -1,0 +1,29 @@
+---
+source: tests/parser.rs
+expression: parsed
+input_file: tests/examples/01_empty_main.bakugo
+---
+SourceFile {
+    top_level: [
+        FnDecl(
+            FnDecl {
+                name: Ident {
+                    value: "main",
+                    span: Span {
+                        str: "main",
+                        start: 5,
+                        end: 9,
+                    },
+                },
+                params: [],
+                result_kind: None,
+                body: [],
+                span: Span {
+                    str: "func main() {}",
+                    start: 0,
+                    end: 14,
+                },
+            },
+        ),
+    ],
+}

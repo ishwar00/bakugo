@@ -1,0 +1,13 @@
+---
+source: tests/parser.rs
+expression: BakugoParsingErrDebug(err)
+input_file: tests/examples/error/01_func_parameters.bakugo
+---
+  × Parsing error
+   ╭─[01_func_parameters.bakugo:1:1]
+ 1 │ func expr(int) {
+   ·           ─┬─
+   ·            ╰── Syntax error: Function declaration parameters cannot only have a type
+ 2 │ };
+   ╰────
+

@@ -39,7 +39,7 @@ WHITESPACE = _{ "\u{0020}" | "\u{0009}" | "\u{000D}" | "\u{000A}" }
 
 /// No comments containg `NewLine`.
 // Refer TODO[3]
-COMMENT = _{ "/*" ~ (!("*/" | NewLine) ~ ANY)* ~ "*/" }
+COMMENT = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/" }
 
 /// Punctuation
 Semicolon = { ";" }

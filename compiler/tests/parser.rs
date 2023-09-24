@@ -1,10 +1,48 @@
-use bakugo::parser::*;
-use insta::{assert_snapshot, assert_yaml_snapshot, glob};
+use std::{fmt::Display, fs};
+
+use bakugo::{ast::BakugoParsingErrorDisplay, parser::*};
+use insta::{
+    assert_debug_snapshot, assert_display_snapshot, assert_snapshot, assert_yaml_snapshot, glob,
+};
+use miette::{GraphicalReportHandler, GraphicalTheme, NamedSource};
 use pest::Parser;
+
+struct BakugoParsingErrDebug(BakugoParsingErrorDisplay);
+
+impl Display for BakugoParsingErrDebug {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let report_handler = GraphicalReportHandler::new_themed(GraphicalTheme::unicode_nocolor());
+        report_handler.render_report(f, &self.0)
+    }
+}
 
 #[test]
 fn test_parser() {
-    glob!("examples/*.bakugo", |_| {});
+    glob!("examples/**/*.bakugo", |path| {
+        let input = fs::read_to_string(path).unwrap();
+        let parsed = parse_string(&input);
+        match parsed {
+            Ok(parsed) => assert_yaml_snapshot!(parsed),
+            Err(err) => assert_snapshot!(err.to_string()),
+        }
+    });
+}
+
+#[test]
+fn test_ast() {
+    glob!("examples/**/*.bakugo", |path| {
+        let input = fs::read_to_string(path).unwrap();
+        let mut parsed = parse_string(&input).unwrap();
+        let source_file = parsed.next().unwrap();
+        let source = NamedSource::new(
+            path.file_name().unwrap().to_str().unwrap().to_string(),
+            input.clone(),
+        );
+        match construct_ast(source, source_file) {
+            Ok(parsed) => assert_debug_snapshot!(parsed),
+            Err(err) => assert_display_snapshot!(BakugoParsingErrDebug(err)),
+        }
+    });
 }
 
 #[test]
