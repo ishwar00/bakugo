@@ -471,7 +471,7 @@ impl<'i> Expr<'i> {
                                 .next()
                                 .map(Self::parse_expr_list)
                                 .transpose()?
-                                .unwrap_or_else(Vec::new),
+                                .unwrap_or_default(),
                         },
                     })
                 }

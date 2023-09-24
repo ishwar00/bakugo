@@ -34,10 +34,7 @@ fn test_ast() {
         let input = fs::read_to_string(path).unwrap();
         let mut parsed = parse_string(&input).unwrap();
         let source_file = parsed.next().unwrap();
-        let source = NamedSource::new(
-            path.file_name().unwrap().to_str().unwrap().to_string(),
-            input.clone(),
-        );
+        let source = NamedSource::new(path.file_name().unwrap().to_str().unwrap(), input.clone());
         match construct_ast(source, source_file) {
             Ok(parsed) => assert_debug_snapshot!(parsed),
             Err(err) => assert_display_snapshot!(BakugoParsingErrDebug(err)),
