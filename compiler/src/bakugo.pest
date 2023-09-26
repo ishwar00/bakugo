@@ -168,7 +168,7 @@ UnaryNot   =  { "!" }
 
 // Statements
 
-Statement = _{ Declaration | SimpleStmt | ReturnStmt | Block | IfStmt }
+Statement = _{ ReturnStmt | Declaration | SimpleStmt | Block | IfStmt }
 
 SimpleStmt = _{ ExpressionStmt | IncDecStmt | Assignment }
 
