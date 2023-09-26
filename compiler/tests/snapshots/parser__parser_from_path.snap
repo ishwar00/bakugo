@@ -1,7 +1,7 @@
 ---
 source: tests/parser.rs
 expression: parsed
-input_file: tests/examples/error/01_func_parameters.bakugo
+input_file: tests/examples/ast_error/01_func_parameters.bakugo
 ---
 pos:
   - 0

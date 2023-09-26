@@ -1,4 +1,4 @@
-use std::{fmt::Display, fs};
+use std::{fmt::Display, fs, path::Path};
 
 use bakugo::{ast::BakugoParsingErrorDisplay, parser::*};
 use insta::{
@@ -18,19 +18,23 @@ impl Display for BakugoParsingErrDebug {
 
 #[test]
 fn test_parser() {
-    glob!("examples/**/*.bakugo", |path| {
+    fn test_parser_from_path(path: &Path) {
         let input = fs::read_to_string(path).unwrap();
         let parsed = parse_string(&input);
         match parsed {
             Ok(parsed) => assert_yaml_snapshot!(parsed),
             Err(err) => assert_snapshot!(err.to_string()),
         }
-    });
+    }
+
+    glob!("examples/*.bakugo", test_parser_from_path);
+    glob!("examples/ast_error/*.bakugo", test_parser_from_path);
+    glob!("examples/parser_error/*.bakugo", test_parser_from_path);
 }
 
 #[test]
 fn test_ast() {
-    glob!("examples/**/*.bakugo", |path| {
+    fn test_ast_from_path(path: &Path) {
         let input = fs::read_to_string(path).unwrap();
         let mut parsed = parse_string(&input).unwrap();
         let source_file = parsed.next().unwrap();
@@ -39,7 +43,10 @@ fn test_ast() {
             Ok(parsed) => assert_debug_snapshot!(parsed),
             Err(err) => assert_display_snapshot!(BakugoParsingErrDebug(err)),
         }
-    });
+    }
+
+    glob!("examples/*.bakugo", test_ast_from_path);
+    glob!("examples/ast_error/*.bakugo", test_ast_from_path);
 }
 
 #[test]
