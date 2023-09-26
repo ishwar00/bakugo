@@ -98,7 +98,7 @@ fn test_decimal_lit() {
 
 #[test]
 fn test_rune_lit() {
-    let runes = r#"
+    let runes = r"
         'a'
         'ä'
         '本'
@@ -119,7 +119,7 @@ fn test_rune_lit() {
         '\400'
         '\uDFFF'
         '\U00110000'
-    "#;
+    ";
     // NOTE:
     // '\''        // rune literal containing single quote character
     //'aa'         // illegal: too many characters
@@ -147,7 +147,7 @@ fn test_rune_lit() {
 
 #[test]
 fn test_string_lit() {
-    let strings = vec![
+    let strings = [
         r#" `abc` "#,
         r#" "\n" "#,
         r#" "\"" "#,
