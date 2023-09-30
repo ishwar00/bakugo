@@ -108,7 +108,7 @@ TypeSpec = { TypeDef }
 TypeDef = { Ident ~ Type }
 
 // Variable declaration
-VarDecl = { "var" ~ (VarSpec | "(" ~ (VarSpec ~ Semicolon)* ~ ")") }
+VarDecl = { "var" ~ (VarSpec | "(" ~ (VarSpec ~ Semicolon)+ ~ ")") }
 VarSpec = { IdentifierList ~ ((Type ~ ("=" ~ ExpressionList)?) | ("=" ~ ExpressionList)) }
 
 // Function declaration
