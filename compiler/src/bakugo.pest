@@ -8,6 +8,7 @@
 // 3. consider comment containing newlines as newlines. A general comment containing no
 // newlines acts like a space. Any other comment acts like a newline.
 // 4. Semicolons
+// 5. Keywords: restrict keywords as identifiers. Probably in AST.
 
 // Questions:
 //
@@ -114,8 +115,6 @@ VarSpec = { IdentifierList ~ ((Type ~ ("=" ~ ExpressionList)?) | ("=" ~ Expressi
 FunctionDecl =  { "func" ~ FunctionName ~ Signature ~ FunctionBody }
 FunctionName = _{ Ident }
 FunctionBody = _{ Block }
-
-// op? expr op expr op expr
 
 // TODO: update the spec
 // Operands
