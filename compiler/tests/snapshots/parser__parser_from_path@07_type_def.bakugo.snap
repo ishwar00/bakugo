@@ -1,0 +1,215 @@
+---
+source: tests/parser.rs
+expression: parsed
+input_file: tests/examples/07_type_def.bakugo
+---
+pos:
+  - 0
+  - 65
+pairs:
+  - pos:
+      - 0
+      - 65
+    rule: SourceFile
+    inner:
+      pos:
+        - 0
+        - 65
+      pairs:
+        - pos:
+            - 0
+            - 63
+          rule: TopLevelDecl
+          inner:
+            pos:
+              - 0
+              - 63
+            pairs:
+              - pos:
+                  - 0
+                  - 63
+                rule: FunctionDecl
+                inner:
+                  pos:
+                    - 5
+                    - 61
+                  pairs:
+                    - pos:
+                        - 5
+                        - 9
+                      rule: Ident
+                      inner: main
+                    - pos:
+                        - 9
+                        - 12
+                      rule: Signature
+                      inner:
+                        pos:
+                          - 9
+                          - 11
+                        pairs:
+                          - pos:
+                              - 9
+                              - 11
+                            rule: Parameters
+                            inner: ()
+                    - pos:
+                        - 15
+                        - 61
+                      rule: StatementList
+                      inner:
+                        pos:
+                          - 15
+                          - 61
+                        pairs:
+                          - pos:
+                              - 15
+                              - 25
+                            rule: Declaration
+                            inner:
+                              pos:
+                                - 15
+                                - 25
+                              pairs:
+                                - pos:
+                                    - 15
+                                    - 25
+                                  rule: TypeDecl
+                                  inner:
+                                    pos:
+                                      - 20
+                                      - 25
+                                    pairs:
+                                      - pos:
+                                          - 20
+                                          - 25
+                                        rule: TypeDef
+                                        inner:
+                                          pos:
+                                            - 20
+                                            - 25
+                                          pairs:
+                                            - pos:
+                                                - 20
+                                                - 21
+                                              rule: Ident
+                                              inner: a
+                                            - pos:
+                                                - 22
+                                                - 25
+                                              rule: Type
+                                              inner:
+                                                pos:
+                                                  - 22
+                                                  - 25
+                                                pairs:
+                                                  - pos:
+                                                      - 22
+                                                      - 25
+                                                    rule: Ident
+                                                    inner: int
+                          - pos:
+                              - 25
+                              - 26
+                            rule: Semicolon
+                            inner: ;
+                          - pos:
+                              - 28
+                              - 60
+                            rule: Declaration
+                            inner:
+                              pos:
+                                - 28
+                                - 60
+                              pairs:
+                                - pos:
+                                    - 28
+                                    - 60
+                                  rule: TypeDecl
+                                  inner:
+                                    pos:
+                                      - 37
+                                      - 57
+                                    pairs:
+                                      - pos:
+                                          - 37
+                                          - 45
+                                        rule: TypeDef
+                                        inner:
+                                          pos:
+                                            - 37
+                                            - 45
+                                          pairs:
+                                            - pos:
+                                                - 37
+                                                - 38
+                                              rule: Ident
+                                              inner: b
+                                            - pos:
+                                                - 39
+                                                - 45
+                                              rule: Type
+                                              inner:
+                                                pos:
+                                                  - 39
+                                                  - 45
+                                                pairs:
+                                                  - pos:
+                                                      - 39
+                                                      - 45
+                                                    rule: Ident
+                                                    inner: string
+                                      - pos:
+                                          - 45
+                                          - 46
+                                        rule: Semicolon
+                                        inner: ;
+                                      - pos:
+                                          - 49
+                                          - 56
+                                        rule: TypeDef
+                                        inner:
+                                          pos:
+                                            - 49
+                                            - 56
+                                          pairs:
+                                            - pos:
+                                                - 49
+                                                - 50
+                                              rule: Ident
+                                              inner: c
+                                            - pos:
+                                                - 51
+                                                - 56
+                                              rule: Type
+                                              inner:
+                                                pos:
+                                                  - 51
+                                                  - 56
+                                                pairs:
+                                                  - pos:
+                                                      - 51
+                                                      - 56
+                                                    rule: Ident
+                                                    inner: float
+                                      - pos:
+                                          - 56
+                                          - 57
+                                        rule: Semicolon
+                                        inner: ;
+                          - pos:
+                              - 60
+                              - 61
+                            rule: Semicolon
+                            inner: ;
+        - pos:
+            - 63
+            - 64
+          rule: Semicolon
+          inner: ;
+        - pos:
+            - 65
+            - 65
+          rule: EOI
+          inner: ""
+

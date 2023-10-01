@@ -1,0 +1,11 @@
+---
+source: tests/parser.rs
+expression: err.to_string()
+input_file: tests/examples/parser_error/02_type_def.bakugo
+---
+ --> 4:12
+  |
+4 | 		b string int;
+  | 		         ^---
+  |
+  = expected Semicolon

@@ -612,7 +612,22 @@ impl<'i> StatementList<'i> {
                 }
             }
 
-            Rule::TypeDecl => {}
+            Rule::TypeDecl => {
+                let type_defs = pair
+                    .into_inner()
+                    .filter(|pair| pair.as_rule() != Rule::Semicolon);
+
+                for type_def in type_defs {
+                    let mut inner = type_def.into_inner();
+                    let identifier = inner.next().unwrap();
+                    let kind = inner.next().unwrap();
+
+                    parsed_stmts.push(Statement::Declaration(Decl::Kind(KindDecl {
+                        name: Ident::parse(identifier)?,
+                        kind: Kind::parse(kind)?,
+                    })))
+                }
+            }
 
             invalid_rule => {
                 return Err(BakugoParsingError::new(
