@@ -17,7 +17,9 @@ SourceFile {
                 },
                 params: [],
                 result_kind: None,
-                body: [],
+                body: StatementList(
+                    [],
+                ),
                 span: Span {
                     str: "func main() {\n\t/* */\n\n\t/**/\n\n\t/*  hey there */\n\n\t/*hey there*/\n\n\t/*bakugo*/\n\n\t/*\n\n\t*/\n\n\t/*\n\t*/\n\n\t/*\n\t\tbakugo\n\t*/\n}",
                     start: 0,

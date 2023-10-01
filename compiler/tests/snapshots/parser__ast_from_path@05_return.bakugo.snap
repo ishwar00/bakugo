@@ -17,9 +17,11 @@ SourceFile {
                 },
                 params: [],
                 result_kind: None,
-                body: [
-                    Return,
-                ],
+                body: StatementList(
+                    [
+                        Return,
+                    ],
+                ),
                 span: Span {
                     str: "func main() {\n    return;\n}",
                     start: 0,

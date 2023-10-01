@@ -119,7 +119,9 @@ SourceFile {
                     },
                 ],
                 result_kind: None,
-                body: [],
+                body: StatementList(
+                    [],
+                ),
                 span: Span {
                     str: "func something(a, b bunt, c uint, d (int, )) {\n}",
                     start: 0,
@@ -275,7 +277,9 @@ SourceFile {
                         },
                     },
                 ),
-                body: [],
+                body: StatementList(
+                    [],
+                ),
                 span: Span {
                     str: "func something(a, b bunt, c uint, d (int, string)) (int, string) {\n}",
                     start: 51,
@@ -295,7 +299,9 @@ SourceFile {
                 },
                 params: [],
                 result_kind: None,
-                body: [],
+                body: StatementList(
+                    [],
+                ),
                 span: Span {
                     str: "func empty() {\n\n}",
                     start: 122,

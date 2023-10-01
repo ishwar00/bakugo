@@ -1,0 +1,216 @@
+---
+source: tests/parser.rs
+expression: parsed
+input_file: tests/examples/ast_error/06_const_decl.bakugo
+---
+pos:
+  - 0
+  - 75
+pairs:
+  - pos:
+      - 0
+      - 75
+    rule: SourceFile
+    inner:
+      pos:
+        - 0
+        - 75
+      pairs:
+        - pos:
+            - 0
+            - 73
+          rule: TopLevelDecl
+          inner:
+            pos:
+              - 0
+              - 73
+            pairs:
+              - pos:
+                  - 0
+                  - 73
+                rule: FunctionDecl
+                inner:
+                  pos:
+                    - 5
+                    - 71
+                  pairs:
+                    - pos:
+                        - 5
+                        - 8
+                      rule: Ident
+                      inner: abc
+                    - pos:
+                        - 8
+                        - 11
+                      rule: Signature
+                      inner:
+                        pos:
+                          - 8
+                          - 10
+                        pairs:
+                          - pos:
+                              - 8
+                              - 10
+                            rule: Parameters
+                            inner: ()
+                    - pos:
+                        - 17
+                        - 71
+                      rule: StatementList
+                      inner:
+                        pos:
+                          - 17
+                          - 71
+                        pairs:
+                          - pos:
+                              - 17
+                              - 70
+                            rule: Declaration
+                            inner:
+                              pos:
+                                - 17
+                                - 70
+                              pairs:
+                                - pos:
+                                    - 17
+                                    - 70
+                                  rule: ConstDecl
+                                  inner:
+                                    pos:
+                                      - 33
+                                      - 64
+                                    pairs:
+                                      - pos:
+                                          - 33
+                                          - 43
+                                        rule: ConstSpec
+                                        inner:
+                                          pos:
+                                            - 33
+                                            - 43
+                                          pairs:
+                                            - pos:
+                                                - 33
+                                                - 35
+                                              rule: IdentifierList
+                                              inner:
+                                                pos:
+                                                  - 33
+                                                  - 34
+                                                pairs:
+                                                  - pos:
+                                                      - 33
+                                                      - 34
+                                                    rule: Ident
+                                                    inner: c
+                                            - pos:
+                                                - 35
+                                                - 38
+                                              rule: Type
+                                              inner:
+                                                pos:
+                                                  - 35
+                                                  - 38
+                                                pairs:
+                                                  - pos:
+                                                      - 35
+                                                      - 38
+                                                    rule: Ident
+                                                    inner: int
+                                            - pos:
+                                                - 41
+                                                - 43
+                                              rule: ExpressionList
+                                              inner:
+                                                pos:
+                                                  - 41
+                                                  - 43
+                                                pairs:
+                                                  - pos:
+                                                      - 41
+                                                      - 43
+                                                    rule: IntLit
+                                                    inner: "20"
+                                      - pos:
+                                          - 43
+                                          - 44
+                                        rule: Semicolon
+                                        inner: ;
+                                      - pos:
+                                          - 47
+                                          - 63
+                                        rule: ConstSpec
+                                        inner:
+                                          pos:
+                                            - 47
+                                            - 63
+                                          pairs:
+                                            - pos:
+                                                - 47
+                                                - 54
+                                              rule: IdentifierList
+                                              inner:
+                                                pos:
+                                                  - 47
+                                                  - 54
+                                                pairs:
+                                                  - pos:
+                                                      - 47
+                                                      - 48
+                                                    rule: Ident
+                                                    inner: i
+                                                  - pos:
+                                                      - 50
+                                                      - 51
+                                                    rule: Ident
+                                                    inner: j
+                                                  - pos:
+                                                      - 53
+                                                      - 54
+                                                    rule: Ident
+                                                    inner: k
+                                            - pos:
+                                                - 57
+                                                - 63
+                                              rule: ExpressionList
+                                              inner:
+                                                pos:
+                                                  - 57
+                                                  - 63
+                                                pairs:
+                                                  - pos:
+                                                      - 57
+                                                      - 59
+                                                    rule: IntLit
+                                                    inner: "60"
+                                                  - pos:
+                                                      - 59
+                                                      - 60
+                                                    rule: Comma
+                                                    inner: ","
+                                                  - pos:
+                                                      - 61
+                                                      - 63
+                                                    rule: IntLit
+                                                    inner: "70"
+                                      - pos:
+                                          - 63
+                                          - 64
+                                        rule: Semicolon
+                                        inner: ;
+                          - pos:
+                              - 70
+                              - 71
+                            rule: Semicolon
+                            inner: ;
+        - pos:
+            - 73
+            - 74
+          rule: Semicolon
+          inner: ;
+        - pos:
+            - 75
+            - 75
+          rule: EOI
+          inner: ""
+

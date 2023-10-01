@@ -546,23 +546,23 @@ impl<'i> StatementList<'i> {
         match pair.as_rule() {
             Rule::VarDecl | Rule::ConstDecl => {
                 let is_var = pair.as_rule() == Rule::VarDecl;
-                let var_specs = pair.into_inner().filter(|p| p.as_rule() != Rule::Semicolon);
+                let var_const_specs = pair.into_inner().filter(|p| p.as_rule() != Rule::Semicolon);
 
-                for var_spec in var_specs {
-                    let var_spec_span = var_spec.as_span();
+                for var_const_spec in var_const_specs {
+                    let spec_span = var_const_spec.as_span();
 
-                    if !matches!(var_spec.as_rule(), Rule::VarSpec | Rule::ConstSpec) {
+                    if !matches!(var_const_spec.as_rule(), Rule::VarSpec | Rule::ConstSpec) {
                         return Err(BakugoParsingError::new(
-                            var_spec.as_span(),
+                            var_const_spec.as_span(),
                             format!(
                                 "expected a var or const decl. got {:?}.",
-                                var_spec.as_rule()
+                                var_const_spec.as_rule()
                             ),
                             BakugoParsingErrorKind::InternalError,
                         ));
                     }
 
-                    let mut var_spec_inner = var_spec.into_inner();
+                    let mut var_spec_inner = var_const_spec.into_inner();
                     let idents = var_spec_inner.next().unwrap();
 
                     let maybe_kind = var_spec_inner.next().unwrap();
@@ -587,7 +587,7 @@ impl<'i> StatementList<'i> {
 
                     if idents.len() != exprs.len() {
                         return Err(BakugoParsingError::new(
-                            var_spec_span,
+                            spec_span,
                             format!(
                                 "Number of expressions ({}) does not match number of identifers ({})",
                                 exprs.len(),
