@@ -1,0 +1,110 @@
+---
+source: tests/parser.rs
+expression: parsed
+input_file: tests/examples/08_top_level_decl.bakugo
+---
+SourceFile {
+    top_level: [
+        VarDecl(
+            VarConstDecl {
+                name: Ident {
+                    value: "a",
+                    span: Span {
+                        str: "a",
+                        start: 4,
+                        end: 5,
+                    },
+                },
+                kind: Some(
+                    Simple {
+                        name: "int",
+                        span: Span {
+                            str: "int",
+                            start: 6,
+                            end: 9,
+                        },
+                    },
+                ),
+                expr: Integer {
+                    value: 10,
+                    span: Span {
+                        str: "10",
+                        start: 12,
+                        end: 14,
+                    },
+                },
+            },
+        ),
+        VarDecl(
+            VarConstDecl {
+                name: Ident {
+                    value: "d",
+                    span: Span {
+                        str: "d",
+                        start: 20,
+                        end: 21,
+                    },
+                },
+                kind: None,
+                expr: Integer {
+                    value: 30,
+                    span: Span {
+                        str: "30",
+                        start: 24,
+                        end: 26,
+                    },
+                },
+            },
+        ),
+        ConstDecl(
+            VarConstDecl {
+                name: Ident {
+                    value: "b",
+                    span: Span {
+                        str: "b",
+                        start: 34,
+                        end: 35,
+                    },
+                },
+                kind: Some(
+                    Simple {
+                        name: "uint",
+                        span: Span {
+                            str: "uint",
+                            start: 36,
+                            end: 40,
+                        },
+                    },
+                ),
+                expr: Integer {
+                    value: 20,
+                    span: Span {
+                        str: "20",
+                        start: 43,
+                        end: 45,
+                    },
+                },
+            },
+        ),
+        KindDecl(
+            KindDecl {
+                name: Ident {
+                    value: "c",
+                    span: Span {
+                        str: "c",
+                        start: 52,
+                        end: 53,
+                    },
+                },
+                kind: Simple {
+                    name: "int",
+                    span: Span {
+                        str: "int",
+                        start: 54,
+                        end: 57,
+                    },
+                },
+            },
+        ),
+    ],
+}

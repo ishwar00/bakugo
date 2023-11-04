@@ -66,9 +66,45 @@ pub struct SourceFile<'i> {
     pub top_level: Vec<TopLevelDecl<'i>>,
 }
 
+impl<'i> Node<'i> for SourceFile<'i> {
+    fn parse(pair: Pair<'i, Rule>) -> Result<Self, BakugoParsingError> {
+        check_rule(&pair, Rule::SourceFile, "top level decl")?;
+
+        let pairs = pair.into_inner();
+        let mut top_level = vec![];
+        for pair in pairs {
+            // TODO: find a better way to do this
+            // see: https://github.com/pest-parser/pest/issues/327
+            // We need semicolons in grammar to get good errors
+            // (Ex: "expecting Semicolon") but we ignore it during AST construction.
+            if matches!(pair.as_rule(), Rule::Semicolon | Rule::EOI) {
+                continue;
+            }
+            let inner = pair.into_inner().next().unwrap();
+            match inner.as_rule() {
+                Rule::FunctionDecl => top_level.push(TopLevelDecl::FnDecl(FnDecl::parse(inner)?)),
+                Rule::Declaration => {
+                    Decl::parse(inner.into_inner().next().unwrap(), |decl| {
+                        top_level.push(match decl {
+                            Decl::Var(v) => TopLevelDecl::VarDecl(v),
+                            Decl::Const(c) => TopLevelDecl::ConstDecl(c),
+                            Decl::Kind(k) => TopLevelDecl::KindDecl(k),
+                        })
+                    })?;
+                }
+                _ => todo!("non decls"),
+            };
+        }
+        Ok(SourceFile { top_level })
+    }
+}
+
 #[derive(Debug)]
 pub enum TopLevelDecl<'i> {
     FnDecl(FnDecl<'i>),
+    VarDecl(VarConstDecl<'i>),
+    ConstDecl(VarConstDecl<'i>),
+    KindDecl(KindDecl<'i>),
 }
 
 #[derive(Debug)]
@@ -538,10 +574,10 @@ pub struct KindDecl<'i> {
     pub kind: Kind<'i>,
 }
 
-impl<'i> StatementList<'i> {
-    fn parse_decl(
-        parsed_stmts: &mut Vec<Statement<'i>>,
+impl<'i> Decl<'i> {
+    fn parse(
         pair: Pair<'i, Rule>,
+        mut new_decl: impl FnMut(Decl<'i>),
     ) -> Result<(), BakugoParsingError<'i>> {
         match pair.as_rule() {
             Rule::VarDecl | Rule::ConstDecl => {
@@ -603,11 +639,11 @@ impl<'i> StatementList<'i> {
                             kind: kind.clone(),
                             expr,
                         };
-                        parsed_stmts.push(Statement::Declaration(if is_var {
+                        new_decl(if is_var {
                             Decl::Var(decl)
                         } else {
                             Decl::Const(decl)
-                        }))
+                        });
                     }
                 }
             }
@@ -622,10 +658,10 @@ impl<'i> StatementList<'i> {
                     let identifier = inner.next().unwrap();
                     let kind = inner.next().unwrap();
 
-                    parsed_stmts.push(Statement::Declaration(Decl::Kind(KindDecl {
+                    new_decl(Decl::Kind(KindDecl {
                         name: Ident::parse(identifier)?,
                         kind: Kind::parse(kind)?,
-                    })))
+                    }));
                 }
             }
 
@@ -660,7 +696,9 @@ impl<'i> Node<'i> for StatementList<'i> {
                         Rule::Semicolon => {}
 
                         Rule::Declaration => {
-                            Self::parse_decl(&mut parsed_stmts, pair.into_inner().next().unwrap())?
+                            Decl::parse(pair.into_inner().next().unwrap(), |decl| {
+                                parsed_stmts.push(Statement::Declaration(decl))
+                            })?
                         }
 
                         invalid_rule => {
