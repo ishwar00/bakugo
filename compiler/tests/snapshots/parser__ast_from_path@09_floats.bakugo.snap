@@ -1,0 +1,170 @@
+---
+source: tests/parser.rs
+expression: parsed
+input_file: tests/examples/09_floats.bakugo
+---
+SourceFile {
+    top_level: [
+        FnDecl(
+            FnDecl {
+                name: Ident {
+                    value: "main",
+                    span: Span {
+                        str: "main",
+                        start: 5,
+                        end: 9,
+                    },
+                },
+                params: [],
+                result_kind: None,
+                body: StatementList(
+                    [
+                        Declaration(
+                            Var(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "a",
+                                        span: Span {
+                                            str: "a",
+                                            start: 22,
+                                            end: 23,
+                                        },
+                                    },
+                                    kind: None,
+                                    expr: Float {
+                                        value: 10.0,
+                                        span: Span {
+                                            str: "10.0",
+                                            start: 26,
+                                            end: 30,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Var(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "b",
+                                        span: Span {
+                                            str: "b",
+                                            start: 40,
+                                            end: 41,
+                                        },
+                                    },
+                                    kind: None,
+                                    expr: Float {
+                                        value: 15.0,
+                                        span: Span {
+                                            str: "15.",
+                                            start: 44,
+                                            end: 47,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Const(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "c",
+                                        span: Span {
+                                            str: "c",
+                                            start: 59,
+                                            end: 60,
+                                        },
+                                    },
+                                    kind: None,
+                                    expr: Float {
+                                        value: 0.15,
+                                        span: Span {
+                                            str: ".15",
+                                            start: 63,
+                                            end: 66,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Const(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "d",
+                                        span: Span {
+                                            str: "d",
+                                            start: 78,
+                                            end: 79,
+                                        },
+                                    },
+                                    kind: None,
+                                    expr: Float {
+                                        value: 5.0,
+                                        span: Span {
+                                            str: "05.",
+                                            start: 82,
+                                            end: 85,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Const(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "e",
+                                        span: Span {
+                                            str: "e",
+                                            start: 97,
+                                            end: 98,
+                                        },
+                                    },
+                                    kind: None,
+                                    expr: Float {
+                                        value: 0.001,
+                                        span: Span {
+                                            str: ".001",
+                                            start: 101,
+                                            end: 105,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Const(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "f",
+                                        span: Span {
+                                            str: "f",
+                                            start: 117,
+                                            end: 118,
+                                        },
+                                    },
+                                    kind: None,
+                                    expr: Float {
+                                        value: 1.1,
+                                        span: Span {
+                                            str: "0001.1000",
+                                            start: 121,
+                                            end: 130,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                    ],
+                ),
+                span: Span {
+                    str: "func main() {\n    var a = 10.0;\n    var b = 15.;\n    const c = .15;\n    const d = 05.;\n    const e = .001;\n    const f = 0001.1000;\n}",
+                    start: 0,
+                    end: 133,
+                },
+            },
+        ),
+    ],
+}

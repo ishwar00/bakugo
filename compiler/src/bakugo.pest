@@ -50,6 +50,7 @@ Comma = { "," }
 Ident = @{ Letter ~ (Letter | UnicodeDigit)* }
 
 IntLit        = @{ "0" | ('1'..'9' ~ ("_"? ~ DecimalDigits)?) }
+FloatLit      = @{ DecimalDigits ~ "." ~ DecimalDigits? | "." ~ DecimalDigits }
 DecimalDigits = @{ DecimalDigit ~ ("_"? ~ DecimalDigit)* }
 
 /// Rune literals
@@ -120,7 +121,7 @@ FunctionBody = _{ Block }
 // Operands
 Operand     = _{ Literal | OperandName | "(" ~ Expression ~ ")" }
 Literal     = _{ BasicLit }
-BasicLit    = _{ IntLit | RuneLit | StringLit }
+BasicLit    = _{ FloatLit | IntLit | RuneLit | StringLit }
 OperandName = _{ Ident }
 
 // Primary expressions

@@ -361,7 +361,11 @@ pub enum Expr<'i> {
         span: Span<'i>,
     },
     Integer {
-        value: i32,
+        value: i64, // TODO: other int types?
+        span: Span<'i>,
+    },
+    Float {
+        value: f64, // TODO: other float types?
         span: Span<'i>,
     },
     FunctionCall {
@@ -387,6 +391,10 @@ impl<'i> Node<'i> for Expr<'i> {
                 span: pair.as_span(),
             }),
             Rule::IntLit => Ok(Expr::Integer {
+                value: pair.as_str().parse().unwrap(),
+                span: pair.as_span(),
+            }),
+            Rule::FloatLit => Ok(Expr::Float {
                 value: pair.as_str().parse().unwrap(),
                 span: pair.as_span(),
             }),
@@ -437,7 +445,9 @@ impl<'i> Expr<'i> {
         PRATT_PARSER
             .map_primary(|primary| match primary.as_rule() {
                 // TODO: check if this match is needed
-                Rule::IntLit | Rule::Ident | Rule::FunctionCall => Expr::parse(primary),
+                Rule::FloatLit | Rule::IntLit | Rule::Ident | Rule::FunctionCall => {
+                    Expr::parse(primary)
+                }
                 invalid_rule => Err(BakugoParsingError::new(
                     primary.as_span(),
                     format!("expected an expresion. got {:?}", invalid_rule),

@@ -1,0 +1,8 @@
+func main() {
+    var a = 10.0;
+    var b = 15.;
+    const c = .15;
+    const d = 05.;
+    const e = .001;
+    const f = 0001.1000;
+};
