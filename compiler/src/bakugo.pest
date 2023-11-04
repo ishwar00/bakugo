@@ -11,7 +11,7 @@
 // 5. Keywords: restrict keywords as identifiers. Probably in AST.
 
 // Questions:
-//
+// 
 
 /// Source Code Representation
 /// Characters
@@ -44,7 +44,7 @@ COMMENT = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/" }
 
 /// Punctuation
 Semicolon = { ";" }
-Comma = { "," }
+Comma     = { "," }
 
 /// Identifier
 Ident = @{ Letter ~ (Letter | UnicodeDigit)* }
@@ -101,7 +101,7 @@ ConstSpec      = { IdentifierList ~ (Type? ~ "=" ~ ExpressionList)? }
 ExpressionList = { Expression ~ (Comma ~ Expression)* }
 
 // Type declarations
-TypeDecl = { "type" ~ (TypeSpec | "(" ~ (TypeSpec ~ Semicolon)+ ~ ")") }
+TypeDecl =  { "type" ~ (TypeSpec | "(" ~ (TypeSpec ~ Semicolon)+ ~ ")") }
 TypeSpec = _{ TypeDef }
 
 // TODO: correct TypeDef spec (remove type parameters)
@@ -127,7 +127,7 @@ OperandName = _{ Ident }
 // Primary expressions
 // ref: https://www.csd.uwo.ca/~mmorenom/CS447/Lectures/Syntax.html/node8.html
 PrimaryExpr      = _{ FunctionCall | Operand }
-FunctionCall     = { Operand ~ PrimaryExprPrime }
+FunctionCall     =  { Operand ~ PrimaryExprPrime }
 PrimaryExprPrime = _{ (Arguments ~ PrimaryExprPrime?) }
 
 Arguments = { "(" ~ ((ExpressionList | (Type ~ (Comma ~ ExpressionList)?)) ~ ","?)? ~ ")" }
@@ -138,20 +138,20 @@ Expression      = _{ UnaryExpr ~ ExpressionPrime? }
 ExpressionPrime = _{ BinaryOp ~ Expression ~ ExpressionPrime? }
 UnaryExpr       = _{ (UnaryOp ~ UnaryExpr) | PrimaryExpr }
 
-BinaryOp  = _{ RelOp | SumOp | ProductOp }
+BinaryOp = _{ RelOp | SumOp | ProductOp }
 
-RelOp     = _{ Eq | NotEq | Le | Lt | Ge | Gt }
-Eq        =  { "==" }
-NotEq     =  { "!=" }
-Le        =  { "<=" }
-Lt        =  { "<" }
-Ge        =  { ">=" }
-Gt        =  { ">" }
+RelOp = _{ Eq | NotEq | Le | Lt | Ge | Gt }
+Eq    =  { "==" }
+NotEq =  { "!=" }
+Le    =  { "<=" }
+Lt    =  { "<" }
+Ge    =  { ">=" }
+Gt    =  { ">" }
 
-SumOp     = _{ Plus | Minus | Pipe }
-Plus      =  { "+" }
-Minus     =  { "-" }
-Pipe      =  { "|" }
+SumOp = _{ Plus | Minus | Pipe }
+Plus  =  { "+" }
+Minus =  { "-" }
+Pipe  =  { "|" }
 
 ProductOp = _{ Star | Slash | Percent | And }
 Star      =  { "*" }
