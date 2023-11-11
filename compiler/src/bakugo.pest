@@ -119,7 +119,8 @@ FunctionBody = _{ Block }
 
 // TODO: update the spec
 // Operands
-Operand     = _{ Literal | OperandName | "(" ~ Expression ~ ")" }
+Operand     = _{ Literal | OperandName | TupleExpr | "(" ~ Expression ~ ")" }
+TupleExpr   = { "(" ~ ((Expression ~ ("," ~ Expression)+ ~ ","?) | (Expression ~ ",")) ~ ")" }
 Literal     = _{ BasicLit }
 BasicLit    = _{ FloatLit | IntLit | RuneLit | StringLit }
 OperandName = _{ Ident }

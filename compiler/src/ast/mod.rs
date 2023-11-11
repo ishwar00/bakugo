@@ -381,6 +381,7 @@ pub enum Expr<'i> {
         op: BinaryOp,
         right: Box<Expr<'i>>,
     },
+    TupleExpr(Vec<Expr<'i>>),
 }
 
 impl<'i> Node<'i> for Expr<'i> {
@@ -398,6 +399,14 @@ impl<'i> Node<'i> for Expr<'i> {
                 value: pair.as_str().parse().unwrap(),
                 span: pair.as_span(),
             }),
+            Rule::TupleExpr => {
+                let expr_list = pair
+                    .into_inner()
+                    .map(Expr::parse)
+                    .collect::<Result<Vec<_>, _>>()?;
+
+                Ok(Expr::TupleExpr(expr_list))
+            }
             Rule::FunctionCall => Ok(Self::parse_expr(pair.into_inner())?),
             invalid_rule => Err(BakugoParsingError::new(
                 pair.as_span(),
@@ -445,9 +454,11 @@ impl<'i> Expr<'i> {
         PRATT_PARSER
             .map_primary(|primary| match primary.as_rule() {
                 // TODO: check if this match is needed
-                Rule::FloatLit | Rule::IntLit | Rule::Ident | Rule::FunctionCall => {
-                    Expr::parse(primary)
-                }
+                Rule::FloatLit
+                | Rule::IntLit
+                | Rule::Ident
+                | Rule::FunctionCall
+                | Rule::TupleExpr => Expr::parse(primary),
                 invalid_rule => Err(BakugoParsingError::new(
                     primary.as_span(),
                     format!("expected an expresion. got {:?}", invalid_rule),
