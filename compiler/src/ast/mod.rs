@@ -368,6 +368,10 @@ pub enum Expr<'i> {
         value: f64, // TODO: other float types?
         span: Span<'i>,
     },
+    String {
+        value: String,
+        span: Span<'i>,
+    },
     FunctionCall {
         function: Box<Expr<'i>>,
         args: Args<'i>,
@@ -397,6 +401,15 @@ impl<'i> Node<'i> for Expr<'i> {
             }),
             Rule::FloatLit => Ok(Expr::Float {
                 value: pair.as_str().parse().unwrap(),
+                span: pair.as_span(),
+            }),
+            Rule::RawStringLit => Ok(Expr::String {
+                value: pair.as_str().trim_matches('`').to_owned(),
+                span: pair.as_span(),
+            }),
+            Rule::InterpretedStringLit => Ok(Expr::String {
+                // TODO: parse escape characters
+                value: pair.as_str().trim_matches('"').to_owned(),
                 span: pair.as_span(),
             }),
             Rule::TupleExpr => {
@@ -457,6 +470,8 @@ impl<'i> Expr<'i> {
                 Rule::FloatLit
                 | Rule::IntLit
                 | Rule::Ident
+                | Rule::InterpretedStringLit
+                | Rule::RawStringLit
                 | Rule::FunctionCall
                 | Rule::TupleExpr => Expr::parse(primary),
                 invalid_rule => Err(BakugoParsingError::new(
@@ -567,7 +582,7 @@ impl<'i> Expr<'i> {
 
 #[derive(Debug)]
 pub enum Statement<'i> {
-    Return, // TODO: add expression list
+    Return(Option<Vec<Expr<'i>>>),
     Declaration(Decl<'i>),
     Expression(Expr<'i>),
 }
@@ -712,7 +727,20 @@ impl<'i> Node<'i> for StatementList<'i> {
                             parsed_stmts.push(Statement::Expression(expr))
                         }
 
-                        Rule::ReturnStmt => parsed_stmts.push(Statement::Return),
+                        Rule::ReturnStmt => {
+                            let expr_list = pair
+                                .into_inner()
+                                .next()
+                                .unwrap()
+                                .into_inner()
+                                .map(Expr::parse)
+                                .collect::<Result<Vec<_>, _>>()?;
+                            parsed_stmts.push(Statement::Return(if expr_list.is_empty() {
+                                None
+                            } else {
+                                Some(expr_list)
+                            }))
+                        }
 
                         Rule::Semicolon => {}
 

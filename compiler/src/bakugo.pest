@@ -64,7 +64,7 @@ BigUValue      = @{ "\\" ~ "U" ~ HexDigit{8} }
 EscapedChar    = @{ "\\" ~ ("a" | "b" | "f" | "n" | "r" | "t" | "v" | "\\" | "'" | "\"") }
 
 /// string literals
-StringLit = { RawStringLit | InterpretedStringLit }
+StringLit = _{ RawStringLit | InterpretedStringLit }
 // `UnicodeChar | NewLine` is equivalent to `ANY``
 RawStringLit         = @{ "`" ~ (!"`" ~ ANY)* ~ "`" }
 InterpretedStringLit = @{ "\"" ~ (!"\"" ~ (ByteValue | UnicodeValue))* ~ "\"" }
