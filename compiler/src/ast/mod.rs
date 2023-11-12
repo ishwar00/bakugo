@@ -11,6 +11,8 @@ pub enum BakugoParsingErrorKind {
     InternalError,
     #[error("Syntax error")]
     SyntaxError,
+    #[error("Error")]
+    Error,
 }
 
 #[derive(Error, Debug)]
@@ -585,6 +587,7 @@ pub enum Statement<'i> {
     Return(Option<Vec<Expr<'i>>>),
     Declaration(Decl<'i>),
     Expression(Expr<'i>),
+    Assignment { left: Expr<'i>, right: Expr<'i> },
 }
 
 #[derive(Debug)]
@@ -665,7 +668,7 @@ impl<'i> Decl<'i> {
                                 exprs.len(),
                                 idents.len()
                             ),
-                            BakugoParsingErrorKind::SyntaxError,
+                            BakugoParsingErrorKind::Error,
                         ));
                     }
 
@@ -736,6 +739,38 @@ impl<'i> Node<'i> for StatementList<'i> {
                             ))),
                             None => parsed_stmts.push(Statement::Return(None)),
                         },
+
+                        Rule::Assignment => {
+                            let span = pair.as_span();
+                            let mut expr_iter = pair.into_inner();
+                            let left_expr_list = expr_iter.next().unwrap();
+                            let right_expr_list = expr_iter.next().unwrap();
+
+                            let left_exprs = left_expr_list
+                                .into_inner()
+                                .filter(|p| p.as_rule() != Rule::Comma)
+                                .map(Expr::parse)
+                                .collect::<Result<Vec<Expr>, _>>()?;
+
+                            let right_exprs = right_expr_list
+                                .into_inner()
+                                .filter(|p| p.as_rule() != Rule::Comma)
+                                .map(Expr::parse)
+                                .collect::<Result<Vec<Expr>, _>>()?;
+
+                            if left_exprs.len() != right_exprs.len() {
+                                return Err(BakugoParsingError::new(
+                                    span,
+                                    format!("Number of expressions on left side ({}) does not match the right side ({})", left_exprs.len(), right_exprs.len()),
+                                    BakugoParsingErrorKind::Error,
+                                ));
+                            }
+
+                            for (left, right) in left_exprs.into_iter().zip(right_exprs.into_iter())
+                            {
+                                parsed_stmts.push(Statement::Assignment { left, right })
+                            }
+                        }
 
                         Rule::Semicolon => {}
 

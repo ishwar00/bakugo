@@ -1,0 +1,271 @@
+---
+source: tests/parser.rs
+expression: parsed
+input_file: tests/examples/ast_error/08_assignments.bakugo
+---
+pos:
+  - 0
+  - 77
+pairs:
+  - pos:
+      - 0
+      - 77
+    rule: SourceFile
+    inner:
+      pos:
+        - 0
+        - 77
+      pairs:
+        - pos:
+            - 0
+            - 75
+          rule: TopLevelDecl
+          inner:
+            pos:
+              - 0
+              - 75
+            pairs:
+              - pos:
+                  - 0
+                  - 75
+                rule: FunctionDecl
+                inner:
+                  pos:
+                    - 5
+                    - 73
+                  pairs:
+                    - pos:
+                        - 5
+                        - 9
+                      rule: Ident
+                      inner: main
+                    - pos:
+                        - 9
+                        - 12
+                      rule: Signature
+                      inner:
+                        pos:
+                          - 9
+                          - 11
+                        pairs:
+                          - pos:
+                              - 9
+                              - 11
+                            rule: Parameters
+                            inner: ()
+                    - pos:
+                        - 15
+                        - 73
+                      rule: StatementList
+                      inner:
+                        pos:
+                          - 15
+                          - 73
+                        pairs:
+                          - pos:
+                              - 15
+                              - 25
+                            rule: Assignment
+                            inner:
+                              pos:
+                                - 15
+                                - 25
+                              pairs:
+                                - pos:
+                                    - 15
+                                    - 17
+                                  rule: ExpressionList
+                                  inner:
+                                    pos:
+                                      - 15
+                                      - 16
+                                    pairs:
+                                      - pos:
+                                          - 15
+                                          - 16
+                                        rule: Ident
+                                        inner: a
+                                - pos:
+                                    - 19
+                                    - 25
+                                  rule: ExpressionList
+                                  inner:
+                                    pos:
+                                      - 19
+                                      - 25
+                                    pairs:
+                                      - pos:
+                                          - 19
+                                          - 22
+                                        rule: FloatLit
+                                        inner: "3.3"
+                                      - pos:
+                                          - 22
+                                          - 23
+                                        rule: Comma
+                                        inner: ","
+                                      - pos:
+                                          - 24
+                                          - 25
+                                        rule: IntLit
+                                        inner: "4"
+                          - pos:
+                              - 25
+                              - 26
+                            rule: Semicolon
+                            inner: ;
+                          - pos:
+                              - 28
+                              - 49
+                            rule: Assignment
+                            inner:
+                              pos:
+                                - 28
+                                - 49
+                              pairs:
+                                - pos:
+                                    - 28
+                                    - 33
+                                  rule: ExpressionList
+                                  inner:
+                                    pos:
+                                      - 28
+                                      - 32
+                                    pairs:
+                                      - pos:
+                                          - 28
+                                          - 29
+                                        rule: Ident
+                                        inner: a
+                                      - pos:
+                                          - 29
+                                          - 30
+                                        rule: Comma
+                                        inner: ","
+                                      - pos:
+                                          - 31
+                                          - 32
+                                        rule: Ident
+                                        inner: b
+                                - pos:
+                                    - 35
+                                    - 49
+                                  rule: ExpressionList
+                                  inner:
+                                    pos:
+                                      - 35
+                                      - 49
+                                    pairs:
+                                      - pos:
+                                          - 35
+                                          - 38
+                                        rule: FloatLit
+                                        inner: "3.3"
+                                      - pos:
+                                          - 38
+                                          - 39
+                                        rule: Comma
+                                        inner: ","
+                                      - pos:
+                                          - 40
+                                          - 45
+                                        rule: InterpretedStringLit
+                                        inner: "\"hey\""
+                                      - pos:
+                                          - 45
+                                          - 46
+                                        rule: Comma
+                                        inner: ","
+                                      - pos:
+                                          - 47
+                                          - 49
+                                        rule: IntLit
+                                        inner: "33"
+                          - pos:
+                              - 49
+                              - 50
+                            rule: Semicolon
+                            inner: ;
+                          - pos:
+                              - 52
+                              - 72
+                            rule: Assignment
+                            inner:
+                              pos:
+                                - 52
+                                - 72
+                              pairs:
+                                - pos:
+                                    - 52
+                                    - 60
+                                  rule: ExpressionList
+                                  inner:
+                                    pos:
+                                      - 52
+                                      - 59
+                                    pairs:
+                                      - pos:
+                                          - 52
+                                          - 53
+                                        rule: Ident
+                                        inner: c
+                                      - pos:
+                                          - 53
+                                          - 54
+                                        rule: Comma
+                                        inner: ","
+                                      - pos:
+                                          - 55
+                                          - 56
+                                        rule: Ident
+                                        inner: a
+                                      - pos:
+                                          - 56
+                                          - 57
+                                        rule: Comma
+                                        inner: ","
+                                      - pos:
+                                          - 58
+                                          - 59
+                                        rule: Ident
+                                        inner: b
+                                - pos:
+                                    - 62
+                                    - 72
+                                  rule: ExpressionList
+                                  inner:
+                                    pos:
+                                      - 62
+                                      - 72
+                                    pairs:
+                                      - pos:
+                                          - 62
+                                          - 65
+                                        rule: FloatLit
+                                        inner: "3.3"
+                                      - pos:
+                                          - 65
+                                          - 66
+                                        rule: Comma
+                                        inner: ","
+                                      - pos:
+                                          - 67
+                                          - 72
+                                        rule: InterpretedStringLit
+                                        inner: "\"hey\""
+                          - pos:
+                              - 72
+                              - 73
+                            rule: Semicolon
+                            inner: ;
+        - pos:
+            - 75
+            - 76
+          rule: Semicolon
+          inner: ;
+        - pos:
+            - 77
+            - 77
+          rule: EOI
+          inner: ""
+

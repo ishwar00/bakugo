@@ -8,7 +8,7 @@ input_file: tests/examples/ast_error/02_var_decl.bakugo
  4 │         c int = 20;
  5 │         f, g, h = 40;
    ·         ──────┬─────
-   ·               ╰── Syntax error: Number of expressions (1) does not match number of identifers (3)
+   ·               ╰── Error: Number of expressions (1) does not match number of identifers (3)
  6 │     );
    ╰────
 

@@ -8,7 +8,7 @@ input_file: tests/examples/ast_error/07_const_decl.bakugo
  4 │         c int = 20;
  5 │         i, j, k int = 10, 20, 30, 40;
    ·         ──────────────┬─────────────
-   ·                       ╰── Syntax error: Number of expressions (4) does not match number of identifers (3)
+   ·                       ╰── Error: Number of expressions (4) does not match number of identifers (3)
  6 │     );
    ╰────
 
