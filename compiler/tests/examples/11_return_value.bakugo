@@ -1,5 +1,5 @@
 func main() {
-	return 34;
+	return 34 + 1;
 	return (34, "hey", 4.5,);
 };
 

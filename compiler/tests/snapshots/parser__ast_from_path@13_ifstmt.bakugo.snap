@@ -1,0 +1,300 @@
+---
+source: tests/parser.rs
+expression: parsed
+input_file: tests/examples/13_ifstmt.bakugo
+---
+SourceFile {
+    top_level: [
+        FnDecl(
+            FnDecl {
+                name: Ident {
+                    value: "main",
+                    span: Span {
+                        str: "main",
+                        start: 5,
+                        end: 9,
+                    },
+                },
+                params: [],
+                result_kind: None,
+                body: StatementList(
+                    [
+                        IfStmt(
+                            IfStmt {
+                                ifs: [
+                                    (
+                                        BinaryExpr {
+                                            left: Identifier {
+                                                value: "a",
+                                                span: Span {
+                                                    str: "a",
+                                                    start: 21,
+                                                    end: 22,
+                                                },
+                                            },
+                                            op: Eq,
+                                            right: Integer {
+                                                value: 5,
+                                                span: Span {
+                                                    str: "5",
+                                                    start: 26,
+                                                    end: 27,
+                                                },
+                                            },
+                                        },
+                                        StatementList(
+                                            [
+                                                Return(
+                                                    Some(
+                                                        [
+                                                            Identifier {
+                                                                value: "aaa",
+                                                                span: Span {
+                                                                    str: "aaa",
+                                                                    start: 45,
+                                                                    end: 48,
+                                                                },
+                                                            },
+                                                        ],
+                                                    ),
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                ],
+                                els: None,
+                            },
+                        ),
+                        IfStmt(
+                            IfStmt {
+                                ifs: [
+                                    (
+                                        BinaryExpr {
+                                            left: Identifier {
+                                                value: "b",
+                                                span: Span {
+                                                    str: "b",
+                                                    start: 65,
+                                                    end: 66,
+                                                },
+                                            },
+                                            op: NotEq,
+                                            right: Integer {
+                                                value: 6,
+                                                span: Span {
+                                                    str: "6",
+                                                    start: 70,
+                                                    end: 71,
+                                                },
+                                            },
+                                        },
+                                        StatementList(
+                                            [
+                                                Expression(
+                                                    FunctionCall {
+                                                        function: Identifier {
+                                                            value: "print",
+                                                            span: Span {
+                                                                str: "print",
+                                                                start: 82,
+                                                                end: 87,
+                                                            },
+                                                        },
+                                                        args: Args {
+                                                            kind: None,
+                                                            args: [
+                                                                String {
+                                                                    value: "not 6",
+                                                                    span: Span {
+                                                                        str: "\"not 6\"",
+                                                                        start: 88,
+                                                                        end: 95,
+                                                                    },
+                                                                },
+                                                            ],
+                                                        },
+                                                    },
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                    (
+                                        BinaryExpr {
+                                            left: Identifier {
+                                                value: "b",
+                                                span: Span {
+                                                    str: "b",
+                                                    start: 112,
+                                                    end: 113,
+                                                },
+                                            },
+                                            op: NotEq,
+                                            right: Integer {
+                                                value: 5,
+                                                span: Span {
+                                                    str: "5",
+                                                    start: 117,
+                                                    end: 118,
+                                                },
+                                            },
+                                        },
+                                        StatementList(
+                                            [
+                                                Expression(
+                                                    FunctionCall {
+                                                        function: Identifier {
+                                                            value: "print",
+                                                            span: Span {
+                                                                str: "print",
+                                                                start: 129,
+                                                                end: 134,
+                                                            },
+                                                        },
+                                                        args: Args {
+                                                            kind: None,
+                                                            args: [
+                                                                String {
+                                                                    value: "not 5",
+                                                                    span: Span {
+                                                                        str: "\"not 5\"",
+                                                                        start: 135,
+                                                                        end: 142,
+                                                                    },
+                                                                },
+                                                            ],
+                                                        },
+                                                    },
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                    (
+                                        BinaryExpr {
+                                            left: Identifier {
+                                                value: "b",
+                                                span: Span {
+                                                    str: "b",
+                                                    start: 159,
+                                                    end: 160,
+                                                },
+                                            },
+                                            op: NotEq,
+                                            right: Integer {
+                                                value: 4,
+                                                span: Span {
+                                                    str: "4",
+                                                    start: 164,
+                                                    end: 165,
+                                                },
+                                            },
+                                        },
+                                        StatementList(
+                                            [
+                                                Expression(
+                                                    FunctionCall {
+                                                        function: Identifier {
+                                                            value: "print",
+                                                            span: Span {
+                                                                str: "print",
+                                                                start: 176,
+                                                                end: 181,
+                                                            },
+                                                        },
+                                                        args: Args {
+                                                            kind: None,
+                                                            args: [
+                                                                String {
+                                                                    value: "not 4",
+                                                                    span: Span {
+                                                                        str: "\"not 4\"",
+                                                                        start: 182,
+                                                                        end: 189,
+                                                                    },
+                                                                },
+                                                            ],
+                                                        },
+                                                    },
+                                                ),
+                                            ],
+                                        ),
+                                    ),
+                                ],
+                                els: Some(
+                                    StatementList(
+                                        [
+                                            Expression(
+                                                FunctionCall {
+                                                    function: Identifier {
+                                                        value: "print",
+                                                        span: Span {
+                                                            str: "print",
+                                                            start: 213,
+                                                            end: 218,
+                                                        },
+                                                    },
+                                                    args: Args {
+                                                        kind: None,
+                                                        args: [
+                                                            Identifier {
+                                                                value: "b",
+                                                                span: Span {
+                                                                    str: "b",
+                                                                    start: 219,
+                                                                    end: 220,
+                                                                },
+                                                            },
+                                                        ],
+                                                    },
+                                                },
+                                            ),
+                                        ],
+                                    ),
+                                ),
+                            },
+                        ),
+                        IfStmt(
+                            IfStmt {
+                                ifs: [
+                                    (
+                                        BinaryExpr {
+                                            left: Identifier {
+                                                value: "c",
+                                                span: Span {
+                                                    str: "c",
+                                                    start: 238,
+                                                    end: 239,
+                                                },
+                                            },
+                                            op: Eq,
+                                            right: Integer {
+                                                value: 1,
+                                                span: Span {
+                                                    str: "1",
+                                                    start: 243,
+                                                    end: 244,
+                                                },
+                                            },
+                                        },
+                                        StatementList(
+                                            [],
+                                        ),
+                                    ),
+                                ],
+                                els: Some(
+                                    StatementList(
+                                        [],
+                                    ),
+                                ),
+                            },
+                        ),
+                    ],
+                ),
+                span: Span {
+                    str: "func main() {\n    if a == 5 {\n        return aaa;\n    };\n\n    if b != 6 {\n        print(\"not 6\");\n    } else if b != 5 {\n        print(\"not 5\");\n    } else if b != 4 {\n        print(\"not 4\");\n    } else {\n        print(b);\n    };\n\n    if c == 1 {\n    } else {\n    };\n}",
+                    start: 0,
+                    end: 268,
+                },
+            },
+        ),
+    ],
+}

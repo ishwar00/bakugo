@@ -354,6 +354,12 @@ pub enum BinaryOp {
     Pipe,
     Percent,
     And,
+    Eq,
+    NotEq,
+    Le,
+    Lt,
+    Ge,
+    Gt,
 }
 
 #[derive(Debug)]
@@ -415,10 +421,7 @@ impl<'i> Node<'i> for Expr<'i> {
                 span: pair.as_span(),
             }),
             Rule::TupleExpr => {
-                let expr_list = pair
-                    .into_inner()
-                    .map(Expr::parse)
-                    .collect::<Result<Vec<_>, _>>()?;
+                let expr_list = Expr::parse_expr_list(pair)?;
 
                 Ok(Expr::TupleExpr(expr_list))
             }
@@ -491,6 +494,12 @@ impl<'i> Expr<'i> {
                     Rule::Percent => BinaryOp::Percent,
                     Rule::And => BinaryOp::And,
                     Rule::Slash => BinaryOp::Slash,
+                    Rule::Eq => BinaryOp::Eq,
+                    Rule::NotEq => BinaryOp::NotEq,
+                    Rule::Le => BinaryOp::Le,
+                    Rule::Lt => BinaryOp::Lt,
+                    Rule::Ge => BinaryOp::Ge,
+                    Rule::Gt => BinaryOp::Gt,
                     _ => {
                         return Err(BakugoParsingError::new(
                             op.as_span(),
@@ -588,6 +597,13 @@ pub enum Statement<'i> {
     Declaration(Decl<'i>),
     Expression(Expr<'i>),
     Assignment { left: Expr<'i>, right: Expr<'i> },
+    IfStmt(IfStmt<'i>),
+}
+
+#[derive(Debug)]
+pub struct IfStmt<'i> {
+    pub ifs: Vec<(Expr<'i>, StatementList<'i>)>,
+    pub els: Option<StatementList<'i>>,
 }
 
 #[derive(Debug)]
@@ -654,11 +670,7 @@ impl<'i> Decl<'i> {
                         .into_inner()
                         .map(Ident::parse)
                         .collect::<Result<Vec<Ident>, _>>()?;
-                    let exprs = exprs
-                        .into_inner()
-                        .filter(|p| p.as_rule() != Rule::Comma)
-                        .map(Expr::parse)
-                        .collect::<Result<Vec<Expr>, _>>()?;
+                    let exprs = Expr::parse_expr_list(exprs)?;
 
                     if idents.len() != exprs.len() {
                         return Err(BakugoParsingError::new(
@@ -731,12 +743,8 @@ impl<'i> Node<'i> for StatementList<'i> {
                         }
 
                         Rule::ReturnStmt => match pair.into_inner().next() {
-                            Some(expr_list) => parsed_stmts.push(Statement::Return(Some(
-                                expr_list
-                                    .into_inner()
-                                    .map(Expr::parse)
-                                    .collect::<Result<Vec<_>, _>>()?,
-                            ))),
+                            Some(expr_list) => parsed_stmts
+                                .push(Statement::Return(Some(Expr::parse_expr_list(expr_list)?))),
                             None => parsed_stmts.push(Statement::Return(None)),
                         },
 
@@ -746,17 +754,9 @@ impl<'i> Node<'i> for StatementList<'i> {
                             let left_expr_list = expr_iter.next().unwrap();
                             let right_expr_list = expr_iter.next().unwrap();
 
-                            let left_exprs = left_expr_list
-                                .into_inner()
-                                .filter(|p| p.as_rule() != Rule::Comma)
-                                .map(Expr::parse)
-                                .collect::<Result<Vec<Expr>, _>>()?;
+                            let left_exprs = Expr::parse_expr_list(left_expr_list)?;
 
-                            let right_exprs = right_expr_list
-                                .into_inner()
-                                .filter(|p| p.as_rule() != Rule::Comma)
-                                .map(Expr::parse)
-                                .collect::<Result<Vec<Expr>, _>>()?;
+                            let right_exprs = Expr::parse_expr_list(right_expr_list)?;
 
                             if left_exprs.len() != right_exprs.len() {
                                 return Err(BakugoParsingError::new(
@@ -770,6 +770,12 @@ impl<'i> Node<'i> for StatementList<'i> {
                             {
                                 parsed_stmts.push(Statement::Assignment { left, right })
                             }
+                        }
+
+                        Rule::IfStmt => {
+                            let mut ifs = Vec::new();
+                            let els = Self::parse_ifstmt(&mut ifs, pair)?;
+                            parsed_stmts.push(Statement::IfStmt(IfStmt { ifs, els }));
                         }
 
                         Rule::Semicolon => {}
@@ -799,6 +805,26 @@ impl<'i> Node<'i> for StatementList<'i> {
                     BakugoParsingErrorKind::InternalError,
                 ))
             }
+        }
+    }
+}
+
+impl<'i> StatementList<'i> {
+    fn parse_ifstmt(
+        v: &mut Vec<(Expr<'i>, StatementList<'i>)>,
+        pair: Pair<'i, Rule>,
+    ) -> Result<Option<StatementList<'i>>, BakugoParsingError<'i>> {
+        let mut inner = pair.into_inner();
+        let cond = Expr::parse_expr(inner.next().unwrap().into_inner())?;
+        let block = StatementList::parse(inner.next().unwrap())?;
+
+        v.push((cond, block));
+
+        match inner.next() {
+            Some(p) if p.as_rule() == Rule::IfStmt => Self::parse_ifstmt(v, p),
+            Some(p) if p.as_rule() == Rule::StatementList => Ok(Some(StatementList::parse(p)?)),
+            None => Ok(None),
+            Some(_) => unreachable!("if stmt can only have ifstmt or statementlist"),
         }
     }
 }

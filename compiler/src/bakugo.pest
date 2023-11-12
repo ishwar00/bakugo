@@ -120,7 +120,7 @@ FunctionBody = _{ Block }
 // TODO: update the spec
 // Operands
 Operand     = _{ Literal | OperandName | TupleExpr | "(" ~ Expression ~ ")" }
-TupleExpr   = { "(" ~ ((Expression ~ ("," ~ Expression)+ ~ ","?) | (Expression ~ ",")) ~ ")" }
+TupleExpr   =  { "(" ~ ((Expression ~ (Comma ~ Expression)+ ~ Comma?) | (Expression ~ Comma)) ~ ")" }
 Literal     = _{ BasicLit }
 BasicLit    = _{ FloatLit | IntLit | RuneLit | StringLit }
 OperandName = _{ Ident }
@@ -169,7 +169,7 @@ UnaryNot   =  { "!" }
 
 // Statements
 
-Statement = _{ ReturnStmt | Declaration | SimpleStmt | Block | IfStmt }
+Statement = _{ ReturnStmt | IfStmt | Declaration | SimpleStmt | Block }
 
 SimpleStmt = _{ Assignment | ExpressionStmt | IncDecStmt }
 
@@ -179,7 +179,9 @@ IncDecStmt = { Expression ~ ("++" | "--") }
 
 Assignment = { ExpressionList ~ "=" ~ ExpressionList }
 
-IfStmt = { "if" ~ (SimpleStmt ~ Semicolon)? ~ Expression ~ Block ~ ("else" ~ (IfStmt | Block))? }
+// TODO: add `(SimpleStmt ~ Semicolon)? ~` before Expression.
+IfCondition = { Expression }
+IfStmt = { "if" ~ IfCondition ~ Block ~ ("else" ~ (IfStmt | Block))? }
 
 ReturnStmt = { "return" ~ ExpressionList? }
 

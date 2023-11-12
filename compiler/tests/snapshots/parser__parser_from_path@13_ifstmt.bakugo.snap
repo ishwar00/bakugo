@@ -1,0 +1,542 @@
+---
+source: tests/parser.rs
+expression: parsed
+input_file: tests/examples/13_ifstmt.bakugo
+---
+pos:
+  - 0
+  - 270
+pairs:
+  - pos:
+      - 0
+      - 270
+    rule: SourceFile
+    inner:
+      pos:
+        - 0
+        - 270
+      pairs:
+        - pos:
+            - 0
+            - 268
+          rule: TopLevelDecl
+          inner:
+            pos:
+              - 0
+              - 268
+            pairs:
+              - pos:
+                  - 0
+                  - 268
+                rule: FunctionDecl
+                inner:
+                  pos:
+                    - 5
+                    - 266
+                  pairs:
+                    - pos:
+                        - 5
+                        - 9
+                      rule: Ident
+                      inner: main
+                    - pos:
+                        - 9
+                        - 12
+                      rule: Signature
+                      inner:
+                        pos:
+                          - 9
+                          - 11
+                        pairs:
+                          - pos:
+                              - 9
+                              - 11
+                            rule: Parameters
+                            inner: ()
+                    - pos:
+                        - 18
+                        - 266
+                      rule: StatementList
+                      inner:
+                        pos:
+                          - 18
+                          - 266
+                        pairs:
+                          - pos:
+                              - 18
+                              - 55
+                            rule: IfStmt
+                            inner:
+                              pos:
+                                - 21
+                                - 49
+                              pairs:
+                                - pos:
+                                    - 21
+                                    - 28
+                                  rule: IfCondition
+                                  inner:
+                                    pos:
+                                      - 21
+                                      - 27
+                                    pairs:
+                                      - pos:
+                                          - 21
+                                          - 22
+                                        rule: Ident
+                                        inner: a
+                                      - pos:
+                                          - 23
+                                          - 25
+                                        rule: Eq
+                                        inner: "=="
+                                      - pos:
+                                          - 26
+                                          - 27
+                                        rule: IntLit
+                                        inner: "5"
+                                - pos:
+                                    - 38
+                                    - 49
+                                  rule: StatementList
+                                  inner:
+                                    pos:
+                                      - 38
+                                      - 49
+                                    pairs:
+                                      - pos:
+                                          - 38
+                                          - 48
+                                        rule: ReturnStmt
+                                        inner:
+                                          pos:
+                                            - 45
+                                            - 48
+                                          pairs:
+                                            - pos:
+                                                - 45
+                                                - 48
+                                              rule: ExpressionList
+                                              inner:
+                                                pos:
+                                                  - 45
+                                                  - 48
+                                                pairs:
+                                                  - pos:
+                                                      - 45
+                                                      - 48
+                                                    rule: Ident
+                                                    inner: aaa
+                                      - pos:
+                                          - 48
+                                          - 49
+                                        rule: Semicolon
+                                        inner: ;
+                          - pos:
+                              - 55
+                              - 56
+                            rule: Semicolon
+                            inner: ;
+                          - pos:
+                              - 62
+                              - 228
+                            rule: IfStmt
+                            inner:
+                              pos:
+                                - 65
+                                - 228
+                              pairs:
+                                - pos:
+                                    - 65
+                                    - 72
+                                  rule: IfCondition
+                                  inner:
+                                    pos:
+                                      - 65
+                                      - 71
+                                    pairs:
+                                      - pos:
+                                          - 65
+                                          - 66
+                                        rule: Ident
+                                        inner: b
+                                      - pos:
+                                          - 67
+                                          - 69
+                                        rule: NotEq
+                                        inner: "!="
+                                      - pos:
+                                          - 70
+                                          - 71
+                                        rule: IntLit
+                                        inner: "6"
+                                - pos:
+                                    - 82
+                                    - 97
+                                  rule: StatementList
+                                  inner:
+                                    pos:
+                                      - 82
+                                      - 97
+                                    pairs:
+                                      - pos:
+                                          - 82
+                                          - 96
+                                        rule: ExpressionStmt
+                                        inner:
+                                          pos:
+                                            - 82
+                                            - 96
+                                          pairs:
+                                            - pos:
+                                                - 82
+                                                - 96
+                                              rule: FunctionCall
+                                              inner:
+                                                pos:
+                                                  - 82
+                                                  - 96
+                                                pairs:
+                                                  - pos:
+                                                      - 82
+                                                      - 87
+                                                    rule: Ident
+                                                    inner: print
+                                                  - pos:
+                                                      - 87
+                                                      - 96
+                                                    rule: Arguments
+                                                    inner:
+                                                      pos:
+                                                        - 88
+                                                        - 95
+                                                      pairs:
+                                                        - pos:
+                                                            - 88
+                                                            - 95
+                                                          rule: ExpressionList
+                                                          inner:
+                                                            pos:
+                                                              - 88
+                                                              - 95
+                                                            pairs:
+                                                              - pos:
+                                                                  - 88
+                                                                  - 95
+                                                                rule: InterpretedStringLit
+                                                                inner: "\"not 6\""
+                                      - pos:
+                                          - 96
+                                          - 97
+                                        rule: Semicolon
+                                        inner: ;
+                                - pos:
+                                    - 109
+                                    - 228
+                                  rule: IfStmt
+                                  inner:
+                                    pos:
+                                      - 112
+                                      - 228
+                                    pairs:
+                                      - pos:
+                                          - 112
+                                          - 119
+                                        rule: IfCondition
+                                        inner:
+                                          pos:
+                                            - 112
+                                            - 118
+                                          pairs:
+                                            - pos:
+                                                - 112
+                                                - 113
+                                              rule: Ident
+                                              inner: b
+                                            - pos:
+                                                - 114
+                                                - 116
+                                              rule: NotEq
+                                              inner: "!="
+                                            - pos:
+                                                - 117
+                                                - 118
+                                              rule: IntLit
+                                              inner: "5"
+                                      - pos:
+                                          - 129
+                                          - 144
+                                        rule: StatementList
+                                        inner:
+                                          pos:
+                                            - 129
+                                            - 144
+                                          pairs:
+                                            - pos:
+                                                - 129
+                                                - 143
+                                              rule: ExpressionStmt
+                                              inner:
+                                                pos:
+                                                  - 129
+                                                  - 143
+                                                pairs:
+                                                  - pos:
+                                                      - 129
+                                                      - 143
+                                                    rule: FunctionCall
+                                                    inner:
+                                                      pos:
+                                                        - 129
+                                                        - 143
+                                                      pairs:
+                                                        - pos:
+                                                            - 129
+                                                            - 134
+                                                          rule: Ident
+                                                          inner: print
+                                                        - pos:
+                                                            - 134
+                                                            - 143
+                                                          rule: Arguments
+                                                          inner:
+                                                            pos:
+                                                              - 135
+                                                              - 142
+                                                            pairs:
+                                                              - pos:
+                                                                  - 135
+                                                                  - 142
+                                                                rule: ExpressionList
+                                                                inner:
+                                                                  pos:
+                                                                    - 135
+                                                                    - 142
+                                                                  pairs:
+                                                                    - pos:
+                                                                        - 135
+                                                                        - 142
+                                                                      rule: InterpretedStringLit
+                                                                      inner: "\"not 5\""
+                                            - pos:
+                                                - 143
+                                                - 144
+                                              rule: Semicolon
+                                              inner: ;
+                                      - pos:
+                                          - 156
+                                          - 228
+                                        rule: IfStmt
+                                        inner:
+                                          pos:
+                                            - 159
+                                            - 222
+                                          pairs:
+                                            - pos:
+                                                - 159
+                                                - 166
+                                              rule: IfCondition
+                                              inner:
+                                                pos:
+                                                  - 159
+                                                  - 165
+                                                pairs:
+                                                  - pos:
+                                                      - 159
+                                                      - 160
+                                                    rule: Ident
+                                                    inner: b
+                                                  - pos:
+                                                      - 161
+                                                      - 163
+                                                    rule: NotEq
+                                                    inner: "!="
+                                                  - pos:
+                                                      - 164
+                                                      - 165
+                                                    rule: IntLit
+                                                    inner: "4"
+                                            - pos:
+                                                - 176
+                                                - 191
+                                              rule: StatementList
+                                              inner:
+                                                pos:
+                                                  - 176
+                                                  - 191
+                                                pairs:
+                                                  - pos:
+                                                      - 176
+                                                      - 190
+                                                    rule: ExpressionStmt
+                                                    inner:
+                                                      pos:
+                                                        - 176
+                                                        - 190
+                                                      pairs:
+                                                        - pos:
+                                                            - 176
+                                                            - 190
+                                                          rule: FunctionCall
+                                                          inner:
+                                                            pos:
+                                                              - 176
+                                                              - 190
+                                                            pairs:
+                                                              - pos:
+                                                                  - 176
+                                                                  - 181
+                                                                rule: Ident
+                                                                inner: print
+                                                              - pos:
+                                                                  - 181
+                                                                  - 190
+                                                                rule: Arguments
+                                                                inner:
+                                                                  pos:
+                                                                    - 182
+                                                                    - 189
+                                                                  pairs:
+                                                                    - pos:
+                                                                        - 182
+                                                                        - 189
+                                                                      rule: ExpressionList
+                                                                      inner:
+                                                                        pos:
+                                                                          - 182
+                                                                          - 189
+                                                                        pairs:
+                                                                          - pos:
+                                                                              - 182
+                                                                              - 189
+                                                                            rule: InterpretedStringLit
+                                                                            inner: "\"not 4\""
+                                                  - pos:
+                                                      - 190
+                                                      - 191
+                                                    rule: Semicolon
+                                                    inner: ;
+                                            - pos:
+                                                - 213
+                                                - 222
+                                              rule: StatementList
+                                              inner:
+                                                pos:
+                                                  - 213
+                                                  - 222
+                                                pairs:
+                                                  - pos:
+                                                      - 213
+                                                      - 221
+                                                    rule: ExpressionStmt
+                                                    inner:
+                                                      pos:
+                                                        - 213
+                                                        - 221
+                                                      pairs:
+                                                        - pos:
+                                                            - 213
+                                                            - 221
+                                                          rule: FunctionCall
+                                                          inner:
+                                                            pos:
+                                                              - 213
+                                                              - 221
+                                                            pairs:
+                                                              - pos:
+                                                                  - 213
+                                                                  - 218
+                                                                rule: Ident
+                                                                inner: print
+                                                              - pos:
+                                                                  - 218
+                                                                  - 221
+                                                                rule: Arguments
+                                                                inner:
+                                                                  pos:
+                                                                    - 219
+                                                                    - 220
+                                                                  pairs:
+                                                                    - pos:
+                                                                        - 219
+                                                                        - 220
+                                                                      rule: ExpressionList
+                                                                      inner:
+                                                                        pos:
+                                                                          - 219
+                                                                          - 220
+                                                                        pairs:
+                                                                          - pos:
+                                                                              - 219
+                                                                              - 220
+                                                                            rule: Ident
+                                                                            inner: b
+                                                  - pos:
+                                                      - 221
+                                                      - 222
+                                                    rule: Semicolon
+                                                    inner: ;
+                          - pos:
+                              - 228
+                              - 229
+                            rule: Semicolon
+                            inner: ;
+                          - pos:
+                              - 235
+                              - 265
+                            rule: IfStmt
+                            inner:
+                              pos:
+                                - 238
+                                - 264
+                              pairs:
+                                - pos:
+                                    - 238
+                                    - 245
+                                  rule: IfCondition
+                                  inner:
+                                    pos:
+                                      - 238
+                                      - 244
+                                    pairs:
+                                      - pos:
+                                          - 238
+                                          - 239
+                                        rule: Ident
+                                        inner: c
+                                      - pos:
+                                          - 240
+                                          - 242
+                                        rule: Eq
+                                        inner: "=="
+                                      - pos:
+                                          - 243
+                                          - 244
+                                        rule: IntLit
+                                        inner: "1"
+                                - pos:
+                                    - 251
+                                    - 251
+                                  rule: StatementList
+                                  inner: ""
+                                - pos:
+                                    - 264
+                                    - 264
+                                  rule: StatementList
+                                  inner: ""
+                          - pos:
+                              - 265
+                              - 266
+                            rule: Semicolon
+                            inner: ;
+        - pos:
+            - 268
+            - 269
+          rule: Semicolon
+          inner: ;
+        - pos:
+            - 270
+            - 270
+          rule: EOI
+          inner: ""
+
