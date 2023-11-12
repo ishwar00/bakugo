@@ -24,6 +24,6 @@ pub fn construct_ast(
 ) -> Result<SourceFile<'_>, BakugoParsingErrorDisplay> {
     match SourceFile::parse(pair) {
         Ok(s) => Ok(s),
-        Err(bakugo_err) => return Err(BakugoParsingErrorDisplay::from_error(bakugo_err, source)),
+        Err(bakugo_err) => Err(BakugoParsingErrorDisplay::from_error(bakugo_err, source)),
     }
 }
