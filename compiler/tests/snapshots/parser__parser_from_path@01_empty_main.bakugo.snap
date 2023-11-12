@@ -1,0 +1,71 @@
+---
+source: tests/parser.rs
+expression: parsed
+input_file: tests/examples/01_empty_main.bakugo
+---
+pos:
+  - 0
+  - 16
+pairs:
+  - pos:
+      - 0
+      - 16
+    rule: SourceFile
+    inner:
+      pos:
+        - 0
+        - 16
+      pairs:
+        - pos:
+            - 0
+            - 14
+          rule: TopLevelDecl
+          inner:
+            pos:
+              - 0
+              - 14
+            pairs:
+              - pos:
+                  - 0
+                  - 14
+                rule: FunctionDecl
+                inner:
+                  pos:
+                    - 5
+                    - 13
+                  pairs:
+                    - pos:
+                        - 5
+                        - 9
+                      rule: Ident
+                      inner: main
+                    - pos:
+                        - 9
+                        - 12
+                      rule: Signature
+                      inner:
+                        pos:
+                          - 9
+                          - 11
+                        pairs:
+                          - pos:
+                              - 9
+                              - 11
+                            rule: Parameters
+                            inner: ()
+                    - pos:
+                        - 13
+                        - 13
+                      rule: StatementList
+                      inner: ""
+        - pos:
+            - 14
+            - 15
+          rule: Semicolon
+          inner: ;
+        - pos:
+            - 16
+            - 16
+          rule: EOI
+          inner: ""
+

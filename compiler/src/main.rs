@@ -1,8 +1,9 @@
-use std::{env::args, fs};
+use std::{env::args, fs, println};
 
-use bakugo::parser::parse_string;
+use bakugo::parser::{construct_ast, parse_string};
+use miette::NamedSource;
 
-fn main() {
+fn main() -> miette::Result<()> {
     // TODO: REPL?
     let filepath = args().nth(1).expect("give me a file name to run pls");
 
@@ -14,13 +15,18 @@ fn main() {
 
     match parsed {
         Ok(parsed) => {
-            let package = parsed.peek().unwrap(); // never fails?
-            for item in package.into_inner() {
-                println!("{item:?}");
+            for package in parsed {
+                // for item in package.clone().into_inner() {
+                // println!("{item:#?}");
+                // }
+                let source = NamedSource::new(filepath.clone(), unparsed_file.clone());
+                let ast = construct_ast(source, package)?;
+                println!("{ast:#?}");
             }
         }
         Err(err) => {
             println!("parsing error: {err}")
         }
     }
+    Ok(())
 }

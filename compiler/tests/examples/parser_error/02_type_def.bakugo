@@ -1,0 +1,7 @@
+func main() {
+	type a int;
+	type (
+		b string int;
+		c float;
+	);
+};

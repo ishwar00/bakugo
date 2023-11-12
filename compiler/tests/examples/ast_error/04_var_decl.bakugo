@@ -1,0 +1,7 @@
+func abc() {
+    var a = 10;
+    var (
+        c int = 20;
+		i, j, k int = 10, 20, 30, 40;
+    );
+};

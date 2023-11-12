@@ -1,0 +1,6 @@
+---
+source: tests/parser.rs
+expression: parsed.as_str()
+---
+_x9
+

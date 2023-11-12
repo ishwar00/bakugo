@@ -1,11 +1,10 @@
 ---
 source: tests/parser.rs
 expression: err.to_string()
-input_file: tests/examples/02_sanity.bakugo
 ---
  --> 1:1
   |
-1 | backage main
+1 |  space
   | ^---
   |
-  = expected package
+  = expected IntLit

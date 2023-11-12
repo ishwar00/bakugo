@@ -1,0 +1,582 @@
+---
+source: tests/parser.rs
+expression: parsed
+input_file: tests/examples/06_var_const_decl.bakugo
+---
+SourceFile {
+    top_level: [
+        FnDecl(
+            FnDecl {
+                name: Ident {
+                    value: "abc",
+                    span: Span {
+                        str: "abc",
+                        start: 5,
+                        end: 8,
+                    },
+                },
+                params: [],
+                result_kind: None,
+                body: StatementList(
+                    [
+                        Declaration(
+                            Var(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "a",
+                                        span: Span {
+                                            str: "a",
+                                            start: 21,
+                                            end: 22,
+                                        },
+                                    },
+                                    kind: None,
+                                    expr: Integer {
+                                        value: 10,
+                                        span: Span {
+                                            str: "10",
+                                            start: 25,
+                                            end: 27,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Var(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "z",
+                                        span: Span {
+                                            str: "z",
+                                            start: 37,
+                                            end: 38,
+                                        },
+                                    },
+                                    kind: Some(
+                                        Simple {
+                                            name: "int",
+                                            span: Span {
+                                                str: "int",
+                                                start: 39,
+                                                end: 42,
+                                            },
+                                        },
+                                    ),
+                                    expr: Integer {
+                                        value: 10,
+                                        span: Span {
+                                            str: "10",
+                                            start: 45,
+                                            end: 47,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Var(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "b",
+                                        span: Span {
+                                            str: "b",
+                                            start: 67,
+                                            end: 68,
+                                        },
+                                    },
+                                    kind: None,
+                                    expr: Integer {
+                                        value: 10,
+                                        span: Span {
+                                            str: "10",
+                                            start: 71,
+                                            end: 73,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Var(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "c",
+                                        span: Span {
+                                            str: "c",
+                                            start: 83,
+                                            end: 84,
+                                        },
+                                    },
+                                    kind: Some(
+                                        Simple {
+                                            name: "int",
+                                            span: Span {
+                                                str: "int",
+                                                start: 85,
+                                                end: 88,
+                                            },
+                                        },
+                                    ),
+                                    expr: Integer {
+                                        value: 20,
+                                        span: Span {
+                                            str: "20",
+                                            start: 91,
+                                            end: 93,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Var(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "c",
+                                        span: Span {
+                                            str: "c",
+                                            start: 103,
+                                            end: 104,
+                                        },
+                                    },
+                                    kind: Some(
+                                        Simple {
+                                            name: "int",
+                                            span: Span {
+                                                str: "int",
+                                                start: 111,
+                                                end: 114,
+                                            },
+                                        },
+                                    ),
+                                    expr: Integer {
+                                        value: 30,
+                                        span: Span {
+                                            str: "30",
+                                            start: 117,
+                                            end: 119,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Var(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "d",
+                                        span: Span {
+                                            str: "d",
+                                            start: 106,
+                                            end: 107,
+                                        },
+                                    },
+                                    kind: Some(
+                                        Simple {
+                                            name: "int",
+                                            span: Span {
+                                                str: "int",
+                                                start: 111,
+                                                end: 114,
+                                            },
+                                        },
+                                    ),
+                                    expr: Integer {
+                                        value: 40,
+                                        span: Span {
+                                            str: "40",
+                                            start: 121,
+                                            end: 123,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Var(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "e",
+                                        span: Span {
+                                            str: "e",
+                                            start: 109,
+                                            end: 110,
+                                        },
+                                    },
+                                    kind: Some(
+                                        Simple {
+                                            name: "int",
+                                            span: Span {
+                                                str: "int",
+                                                start: 111,
+                                                end: 114,
+                                            },
+                                        },
+                                    ),
+                                    expr: Integer {
+                                        value: 50,
+                                        span: Span {
+                                            str: "50",
+                                            start: 125,
+                                            end: 127,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Var(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "i",
+                                        span: Span {
+                                            str: "i",
+                                            start: 137,
+                                            end: 138,
+                                        },
+                                    },
+                                    kind: None,
+                                    expr: Integer {
+                                        value: 50,
+                                        span: Span {
+                                            str: "50",
+                                            start: 147,
+                                            end: 149,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Var(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "j",
+                                        span: Span {
+                                            str: "j",
+                                            start: 140,
+                                            end: 141,
+                                        },
+                                    },
+                                    kind: None,
+                                    expr: Integer {
+                                        value: 60,
+                                        span: Span {
+                                            str: "60",
+                                            start: 151,
+                                            end: 153,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Var(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "k",
+                                        span: Span {
+                                            str: "k",
+                                            start: 143,
+                                            end: 144,
+                                        },
+                                    },
+                                    kind: None,
+                                    expr: Integer {
+                                        value: 70,
+                                        span: Span {
+                                            str: "70",
+                                            start: 155,
+                                            end: 157,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Const(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "a",
+                                        span: Span {
+                                            str: "a",
+                                            start: 177,
+                                            end: 178,
+                                        },
+                                    },
+                                    kind: None,
+                                    expr: Integer {
+                                        value: 10,
+                                        span: Span {
+                                            str: "10",
+                                            start: 181,
+                                            end: 183,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Const(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "i",
+                                        span: Span {
+                                            str: "i",
+                                            start: 195,
+                                            end: 196,
+                                        },
+                                    },
+                                    kind: Some(
+                                        Simple {
+                                            name: "int",
+                                            span: Span {
+                                                str: "int",
+                                                start: 197,
+                                                end: 200,
+                                            },
+                                        },
+                                    ),
+                                    expr: Integer {
+                                        value: 10,
+                                        span: Span {
+                                            str: "10",
+                                            start: 203,
+                                            end: 205,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Const(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "b",
+                                        span: Span {
+                                            str: "b",
+                                            start: 227,
+                                            end: 228,
+                                        },
+                                    },
+                                    kind: None,
+                                    expr: Integer {
+                                        value: 10,
+                                        span: Span {
+                                            str: "10",
+                                            start: 231,
+                                            end: 233,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Const(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "c",
+                                        span: Span {
+                                            str: "c",
+                                            start: 243,
+                                            end: 244,
+                                        },
+                                    },
+                                    kind: Some(
+                                        Simple {
+                                            name: "int",
+                                            span: Span {
+                                                str: "int",
+                                                start: 245,
+                                                end: 248,
+                                            },
+                                        },
+                                    ),
+                                    expr: Integer {
+                                        value: 20,
+                                        span: Span {
+                                            str: "20",
+                                            start: 251,
+                                            end: 253,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Const(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "c",
+                                        span: Span {
+                                            str: "c",
+                                            start: 263,
+                                            end: 264,
+                                        },
+                                    },
+                                    kind: Some(
+                                        Simple {
+                                            name: "int",
+                                            span: Span {
+                                                str: "int",
+                                                start: 271,
+                                                end: 274,
+                                            },
+                                        },
+                                    ),
+                                    expr: Integer {
+                                        value: 30,
+                                        span: Span {
+                                            str: "30",
+                                            start: 277,
+                                            end: 279,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Const(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "d",
+                                        span: Span {
+                                            str: "d",
+                                            start: 266,
+                                            end: 267,
+                                        },
+                                    },
+                                    kind: Some(
+                                        Simple {
+                                            name: "int",
+                                            span: Span {
+                                                str: "int",
+                                                start: 271,
+                                                end: 274,
+                                            },
+                                        },
+                                    ),
+                                    expr: Integer {
+                                        value: 40,
+                                        span: Span {
+                                            str: "40",
+                                            start: 281,
+                                            end: 283,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Const(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "e",
+                                        span: Span {
+                                            str: "e",
+                                            start: 269,
+                                            end: 270,
+                                        },
+                                    },
+                                    kind: Some(
+                                        Simple {
+                                            name: "int",
+                                            span: Span {
+                                                str: "int",
+                                                start: 271,
+                                                end: 274,
+                                            },
+                                        },
+                                    ),
+                                    expr: Integer {
+                                        value: 50,
+                                        span: Span {
+                                            str: "50",
+                                            start: 285,
+                                            end: 287,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Const(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "i",
+                                        span: Span {
+                                            str: "i",
+                                            start: 297,
+                                            end: 298,
+                                        },
+                                    },
+                                    kind: None,
+                                    expr: Integer {
+                                        value: 50,
+                                        span: Span {
+                                            str: "50",
+                                            start: 307,
+                                            end: 309,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Const(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "j",
+                                        span: Span {
+                                            str: "j",
+                                            start: 300,
+                                            end: 301,
+                                        },
+                                    },
+                                    kind: None,
+                                    expr: Integer {
+                                        value: 60,
+                                        span: Span {
+                                            str: "60",
+                                            start: 311,
+                                            end: 313,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                        Declaration(
+                            Const(
+                                VarConstDecl {
+                                    name: Ident {
+                                        value: "k",
+                                        span: Span {
+                                            str: "k",
+                                            start: 303,
+                                            end: 304,
+                                        },
+                                    },
+                                    kind: None,
+                                    expr: Integer {
+                                        value: 70,
+                                        span: Span {
+                                            str: "70",
+                                            start: 315,
+                                            end: 317,
+                                        },
+                                    },
+                                },
+                            ),
+                        ),
+                    ],
+                ),
+                span: Span {
+                    str: "func abc() {\n    var a = 10;\n    var z int = 10;\n    var (\n        b = 10;\n        c int = 20;\n        c, d, e int = 30, 40, 50;\n        i, j, k = 50, 60, 70;\n    );\n\n    const a = 10;\n    const i int = 10;\n    const (\n        b = 10;\n        c int = 20;\n        c, d, e int = 30, 40, 50;\n        i, j, k = 50, 60, 70;\n    );\n\n}",
+                    start: 0,
+                    end: 328,
+                },
+            },
+        ),
+    ],
+}

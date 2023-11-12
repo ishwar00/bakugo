@@ -1,0 +1,15 @@
+func main() {
+	return 34 + 1;
+	return (34, "hey", 4.5,);
+};
+
+
+func primary() {
+	return func_call(
+		`hi
+		there	`, 
+		45, 
+		(4, 2),
+		"hey"
+	);
+};

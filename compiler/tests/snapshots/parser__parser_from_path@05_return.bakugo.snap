@@ -1,0 +1,85 @@
+---
+source: tests/parser.rs
+expression: parsed
+input_file: tests/examples/05_return.bakugo
+---
+pos:
+  - 0
+  - 29
+pairs:
+  - pos:
+      - 0
+      - 29
+    rule: SourceFile
+    inner:
+      pos:
+        - 0
+        - 29
+      pairs:
+        - pos:
+            - 0
+            - 27
+          rule: TopLevelDecl
+          inner:
+            pos:
+              - 0
+              - 27
+            pairs:
+              - pos:
+                  - 0
+                  - 27
+                rule: FunctionDecl
+                inner:
+                  pos:
+                    - 5
+                    - 25
+                  pairs:
+                    - pos:
+                        - 5
+                        - 9
+                      rule: Ident
+                      inner: main
+                    - pos:
+                        - 9
+                        - 12
+                      rule: Signature
+                      inner:
+                        pos:
+                          - 9
+                          - 11
+                        pairs:
+                          - pos:
+                              - 9
+                              - 11
+                            rule: Parameters
+                            inner: ()
+                    - pos:
+                        - 18
+                        - 25
+                      rule: StatementList
+                      inner:
+                        pos:
+                          - 18
+                          - 25
+                        pairs:
+                          - pos:
+                              - 18
+                              - 24
+                            rule: ReturnStmt
+                            inner: return
+                          - pos:
+                              - 24
+                              - 25
+                            rule: Semicolon
+                            inner: ;
+        - pos:
+            - 27
+            - 28
+          rule: Semicolon
+          inner: ;
+        - pos:
+            - 29
+            - 29
+          rule: EOI
+          inner: ""
+

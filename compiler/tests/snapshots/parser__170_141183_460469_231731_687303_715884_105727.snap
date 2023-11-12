@@ -1,0 +1,6 @@
+---
+source: tests/parser.rs
+expression: decimal_test
+---
+170_141183_460469_231731_687303_715884_105727
+

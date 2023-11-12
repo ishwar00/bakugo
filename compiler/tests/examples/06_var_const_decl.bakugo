@@ -1,0 +1,20 @@
+func abc() {
+    var a = 10;
+    var z int = 10;
+    var (
+        b = 10;
+        c int = 20;
+        c, d, e int = 30, 40, 50;
+        i, j, k = 50, 60, 70;
+    );
+
+    const a = 10;
+    const i int = 10;
+    const (
+        b = 10;
+        c int = 20;
+        c, d, e int = 30, 40, 50;
+        i, j, k = 50, 60, 70;
+    );
+
+};

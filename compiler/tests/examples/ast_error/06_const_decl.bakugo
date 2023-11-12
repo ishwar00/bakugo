@@ -1,0 +1,6 @@
+func abc() {
+    const (
+        c int = 20;
+		i, j, k = 60, 70;
+    );
+};

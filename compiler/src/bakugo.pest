@@ -1,2 +1,186 @@
-WHITESPACE = _{ " " | "\n" }
-package = { SOI ~ "package" ~ "main" ~ EOI }
+//! Parsing expression grammars(PEG) for subset of the Go programming language spec
+
+// TODO:
+// 1. Disallow NUL character(U+0000) in the source text
+// 2. Ignore a UTF-8-encoded byte order mark (U+FEFF) if it is the first
+// Unicode code point in the source text. A byte order mark may be disallowed
+// anywhere else in the source.
+// 3. consider comment containing newlines as newlines. A general comment containing no
+// newlines acts like a space. Any other comment acts like a newline.
+// 4. Semicolons
+// 5. Keywords: restrict keywords as identifiers. Probably in AST.
+
+// Questions:
+// 
+
+/// Source Code Representation
+/// Characters
+
+/// escape sequence `\n`
+NewLine     = { "\u{000A}" }
+UnicodeChar = { !(NewLine) ~ ANY }
+// refer:
+// 1. https://pest.rs/book/grammars/built-ins.html
+// 2. page 175 of https://www.unicode.org/versions/Unicode8.0.0/ch04.pdf
+UnicodeLetter = { LETTER }
+UnicodeDigit  = { DECIMAL_NUMBER }
+
+/// Letters and digits
+
+Letter       = { UnicodeLetter | "_" }
+DecimalDigit = { '0'..'9' }
+OctalDigit   = { '0'..'7' }
+HexDigit     = { '0'..'9' | 'A'..'F' | 'a'..'f' }
+
+/// Lexical elements
+
+/// space (U+0020), horizontal tabs (U+0009), carriage returns (U+000D) and
+/// newline (U+000A)
+WHITESPACE = _{ "\u{0020}" | "\u{0009}" | "\u{000D}" | "\u{000A}" }
+
+/// No comments containg `NewLine`.
+// Refer TODO[3]
+COMMENT = _{ "/*" ~ (!("*/") ~ ANY)* ~ "*/" }
+
+/// Punctuation
+Semicolon = { ";" }
+Comma     = { "," }
+
+/// Identifier
+Ident = @{ Letter ~ (Letter | UnicodeDigit)* }
+
+IntLit        = @{ "0" | ('1'..'9' ~ ("_"? ~ DecimalDigits)?) }
+FloatLit      = @{ DecimalDigits ~ "." ~ DecimalDigits? | "." ~ DecimalDigits }
+DecimalDigits = @{ DecimalDigit ~ ("_"? ~ DecimalDigit)* }
+
+/// Rune literals
+RuneLit        = @{ "'" ~ (ByteValue | UnicodeValue) ~ "'" }
+UnicodeValue   =  { LittleUValue | BigUValue | EscapedChar | UnicodeChar }
+ByteValue      =  { HexByteValue | OctalByteValue }
+OctalByteValue = @{ "\\" ~ OctalDigit{3} }
+HexByteValue   = @{ "\\" ~ "x" ~ HexDigit{2} }
+LittleUValue   = @{ "\\" ~ "u" ~ HexDigit{4} }
+BigUValue      = @{ "\\" ~ "U" ~ HexDigit{8} }
+EscapedChar    = @{ "\\" ~ ("a" | "b" | "f" | "n" | "r" | "t" | "v" | "\\" | "'" | "\"") }
+
+/// string literals
+StringLit = _{ RawStringLit | InterpretedStringLit }
+// `UnicodeChar | NewLine` is equivalent to `ANY``
+RawStringLit         = @{ "`" ~ (!"`" ~ ANY)* ~ "`" }
+InterpretedStringLit = @{ "\"" ~ (!"\"" ~ (ByteValue | UnicodeValue))* ~ "\"" }
+
+// Types
+Type     =  { TypeName | Tuple }
+TypeName = _{ Ident }
+
+// TODO: add it in spec
+// Tuple
+Tuple    = { "(" ~ (TypeList | (Type ~ ",")) ~ ")" }
+TypeList = { Type ~ ("," ~ Type)+ }
+
+// Function types
+Signature      =  { Parameters ~ Result? }
+Result         = _{ Type }
+Parameters     =  { "(" ~ (ParameterList ~ ","?)? ~ ")" }
+ParameterList  =  { ParameterDecl ~ ("," ~ ParameterDecl)* }
+ParameterDecl  =  { (IdentifierList ~ Type) | (Type ~ ("," ~ Type)*) }
+IdentifierList =  { Ident ~ ("," ~ Ident)* }
+
+// Blocks
+// *(a.method())
+Block         = _{ "{" ~ StatementList ~ "}" }
+StatementList =  { (Statement ~ Semicolon)* }
+
+// Declarations
+Declaration  = { ConstDecl | TypeDecl | VarDecl }
+TopLevelDecl = { Declaration | FunctionDecl }
+
+// Const declartions
+ConstDecl      = { "const" ~ (ConstSpec | "(" ~ (ConstSpec ~ Semicolon)+ ~ ")") }
+ConstSpec      = { IdentifierList ~ (Type? ~ "=" ~ ExpressionList)? }
+ExpressionList = { Expression ~ (Comma ~ Expression)* }
+
+// Type declarations
+TypeDecl =  { "type" ~ (TypeSpec | "(" ~ (TypeSpec ~ Semicolon)+ ~ ")") }
+TypeSpec = _{ TypeDef }
+
+// TODO: correct TypeDef spec (remove type parameters)
+// Type definitions
+TypeDef = { Ident ~ Type }
+
+// Variable declaration
+VarDecl = { "var" ~ (VarSpec | "(" ~ (VarSpec ~ Semicolon)+ ~ ")") }
+VarSpec = { IdentifierList ~ ((Type ~ ("=" ~ ExpressionList)?) | ("=" ~ ExpressionList)) }
+
+// Function declaration
+FunctionDecl =  { "func" ~ FunctionName ~ Signature ~ FunctionBody }
+FunctionName = _{ Ident }
+FunctionBody = _{ Block }
+
+// TODO: update the spec
+// Operands
+Operand     = _{ Literal | OperandName | TupleExpr | "(" ~ Expression ~ ")" }
+TupleExpr   =  { "(" ~ ((Expression ~ (Comma ~ Expression)+ ~ Comma?) | (Expression ~ Comma)) ~ ")" }
+Literal     = _{ BasicLit }
+BasicLit    = _{ FloatLit | IntLit | RuneLit | StringLit }
+OperandName = _{ Ident }
+
+// Primary expressions
+// ref: https://www.csd.uwo.ca/~mmorenom/CS447/Lectures/Syntax.html/node8.html
+PrimaryExpr      = _{ FunctionCall | Operand }
+FunctionCall     =  { Operand ~ PrimaryExprPrime }
+PrimaryExprPrime = _{ (Arguments ~ PrimaryExprPrime?) }
+
+Arguments = { "(" ~ ((ExpressionList | (Type ~ (Comma ~ ExpressionList)?)) ~ ","?)? ~ ")" }
+
+// Operators
+// ref: https://www.csd.uwo.ca/~mmorenom/CS447/Lectures/Syntax.html/node8.html
+Expression      = _{ UnaryExpr ~ ExpressionPrime? }
+ExpressionPrime = _{ BinaryOp ~ Expression ~ ExpressionPrime? }
+UnaryExpr       = _{ (UnaryOp ~ UnaryExpr) | PrimaryExpr }
+
+BinaryOp = _{ RelOp | SumOp | ProductOp }
+
+RelOp = _{ Eq | NotEq | Le | Lt | Ge | Gt }
+Eq    =  { "==" }
+NotEq =  { "!=" }
+Le    =  { "<=" }
+Lt    =  { "<" }
+Ge    =  { ">=" }
+Gt    =  { ">" }
+
+SumOp = _{ Plus | Minus | Pipe }
+Plus  =  { "+" }
+Minus =  { "-" }
+Pipe  =  { "|" }
+
+ProductOp = _{ Star | Slash | Percent | And }
+Star      =  { "*" }
+Slash     =  { "/" }
+Percent   =  { "%" }
+And       =  { "&" }
+
+UnaryOp    = _{ UnaryPlus | UnaryMinus | UnaryNot | UnaryStar | UnaryAnd }
+UnaryPlus  =  { "+" }
+UnaryMinus =  { "-" }
+UnaryStar  =  { "*" }
+UnaryAnd   =  { "&" }
+UnaryNot   =  { "!" }
+
+// Statements
+
+Statement = _{ ReturnStmt | IfStmt | Declaration | SimpleStmt | Block }
+
+SimpleStmt = _{ Assignment | ExpressionStmt }
+
+ExpressionStmt = { Expression }
+
+Assignment = { ExpressionList ~ "=" ~ ExpressionList }
+
+// TODO: add `(SimpleStmt ~ Semicolon)? ~` before Expression.
+IfCondition = { Expression }
+IfStmt = { "if" ~ IfCondition ~ Block ~ ("else" ~ (IfStmt | Block))? }
+
+ReturnStmt = { "return" ~ ExpressionList? }
+
+SourceFile = { SOI ~ (TopLevelDecl ~ Semicolon)* ~ EOI }

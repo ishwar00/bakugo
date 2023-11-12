@@ -1,0 +1,19 @@
+func main() {
+    if a == 5 {
+        return aaa;
+    };
+
+    if b != 6 {
+        print("not 6");
+    } else if b != 5 {
+        print("not 5");
+    } else if b != 4 {
+        print("not 4");
+    } else {
+        print(b);
+    };
+
+    if c == 1 {
+    } else {
+    };
+};

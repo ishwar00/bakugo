@@ -1,0 +1,14 @@
+---
+source: tests/parser.rs
+expression: BakugoParsingErrDebug(err)
+input_file: tests/examples/ast_error/03_var_decl.bakugo
+---
+  × Parsing error
+   ╭─[03_var_decl.bakugo:4:1]
+ 4 │         c int = 20;
+ 5 │         i, j, k int = 60, 70;
+   ·         ──────────┬─────────
+   ·                   ╰── Error: Number of expressions (2) does not match number of identifers (3)
+ 6 │     );
+   ╰────
+

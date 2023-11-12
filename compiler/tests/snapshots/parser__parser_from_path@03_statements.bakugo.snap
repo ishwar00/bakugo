@@ -1,0 +1,537 @@
+---
+source: tests/parser.rs
+expression: parsed
+input_file: tests/examples/03_statements.bakugo
+---
+pos:
+  - 0
+  - 141
+pairs:
+  - pos:
+      - 0
+      - 141
+    rule: SourceFile
+    inner:
+      pos:
+        - 0
+        - 141
+      pairs:
+        - pos:
+            - 0
+            - 48
+          rule: TopLevelDecl
+          inner:
+            pos:
+              - 0
+              - 48
+            pairs:
+              - pos:
+                  - 0
+                  - 48
+                rule: FunctionDecl
+                inner:
+                  pos:
+                    - 5
+                    - 47
+                  pairs:
+                    - pos:
+                        - 5
+                        - 14
+                      rule: Ident
+                      inner: something
+                    - pos:
+                        - 14
+                        - 45
+                      rule: Signature
+                      inner:
+                        pos:
+                          - 14
+                          - 44
+                        pairs:
+                          - pos:
+                              - 14
+                              - 44
+                            rule: Parameters
+                            inner:
+                              pos:
+                                - 15
+                                - 43
+                              pairs:
+                                - pos:
+                                    - 15
+                                    - 43
+                                  rule: ParameterList
+                                  inner:
+                                    pos:
+                                      - 15
+                                      - 43
+                                    pairs:
+                                      - pos:
+                                          - 15
+                                          - 24
+                                        rule: ParameterDecl
+                                        inner:
+                                          pos:
+                                            - 15
+                                            - 24
+                                          pairs:
+                                            - pos:
+                                                - 15
+                                                - 19
+                                              rule: IdentifierList
+                                              inner:
+                                                pos:
+                                                  - 15
+                                                  - 19
+                                                pairs:
+                                                  - pos:
+                                                      - 15
+                                                      - 16
+                                                    rule: Ident
+                                                    inner: a
+                                                  - pos:
+                                                      - 18
+                                                      - 19
+                                                    rule: Ident
+                                                    inner: b
+                                            - pos:
+                                                - 20
+                                                - 24
+                                              rule: Type
+                                              inner:
+                                                pos:
+                                                  - 20
+                                                  - 24
+                                                pairs:
+                                                  - pos:
+                                                      - 20
+                                                      - 24
+                                                    rule: Ident
+                                                    inner: bunt
+                                      - pos:
+                                          - 26
+                                          - 32
+                                        rule: ParameterDecl
+                                        inner:
+                                          pos:
+                                            - 26
+                                            - 32
+                                          pairs:
+                                            - pos:
+                                                - 26
+                                                - 28
+                                              rule: IdentifierList
+                                              inner:
+                                                pos:
+                                                  - 26
+                                                  - 27
+                                                pairs:
+                                                  - pos:
+                                                      - 26
+                                                      - 27
+                                                    rule: Ident
+                                                    inner: c
+                                            - pos:
+                                                - 28
+                                                - 32
+                                              rule: Type
+                                              inner:
+                                                pos:
+                                                  - 28
+                                                  - 32
+                                                pairs:
+                                                  - pos:
+                                                      - 28
+                                                      - 32
+                                                    rule: Ident
+                                                    inner: uint
+                                      - pos:
+                                          - 34
+                                          - 43
+                                        rule: ParameterDecl
+                                        inner:
+                                          pos:
+                                            - 34
+                                            - 43
+                                          pairs:
+                                            - pos:
+                                                - 34
+                                                - 36
+                                              rule: IdentifierList
+                                              inner:
+                                                pos:
+                                                  - 34
+                                                  - 35
+                                                pairs:
+                                                  - pos:
+                                                      - 34
+                                                      - 35
+                                                    rule: Ident
+                                                    inner: d
+                                            - pos:
+                                                - 36
+                                                - 43
+                                              rule: Type
+                                              inner:
+                                                pos:
+                                                  - 36
+                                                  - 43
+                                                pairs:
+                                                  - pos:
+                                                      - 36
+                                                      - 43
+                                                    rule: Tuple
+                                                    inner:
+                                                      pos:
+                                                        - 37
+                                                        - 40
+                                                      pairs:
+                                                        - pos:
+                                                            - 37
+                                                            - 40
+                                                          rule: Type
+                                                          inner:
+                                                            pos:
+                                                              - 37
+                                                              - 40
+                                                            pairs:
+                                                              - pos:
+                                                                  - 37
+                                                                  - 40
+                                                                rule: Ident
+                                                                inner: int
+                    - pos:
+                        - 47
+                        - 47
+                      rule: StatementList
+                      inner: ""
+        - pos:
+            - 48
+            - 49
+          rule: Semicolon
+          inner: ;
+        - pos:
+            - 51
+            - 119
+          rule: TopLevelDecl
+          inner:
+            pos:
+              - 51
+              - 119
+            pairs:
+              - pos:
+                  - 51
+                  - 119
+                rule: FunctionDecl
+                inner:
+                  pos:
+                    - 56
+                    - 118
+                  pairs:
+                    - pos:
+                        - 56
+                        - 65
+                      rule: Ident
+                      inner: something
+                    - pos:
+                        - 65
+                        - 115
+                      rule: Signature
+                      inner:
+                        pos:
+                          - 65
+                          - 115
+                        pairs:
+                          - pos:
+                              - 65
+                              - 101
+                            rule: Parameters
+                            inner:
+                              pos:
+                                - 66
+                                - 100
+                              pairs:
+                                - pos:
+                                    - 66
+                                    - 100
+                                  rule: ParameterList
+                                  inner:
+                                    pos:
+                                      - 66
+                                      - 100
+                                    pairs:
+                                      - pos:
+                                          - 66
+                                          - 75
+                                        rule: ParameterDecl
+                                        inner:
+                                          pos:
+                                            - 66
+                                            - 75
+                                          pairs:
+                                            - pos:
+                                                - 66
+                                                - 70
+                                              rule: IdentifierList
+                                              inner:
+                                                pos:
+                                                  - 66
+                                                  - 70
+                                                pairs:
+                                                  - pos:
+                                                      - 66
+                                                      - 67
+                                                    rule: Ident
+                                                    inner: a
+                                                  - pos:
+                                                      - 69
+                                                      - 70
+                                                    rule: Ident
+                                                    inner: b
+                                            - pos:
+                                                - 71
+                                                - 75
+                                              rule: Type
+                                              inner:
+                                                pos:
+                                                  - 71
+                                                  - 75
+                                                pairs:
+                                                  - pos:
+                                                      - 71
+                                                      - 75
+                                                    rule: Ident
+                                                    inner: bunt
+                                      - pos:
+                                          - 77
+                                          - 83
+                                        rule: ParameterDecl
+                                        inner:
+                                          pos:
+                                            - 77
+                                            - 83
+                                          pairs:
+                                            - pos:
+                                                - 77
+                                                - 79
+                                              rule: IdentifierList
+                                              inner:
+                                                pos:
+                                                  - 77
+                                                  - 78
+                                                pairs:
+                                                  - pos:
+                                                      - 77
+                                                      - 78
+                                                    rule: Ident
+                                                    inner: c
+                                            - pos:
+                                                - 79
+                                                - 83
+                                              rule: Type
+                                              inner:
+                                                pos:
+                                                  - 79
+                                                  - 83
+                                                pairs:
+                                                  - pos:
+                                                      - 79
+                                                      - 83
+                                                    rule: Ident
+                                                    inner: uint
+                                      - pos:
+                                          - 85
+                                          - 100
+                                        rule: ParameterDecl
+                                        inner:
+                                          pos:
+                                            - 85
+                                            - 100
+                                          pairs:
+                                            - pos:
+                                                - 85
+                                                - 87
+                                              rule: IdentifierList
+                                              inner:
+                                                pos:
+                                                  - 85
+                                                  - 86
+                                                pairs:
+                                                  - pos:
+                                                      - 85
+                                                      - 86
+                                                    rule: Ident
+                                                    inner: d
+                                            - pos:
+                                                - 87
+                                                - 100
+                                              rule: Type
+                                              inner:
+                                                pos:
+                                                  - 87
+                                                  - 100
+                                                pairs:
+                                                  - pos:
+                                                      - 87
+                                                      - 100
+                                                    rule: Tuple
+                                                    inner:
+                                                      pos:
+                                                        - 88
+                                                        - 99
+                                                      pairs:
+                                                        - pos:
+                                                            - 88
+                                                            - 99
+                                                          rule: TypeList
+                                                          inner:
+                                                            pos:
+                                                              - 88
+                                                              - 99
+                                                            pairs:
+                                                              - pos:
+                                                                  - 88
+                                                                  - 91
+                                                                rule: Type
+                                                                inner:
+                                                                  pos:
+                                                                    - 88
+                                                                    - 91
+                                                                  pairs:
+                                                                    - pos:
+                                                                        - 88
+                                                                        - 91
+                                                                      rule: Ident
+                                                                      inner: int
+                                                              - pos:
+                                                                  - 93
+                                                                  - 99
+                                                                rule: Type
+                                                                inner:
+                                                                  pos:
+                                                                    - 93
+                                                                    - 99
+                                                                  pairs:
+                                                                    - pos:
+                                                                        - 93
+                                                                        - 99
+                                                                      rule: Ident
+                                                                      inner: string
+                          - pos:
+                              - 102
+                              - 115
+                            rule: Type
+                            inner:
+                              pos:
+                                - 102
+                                - 115
+                              pairs:
+                                - pos:
+                                    - 102
+                                    - 115
+                                  rule: Tuple
+                                  inner:
+                                    pos:
+                                      - 103
+                                      - 114
+                                    pairs:
+                                      - pos:
+                                          - 103
+                                          - 114
+                                        rule: TypeList
+                                        inner:
+                                          pos:
+                                            - 103
+                                            - 114
+                                          pairs:
+                                            - pos:
+                                                - 103
+                                                - 106
+                                              rule: Type
+                                              inner:
+                                                pos:
+                                                  - 103
+                                                  - 106
+                                                pairs:
+                                                  - pos:
+                                                      - 103
+                                                      - 106
+                                                    rule: Ident
+                                                    inner: int
+                                            - pos:
+                                                - 108
+                                                - 114
+                                              rule: Type
+                                              inner:
+                                                pos:
+                                                  - 108
+                                                  - 114
+                                                pairs:
+                                                  - pos:
+                                                      - 108
+                                                      - 114
+                                                    rule: Ident
+                                                    inner: string
+                    - pos:
+                        - 118
+                        - 118
+                      rule: StatementList
+                      inner: ""
+        - pos:
+            - 119
+            - 120
+          rule: Semicolon
+          inner: ;
+        - pos:
+            - 122
+            - 139
+          rule: TopLevelDecl
+          inner:
+            pos:
+              - 122
+              - 139
+            pairs:
+              - pos:
+                  - 122
+                  - 139
+                rule: FunctionDecl
+                inner:
+                  pos:
+                    - 127
+                    - 138
+                  pairs:
+                    - pos:
+                        - 127
+                        - 132
+                      rule: Ident
+                      inner: empty
+                    - pos:
+                        - 132
+                        - 135
+                      rule: Signature
+                      inner:
+                        pos:
+                          - 132
+                          - 134
+                        pairs:
+                          - pos:
+                              - 132
+                              - 134
+                            rule: Parameters
+                            inner: ()
+                    - pos:
+                        - 138
+                        - 138
+                      rule: StatementList
+                      inner: ""
+        - pos:
+            - 139
+            - 140
+          rule: Semicolon
+          inner: ;
+        - pos:
+            - 141
+            - 141
+          rule: EOI
+          inner: ""
+
