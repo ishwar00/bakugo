@@ -1,0 +1,168 @@
+---
+source: tests/parser.rs
+expression: parsed
+input_file: tests/examples/11_return_value.bakugo
+---
+SourceFile {
+    top_level: [
+        FnDecl(
+            FnDecl {
+                name: Ident {
+                    value: "main",
+                    span: Span {
+                        str: "main",
+                        start: 5,
+                        end: 9,
+                    },
+                },
+                params: [],
+                result_kind: None,
+                body: StatementList(
+                    [
+                        Return(
+                            Some(
+                                [
+                                    Integer {
+                                        value: 34,
+                                        span: Span {
+                                            str: "34",
+                                            start: 22,
+                                            end: 24,
+                                        },
+                                    },
+                                ],
+                            ),
+                        ),
+                        Return(
+                            Some(
+                                [
+                                    TupleExpr(
+                                        [
+                                            Integer {
+                                                value: 34,
+                                                span: Span {
+                                                    str: "34",
+                                                    start: 35,
+                                                    end: 37,
+                                                },
+                                            },
+                                            String {
+                                                value: "hey",
+                                                span: Span {
+                                                    str: "\"hey\"",
+                                                    start: 39,
+                                                    end: 44,
+                                                },
+                                            },
+                                            Float {
+                                                value: 4.5,
+                                                span: Span {
+                                                    str: "4.5",
+                                                    start: 46,
+                                                    end: 49,
+                                                },
+                                            },
+                                        ],
+                                    ),
+                                ],
+                            ),
+                        ),
+                    ],
+                ),
+                span: Span {
+                    str: "func main() {\n\treturn 34;\n\treturn (34, \"hey\", 4.5,);\n}",
+                    start: 0,
+                    end: 54,
+                },
+            },
+        ),
+        FnDecl(
+            FnDecl {
+                name: Ident {
+                    value: "primary",
+                    span: Span {
+                        str: "primary",
+                        start: 63,
+                        end: 70,
+                    },
+                },
+                params: [],
+                result_kind: None,
+                body: StatementList(
+                    [
+                        Return(
+                            Some(
+                                [
+                                    FunctionCall {
+                                        function: Identifier {
+                                            value: "func_call",
+                                            span: Span {
+                                                str: "func_call",
+                                                start: 83,
+                                                end: 92,
+                                            },
+                                        },
+                                        args: Args {
+                                            kind: None,
+                                            args: [
+                                                String {
+                                                    value: "hi\n\t\tthere\t",
+                                                    span: Span {
+                                                        str: "`hi\n\t\tthere\t`",
+                                                        start: 96,
+                                                        end: 109,
+                                                    },
+                                                },
+                                                Integer {
+                                                    value: 45,
+                                                    span: Span {
+                                                        str: "45",
+                                                        start: 114,
+                                                        end: 116,
+                                                    },
+                                                },
+                                                TupleExpr(
+                                                    [
+                                                        Integer {
+                                                            value: 4,
+                                                            span: Span {
+                                                                str: "4",
+                                                                start: 122,
+                                                                end: 123,
+                                                            },
+                                                        },
+                                                        Integer {
+                                                            value: 2,
+                                                            span: Span {
+                                                                str: "2",
+                                                                start: 125,
+                                                                end: 126,
+                                                            },
+                                                        },
+                                                    ],
+                                                ),
+                                                String {
+                                                    value: "hey",
+                                                    span: Span {
+                                                        str: "\"hey\"",
+                                                        start: 131,
+                                                        end: 136,
+                                                    },
+                                                },
+                                            ],
+                                        },
+                                    },
+                                ],
+                            ),
+                        ),
+                    ],
+                ),
+                span: Span {
+                    str: "func primary() {\n\treturn func_call(\n\t\t`hi\n\t\tthere\t`, \n\t\t45, \n\t\t(4, 2),\n\t\t\"hey\"\n\t);\n}",
+                    start: 58,
+                    end: 142,
+                },
+            },
+        ),
+    ],
+}

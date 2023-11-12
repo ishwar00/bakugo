@@ -727,20 +727,15 @@ impl<'i> Node<'i> for StatementList<'i> {
                             parsed_stmts.push(Statement::Expression(expr))
                         }
 
-                        Rule::ReturnStmt => {
-                            let expr_list = pair
-                                .into_inner()
-                                .next()
-                                .unwrap()
-                                .into_inner()
-                                .map(Expr::parse)
-                                .collect::<Result<Vec<_>, _>>()?;
-                            parsed_stmts.push(Statement::Return(if expr_list.is_empty() {
-                                None
-                            } else {
-                                Some(expr_list)
-                            }))
-                        }
+                        Rule::ReturnStmt => match pair.into_inner().next() {
+                            Some(expr_list) => parsed_stmts.push(Statement::Return(Some(
+                                expr_list
+                                    .into_inner()
+                                    .map(Expr::parse)
+                                    .collect::<Result<Vec<_>, _>>()?,
+                            ))),
+                            None => parsed_stmts.push(Statement::Return(None)),
+                        },
 
                         Rule::Semicolon => {}
 

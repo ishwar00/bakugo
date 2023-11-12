@@ -168,7 +168,7 @@ fn test_string_lit() {
         let parse_result = BakugoParser::parse(Rule::StringLit, string_test);
         match parse_result {
             Ok(mut parsed) => {
-                let string_lit = parsed.next().unwrap().into_inner().next().unwrap();
+                let string_lit = parsed.next().unwrap();
                 if let Rule::RawStringLit | Rule::InterpretedStringLit = string_lit.as_rule() {
                     assert_yaml_snapshot!(string_lit.as_str(), string_test);
                 } else {

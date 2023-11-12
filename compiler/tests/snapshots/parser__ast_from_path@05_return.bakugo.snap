@@ -19,7 +19,9 @@ SourceFile {
                 result_kind: None,
                 body: StatementList(
                     [
-                        Return,
+                        Return(
+                            None,
+                        ),
                     ],
                 ),
                 span: Span {
