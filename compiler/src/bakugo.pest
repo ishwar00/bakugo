@@ -171,11 +171,9 @@ UnaryNot   =  { "!" }
 
 Statement = _{ ReturnStmt | IfStmt | Declaration | SimpleStmt | Block }
 
-SimpleStmt = _{ Assignment | ExpressionStmt | IncDecStmt }
+SimpleStmt = _{ Assignment | ExpressionStmt }
 
 ExpressionStmt = { Expression }
-
-IncDecStmt = { Expression ~ ("++" | "--") }
 
 Assignment = { ExpressionList ~ "=" ~ ExpressionList }
 
