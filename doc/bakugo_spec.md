@@ -87,8 +87,8 @@ Lowercase production names are used to identify lexical (terminal) tokens. Non-t
 are in CamelCase. Lexical tokens are enclosed in double quotes ``""`` or back quotes ``` `` ``` .
 
 The form ``a … b`` represents the set of characters from ``a`` through ``b`` as alternatives.
-The horizontal ellipsis ``…`` is also used else where in the spec to informally denote various 
-enumerations or code snippets that are not further specified. The character ``…`` (as opposed 
+The horizontal ellipsis ``…`` is also used else where in the spec to informally denote various
+enumerations or code snippets that are not further specified. The character ``…`` (as opposed
 to the three characters ``...``) is not a token of the Go language.
 
 ## Source code representation
@@ -117,14 +117,16 @@ unicode_char   = /* an arbitrary Unicode code point except newline */ .
 unicode_letter = /* a Unicode code point categorized as "Letter" */ .
 unicode_digit  = /* a Unicode code point categorized as "Number, decimal digit" */ .
 ```
-In _The Unicode Standard 8.0_, Section 4.5 "General Category" defines a set of character categories. 
+In _The Unicode Standard 8.0_, Section 4.5 "General Category" defines a set of character categories.
 Go treats all characters in any of the Letter categories Lu, Ll, Lt, Lm, or Lo as Unicode letters, and those in the Number category Nd as Unicode digits.
 
 ## Letters and digits
-The underscore character `_` is considered a lowercase letter.
+The underscore character `_`(U+005F) is considered a lowercase letter.
 ```
-letter        = letter | "_" .
+letter        = unicode_letter | "_" .
 decimal_digit = "0" … "9" .
+octal_digit = { '0'..'7' }
+hex_digit   = { '0'..'9' | 'A'..'F' | 'a'..'f' }
 ```
 # Lexical elements
 
@@ -140,13 +142,13 @@ A comment cannot start inside a _rune_ or _string_ literal, or inside a comment.
 comment containing no newlines acts like a space. Any other comment acts like a newline.
 
 ## Tokens
-Tokens form the vocabulary of the Go language. There are four classes: _identifiers_, _keywords_, _operators_ and _punctuation_, and _literals_. 
-_White space_, formed from spaces (U+0020), horizontal tabs (U+0009), carriage returns (U+000D), and newlines (U+000A), is ignored except as it separates tokens that would 
+Tokens form the vocabulary of the Go language. There are four classes: _identifiers_, _keywords_, _operators_ and _punctuation_, and _literals_.
+_White space_, formed from spaces (U+0020), horizontal tabs (U+0009), carriage returns (U+000D), and newlines (U+000A), is ignored except as it separates tokens that would
 otherwise combine into a single token. Also, a newline or end of file may trigger the insertion of a _semicolon_.
 While breaking the input into tokens, the next token is the longest sequence of characters that form a valid token.
 
 ## Semicolons
-| NOTE | 
+| NOTE |
 | :-------- |
 | Floating-point, rune or string literal, keywords `break`, `continue` and `fallthrough`, and punctuation `]` are not yet supported. |
 
@@ -161,7 +163,7 @@ The formal syntax uses semicolons `";"` as terminators in a number of production
 
 ## Identifier
 
-Identifiers name program entities such as variables and types. An identifier is a sequence of one or more letters and digits. The first character in an 
+Identifiers name program entities such as variables and types. An identifier is a sequence of one or more letters and digits. The first character in an
 identifier must be a letter.
 
 ```
@@ -221,7 +223,7 @@ The following character sequences represent operators (including assignment oper
 | :--- |
 | Binary, Octal, Hexadecimal literals are not supported yet. |
 
-An integer literal is a sequence of digits representing an _integer constant_. 
+An integer literal is a sequence of digits representing an _integer constant_. A single 0 is considered a decimal zero.
 
 For readability, an underscore character `_` may appear between successive digits; such underscores do not change the literal's value.
 
@@ -232,9 +234,9 @@ decimal_digits = decimal_digit { [ "_" ] decimal_digit } .
 ```
 ## Rune literals
 
-A rune literal represents a _rune constant_, an integer value identifying a Unicode code point. 
-A rune literal is expressed as one or more characters enclosed in single quotes, as in 'x' or '\n'. 
-Within the quotes, any character may appear except newline and unescaped single quote. 
+A rune literal represents a _rune constant_, an integer value identifying a Unicode code point.
+A rune literal is expressed as one or more characters enclosed in single quotes, as in 'x' or '\n'.
+Within the quotes, any character may appear except newline and unescaped single quote.
 A single quoted character represents the Unicode value of the character itself, while multi-character sequences beginning with a backslash encode values in various formats.
 
 The simplest form represents the single character within the quotes; since Go source text is Unicode characters encoded in UTF-8, multiple UTF-8-encoded bytes may represent a single integer value. For instance, the literal 'a' holds a single byte representing a literal `a`, Unicode U+0061, value 0x61, while 'ä' holds two bytes (0xc3 0xa4) representing a literal a-dieresis, U+00E4, value 0xe4.
@@ -320,7 +322,7 @@ interpreted_string_lit = `"` { unicode_value | byte_value } `"` .
 If the source code represents a character as two code points, such as a combining form involving an accent and a letter, the result will be an error if placed in a rune literal (it is not a single code point), and will appear as two code points if placed in a string literal.
 
 ## Constants
-| NOTE | 
+| NOTE |
 | :------- |
 | Floating-point and complex constants are not supported yet. |
 
@@ -329,20 +331,20 @@ There are _boolean constants_, _rune constants_, _integer constants_ and _string
 A constant value is represented by a _rune_, _integer_ or _string_ literal, an identifier denoting a constant, a _constant expression_, The boolean truth values are represented by the
 predeclared constants `true` and `false`.
 
-Numeric constants represent exact values of arbitrary precision and do not overflow. Consequently, there are no constants denoting the IEEE-754 negative zero, 
+Numeric constants represent exact values of arbitrary precision and do not overflow. Consequently, there are no constants denoting the IEEE-754 negative zero,
 infinity, and not-a-number values.
 
 Constants may be typed or untyped. Literal constants, `true`, `false` and certain _constant expressions_ containing only untyped constant operands are untyped.
 
-A constant may be given a type explicitly by a _constant declaration_ or implicitly when used in a _variable declaration_ or an _assignment statement_ or 
+A constant may be given a type explicitly by a _constant declaration_ or implicitly when used in a _variable declaration_ or an _assignment statement_ or
 as an operand in an _expression_. It is an error if the constant value cannot be _represented_ as a value of the respective type.
 
-An untyped constant has a _default_ type which is the type to which the constant is implicitly converted in contexts where a typed value is required, for instance, 
+An untyped constant has a _default_ type which is the type to which the constant is implicitly converted in contexts where a typed value is required, for instance,
 in a _variable declarations_ such as `var i = 0` where there is no explicit type. The default type of an untyped constant is `bool`, `rune`, `int` or `string` respectively, depending on whether it is a boolean, rune, integer, or string constant.
 
 | Implementation restriction |
 | ----------------------------- |
-| Although numeric constants have arbitrary precision in the language, a compiler may implement them using an internal representation with limited precision. That said, every implementation must: 
+| Although numeric constants have arbitrary precision in the language, a compiler may implement them using an internal representation with limited precision. That said, every implementation must:
 | Represent integer constants with at least 256 bits.|
 | Give an error if unable to represent an integer constant precisely.|
 
@@ -353,19 +355,19 @@ These requirements apply both to literal constants and to the result of evaluati
 A variable is a storage location for holding a value. The set of permissible values is determined by the variable's type.
 
 A variable declaration or, for function parameters and results, the signature of a function declaration reserves storage for a named variable.
-The static type (or just type) of a variable is the type given in its declaration.  
+The static type (or just type) of a variable is the type given in its declaration.
 
-A variable's value is retrieved by referring to the variable in an _expression_; it is the most recent value _assigned_ to the variable. 
+A variable's value is retrieved by referring to the variable in an _expression_; it is the most recent value _assigned_ to the variable.
 If a variable has not yet been assigned a value, its value is the _zero value_ for its type.
 
-# Types 
+# Types
 
 A type determines a set of values together with operations specific to those
-values. A type may be denoted by a _type name_, if it has one. 
+values. A type may be denoted by a _type name_, if it has one.
 
 ```
 Type      = TypeName | "(" Type ")" .
-TypeName  = identifier. 
+TypeName  = identifier.
 ```
 The language predeclares certain type names. Others are introduced with _type declarations_.
 
@@ -375,12 +377,12 @@ Predeclared types and defined types are called _named types_. An alias denotes a
 A boolean type represents the set of Boolean truth values denoted by the predeclared constants _true_ and _false_. The predeclared boolean type is _bool_; it is a _defined type_.
 
 ## Numeric types
-An _integer_ type represents the set of integer values. They are collectively 
+An _integer_ type represents the set of integer values. They are collectively
 called numeric types. The predeclared architecture-independent numeric types are:
 
 The value of an _n_-bit integer is _n_ bits wide and represented using two's complement arithmetic.
 
-To avoid portability issues all numeric types are _defined types_ and thus distinct 
+To avoid portability issues all numeric types are _defined types_ and thus distinct
 ```
 uint8       the set of all unsigned  8-bit integers (0 to 255)
 uint16      the set of all unsigned 16-bit integers (0 to 65535)
@@ -408,7 +410,7 @@ rune        alias for int32
 </details>
 
 ## Function types
-| NOTE | 
+| NOTE |
 | :------- |
 | FunctionType is not supported yet. |
 
@@ -420,8 +422,8 @@ ParameterList  = ParameterDecl { "," ParameterDecl } .
 ParameterDecl  = [ IdentifierList ] Type .
 ```
 
-Within a list of parameters, the names (IdentifierList) must either all be present or all be absent. If present, each name stands for one item 
-(parameter) of the specified type and all non-_blank_ names in the signature must be unique. If absent, each type stands for one item of that type. 
+Within a list of parameters, the names (IdentifierList) must either all be present or all be absent. If present, each name stands for one item
+(parameter) of the specified type and all non-_blank_ names in the signature must be unique. If absent, each type stands for one item of that type.
 Parameter lists are always parenthesized. A single return type can be unparenthesized.
 
 ```
@@ -496,7 +498,7 @@ following conditions applies:
 ## Representability
 A _constant_ x is _representable_ by a value of tye T, if one of the following conditions applies:
 
-- x is in the set of value _determined_ by T 
+- x is in the set of value _determined_ by T
 
 ```
 x                   T           x is representable by a value of T because
@@ -537,7 +539,7 @@ An identifier may be re-declared, possibly with a different type, in the same bl
 
 ```
 Declaration   = ConstDecl | TypeDecl | VarDecl .
-TopLevelDecl  = Declaration | FunctionDecl . 
+TopLevelDecl  = Declaration | FunctionDecl .
 ```
 
 The _scope_ of a declared identifier is the extent of source text in which the identifier denotes the specified
@@ -558,8 +560,8 @@ An identifier declared in a block may be redeclared in an inner block too. While
 The following identifiers are implicitly declared in the _universe block_:
 ```
 Types:
-	bool int int8 int16 int32 int64 
-	uint uint8 uint16 uint32 uint64 
+	bool int int8 int16 int32 int64
+	uint uint8 uint16 uint32 uint64
 
 Constants:
 	true false
@@ -571,7 +573,7 @@ Functions:
 
 ```
 Types:
-	any byte comparable complex64 complex128 
+	any byte comparable complex64 complex128
     error float32 float64 rune string uintptr
 
 Constants:
@@ -665,7 +667,7 @@ var (
 	u, v = 2, 3
 )
 ```
-If a list of expressions is given, the variables are initialized with the expressions following the rules for 
+If a list of expressions is given, the variables are initialized with the expressions following the rules for
 _assignment statements_. Otherwise, each variable is initialized to its zero value.
 
 If a type is present, each variable is given that type. Otherwise, each variable is given the type of the
@@ -773,12 +775,12 @@ Unary operators have the highest precedence. As the ++ and -- operators form sta
 expressions, they fall outside the operator hierarchy.
 
 There are five precedence levels for binary operators. Multiplication operators bind strongest,
-followed by addition operators, comparison operators: 
+followed by addition operators, comparison operators:
 
 ```
 Precedence    Operator
     5             *  /  %  &
-    4             +  -  | 
+    4             +  -  |
     3             ==  !=  <  <=  >  >=
 ```
 Binary operators of the same precedence associate from left to right. For instance, x / y * z is
@@ -901,7 +903,7 @@ The right operand is evaluated conditionally.
 </details>
 
 ## Address operators
-| NOTE | 
+| NOTE |
 | :--- |
 | This is added to understand _addressable_|
 
@@ -987,12 +989,12 @@ Statement =
 	Declaration | SimpleStmt |
 	ReturnStmt  | Block | IfStmt .
 
-SimpleStmt = EmptyStmt | ExpressionStmt | IncDecStmt | Assignment  
+SimpleStmt = EmptyStmt | ExpressionStmt | IncDecStmt | Assignment
 ```
 <details><summary>unsupported statements</summary>
 
 ```
-GoStmt | LabeledStmt | ContinueStmt | GotoStmt | FallThroughStmt 
+GoStmt | LabeledStmt | ContinueStmt | GotoStmt | FallThroughStmt
 | SwitchStmt | SelectStmt | ForStmt | DeferStmt
 ```
 
@@ -1132,7 +1134,7 @@ func complexF1() (float64, float64) {
 }
 ```
 
-2. The expression list in the "return" statement may be a single call to a multi-valued function. 
+2. The expression list in the "return" statement may be a single call to a multi-valued function.
 The effect is as if each value returned from that function were assigned to a temporary variable with
 the type of the respective value, followed by a "return" statement listing these variables, at which
 point the rules of the previous case apply.
@@ -1148,7 +1150,7 @@ func complexF2() (float64, float64) {
 When storage is allocated for a _variable_, through a declaration and no explicit
 initialization is provided, the variable or value is given a default value. Each element of such a
 variable or value is set to the _zero value_ for its type: `false` for booleans, `0` for numeric
-types. 
+types.
 
 These two simple declarations are equivalent:
 ```
@@ -1157,7 +1159,7 @@ var i int = 0
 ```
 
 ## Program execution
-| NOTE | 
+| NOTE |
 | :--- |
 | Packages are not supported yet |
 
